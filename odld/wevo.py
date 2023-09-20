@@ -620,6 +620,9 @@ class WEVO:
         #logger.info(f"Final variation = {variation}\n")
         #logger.info(f"Final variation from walkers len = {len(walker_variations)}\n")
 
+        np.savetxt("split.txt", split)
+        np.save("merge.npy", merge)
+
         return split, merge, variation, walker_variations
 
 
