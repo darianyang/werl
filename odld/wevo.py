@@ -117,6 +117,10 @@ class WEVO:
         #self.segments = segments
         self.pcoords = pcoords
         self.weights = weights
+
+        np.savetxt("pcoords.txt", pcoords)
+        np.savetxt("weights.txt", weights)
+
         self.maxcycles = maxcycles
 
         self.pmin = pmin
