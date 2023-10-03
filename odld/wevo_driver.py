@@ -4,6 +4,8 @@ import numpy as np
 import operator
 from westpa.core.we_driver import WEDriver
 from wevo import WEVO
+from split_test import xdim_split
+from split_test import LCAS_split
 
 ############################# SET WEVO PARAMETERS #############################
 
@@ -149,10 +151,14 @@ class WEVODriver(WEDriver):
                 # TODO: pairs seems to not fail with assertion error while greedy tends to fail more often
                 # the reason 'greedy' fails is because extra walkers are sometimes created
                 # but happens at random so it's hard to track down the root cause
-                resample = WEVO(pcoords, weights, merge_dist=merge_dist, char_dist=char_dist,
-                                merge_alg=merge_alg, pmin=pmin, pmax=pmax, dist_exponent=dist_exponent)
-                split, merge, variation, walker_variations = resample.resample()
-                print(f"Final variation value after {resample.count} wevo cycles: ", variation)
+                
+                ### 
+                #resample = WEVO(pcoords, weights, merge_dist=merge_dist, char_dist=char_dist,
+                                #merge_alg=merge_alg, pmin=pmin, pmax=pmax, dist_exponent=dist_exponent)
+                #split, merge, variation, walker_variations = resample.resample()
+                split, merge = LCAS_split(pcoords, weights)
+
+                #print(f"Final variation value after {resample.count} wevo cycles: ", variation)
 
                 # count each operation and segment as a check
                 segs = 0
