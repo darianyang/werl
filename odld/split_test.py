@@ -167,7 +167,12 @@ def xdim_split(pcoords, weights, max_to_split=5, printout=False):
 
 def LCAS_split(pcoords, weights, max_to_split=5, printout=False, saveplots=False):
     
-## Perform Kmeans clustering on pcoords
+    MAX_TO_SPLIT = 5
+    NUM_TO_MERGE = 2*MAX_TO_SPLIT
+    NUM_TRAJ = len(pcoords)
+    N_CLUSTERS = 5
+
+    ## Perform Kmeans clustering on pcoords
     pcoords = pcoords.reshape(-1,1)
     k_clust = KMeans(n_clusters=N_CLUSTERS).fit(pcoords)
     centers = k_clust.cluster_centers_
@@ -236,41 +241,38 @@ def LCAS_split(pcoords, weights, max_to_split=5, printout=False, saveplots=False
 
     return split_arr, merge_arr
 
-
-### 1 iteration using test data ###
-
-## Get pcoords, weights from test data
-pcoords = np.array(get_data('pcoords.txt'))
-weights = np.array(get_data('weights.txt'))
-
-MAX_TO_SPLIT = 5
-NUM_TO_MERGE = 2*MAX_TO_SPLIT
-NUM_TRAJ = len(pcoords)
-N_CLUSTERS = 5
-
-### Test xdim_split with test data ###
-split_arr, merge_arr = xdim_split(pcoords, weights, max_to_split=MAX_TO_SPLIT, printout=True)
-
-
-### Test LCAS with test data ###
-split_arr, merge_arr = LCAS_split(pcoords, weights, max_to_split=MAX_TO_SPLIT, printout=True)
-
-
-### Plot 100th LCAS iteration to see the clustering
-f = open('LCAS_i100_pcoords.txt', 'r')
-lines = f.readlines()
-f.close()
-pcoords = []
-for i in range(len(lines)):
-    pcoords.append(float(lines[i].rstrip()))
-
-pcoords=np.array(pcoords)
-pcoords = pcoords.reshape(-1,1)
-k_clust = KMeans(n_clusters=N_CLUSTERS).fit(pcoords)
-centers = k_clust.cluster_centers_
-labels = k_clust.labels_
-plot_on_odld(pcoords, labels, centers, show=True, savename='kmeans_ODLD_i100')
-
-
 if __name__ == "__main__":
-    pass
+    
+    ### 1 iteration using test data ###
+
+    ## Get pcoords, weights from test data
+    pcoords = np.array(get_data('pcoords.txt'))
+    weights = np.array(get_data('weights.txt'))
+
+    MAX_TO_SPLIT = 5
+    NUM_TO_MERGE = 2*MAX_TO_SPLIT
+    NUM_TRAJ = len(pcoords)
+    N_CLUSTERS = 5
+
+    ### Test xdim_split with test data ###
+    split_arr, merge_arr = xdim_split(pcoords, weights, max_to_split=MAX_TO_SPLIT, printout=True)
+
+
+    ### Test LCAS with test data ###
+    split_arr, merge_arr = LCAS_split(pcoords, weights, max_to_split=MAX_TO_SPLIT, printout=True)
+
+
+    ### Plot 100th LCAS iteration to see the clustering
+    f = open('LCAS_i100_pcoords.txt', 'r')
+    lines = f.readlines()
+    f.close()
+    pcoords = []
+    for i in range(len(lines)):
+        pcoords.append(float(lines[i].rstrip()))
+
+    pcoords=np.array(pcoords)
+    pcoords = pcoords.reshape(-1,1)
+    k_clust = KMeans(n_clusters=N_CLUSTERS).fit(pcoords)
+    centers = k_clust.cluster_centers_
+    labels = k_clust.labels_
+    plot_on_odld(pcoords, labels, centers, show=True, savename='kmeans_ODLD_i100')
