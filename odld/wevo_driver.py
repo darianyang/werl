@@ -153,10 +153,10 @@ class WEVODriver(WEDriver):
                 # but happens at random so it's hard to track down the root cause
                 
                 ### 
-                #resample = WEVO(pcoords, weights, merge_dist=merge_dist, char_dist=char_dist,
-                                #merge_alg=merge_alg, pmin=pmin, pmax=pmax, dist_exponent=dist_exponent)
-                #split, merge, variation, walker_variations = resample.resample()
-                split, merge = LCAS_split(pcoords, weights)
+                resample = WEVO(pcoords, weights, merge_dist=merge_dist, char_dist=char_dist,
+                                merge_alg=merge_alg, pmin=pmin, pmax=pmax, dist_exponent=dist_exponent)
+                split, merge, variation, walker_variations = resample.resample()
+                #split, merge = LCAS_split(pcoords, weights)
 
                 #print(f"Final variation value after {resample.count} wevo cycles: ", variation)
 

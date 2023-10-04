@@ -4,6 +4,7 @@ Check the total simulation time of a west.h5 file.
 
 import numpy as np
 import h5py
+import sys
 
 def check_agg_time(h5, last_iter=None):
     f = h5py.File(h5, "r")
@@ -13,5 +14,5 @@ def check_agg_time(h5, last_iter=None):
     else:
         print(np.sum(particles))
 
-check_agg_time("west.h5", last_iter=None)
+check_agg_time(sys.argv[1], last_iter=None)
 #check_agg_time("200i_1bin/west.h5")
