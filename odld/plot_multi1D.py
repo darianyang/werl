@@ -10,7 +10,7 @@ for h5 in h5_list:
     wedap.H5_Plot(h5=h5, data_type="average", first_iter=250, plot_mode="line", 
                   data_label=h5, ax=ax).plot()
 
-def plot_odld(A=2, B=10, C=0.5, x0=1):
+def plot_odld(A=2, B=5, C=0.5, x0=1):
     twopi_by_A = 2 * np.pi / A
     half_B = B / 2
     sigma = 0.001 ** (0.5)
@@ -24,6 +24,7 @@ def plot_odld(A=2, B=10, C=0.5, x0=1):
     eCx_less_one = eCx - 1.0
     y = half_B / (eCx_less_one * eCx_less_one) * (twopi_by_A * eCx_less_one * np.sin(xarg) + C * eCx * np.cos(xarg))
 
+    #plt.plot(x, -np.log(y/np.max(y)), color='k', alpha=0.5, label='ODLD potential', linestyle="--")
     plt.plot(x, y, color='k', alpha=0.5, label='ODLD potential', linestyle="--")
 plot_odld()
 
