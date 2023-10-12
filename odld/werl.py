@@ -83,6 +83,11 @@ class WERL:
         # then with most_common: [(0, 21), (1, 20), (2, 4), (3, 3), (4, 2)]
         counts = Counter(labels).most_common()
         #print(counts[-1][0])
+        # if less than the requested amount of clusters was generated
+        # then go with zero array return, currently useful for w_init
+        # TODO: is there a more robust way to account for init?
+        if len(counts) < self.n_clusters:
+            return self.to_split, self.to_merge
         
         # split n_split times the lowest count cluster(s)
         splits_remaining = n_split
@@ -140,8 +145,13 @@ class WERL:
 
 if __name__ == "__main__":
     # test data
-    pcoords = np.loadtxt('pcoords.txt')
+    #pcoords = np.loadtxt('pcoords.txt')
     #weights = np.loadtxt('weights.txt')
+
+    # test init data
+    pcoords = np.array([9.5] * 50).reshape(-1,1)
+    weights = np.array([0.02] * 50)
+
     werl = WERL(pcoords)
     split, merge = werl.LCAS()
     print(split, "\n", merge)

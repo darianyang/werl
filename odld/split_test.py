@@ -197,9 +197,9 @@ def LCAS_split(pcoords, weights, max_to_split=5, printout=False, saveplots=False
     max_id, min_id = get_max_min_cluster(clusters, labels)
     max_c_size, min_c_size = len(clusters[max_id]), len(clusters[min_id])
 
-    # print('Total number of trajectories:', len(pcoords))
-    # print('Most populated:', max_id, 'with size', len(clusters[max_id]))
-    # print('Least populated:', min_id, 'with size', len(clusters[min_id]))
+    print('Total number of trajectories:', len(pcoords))
+    print('Most populated:', max_id, 'with size', len(clusters[max_id]))
+    print('Least populated:', min_id, 'with size', len(clusters[min_id]))
 
 
     ### Get split and merge arrays ###
@@ -246,8 +246,10 @@ if __name__ == "__main__":
     ### 1 iteration using test data ###
 
     ## Get pcoords, weights from test data
-    pcoords = np.array(get_data('pcoords.txt'))
-    weights = np.array(get_data('weights.txt'))
+    #pcoords = np.array(get_data('pcoords.txt'))
+    #weights = np.array(get_data('weights.txt'))
+    pcoords = np.array([9.5] * 50).reshape(-1,1)
+    weights = np.array([0.02] * 50)
 
     MAX_TO_SPLIT = 5
     NUM_TO_MERGE = 2*MAX_TO_SPLIT
@@ -259,9 +261,9 @@ if __name__ == "__main__":
 
 
     ### Test LCAS with test data ###
-    split_arr, merge_arr = LCAS_split(pcoords, weights, max_to_split=MAX_TO_SPLIT, printout=False)
+    split_arr, merge_arr = LCAS_split(pcoords, weights, max_to_split=MAX_TO_SPLIT, printout=True)
 
-    print(split_arr, "\n", merge_arr)
+    #print(split_arr, "\n", merge_arr)
 
     ### Plot 100th LCAS iteration to see the clustering
     # f = open('LCAS_i100_pcoords.txt', 'r')

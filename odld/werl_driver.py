@@ -138,11 +138,11 @@ class WERLDriver(WEDriver):
                 # resample = WEVO(pcoords, weights, merge_dist=merge_dist, char_dist=char_dist,
                 #                 merge_alg=merge_alg, pmin=pmin, pmax=pmax, dist_exponent=dist_exponent)
                 # split, merge, variation, walker_variations = resample.resample()
-                # resample = WERL(pcoords)
-                # split, merge = resample.LCAS()
-                split, merge = LCAS_split(pcoords, weights)
+                resample = WERL(pcoords)
+                split, merge = resample.LCAS()
+                #split, merge = LCAS_split(pcoords, weights)
 
-                #print(f"LCAS split: {split}\nLCAS merge: {merge}")
+                print(f"LCAS split: {split}\nLCAS merge: {merge}")
                 #print(f"Final variation value after {resample.count} wevo cycles: ", variation)
 
                 # count each operation and segment as a check
