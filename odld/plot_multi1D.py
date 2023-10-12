@@ -24,7 +24,7 @@ def plot_odld(A=2, B=5, C=0.5, x0=1):
     eCx_less_one = eCx - 1.0
     y = half_B / (eCx_less_one * eCx_less_one) * (twopi_by_A * eCx_less_one * np.sin(xarg) + C * eCx * np.cos(xarg))
 
-    #plt.plot(x, -np.log(y/np.max(y)), color='k', alpha=0.5, label='ODLD potential', linestyle="--")
+    #plt.plot(x, np.flip(-np.log(y)), color='k', alpha=0.5, label='ODLD potential', linestyle="--")
     plt.plot(x, y, color='k', alpha=0.5, label='ODLD potential', linestyle="--")
 plot_odld()
 
@@ -32,5 +32,5 @@ plt.legend()
 plt.xlabel("ODLD Position")
 
 plt.tight_layout()
-plt.savefig("figures/multi_1d.png", dpi=300, transparent=True)
-#plt.show()
+#plt.savefig("figures/multi_1d.png", dpi=300, transparent=True)
+plt.show()

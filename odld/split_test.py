@@ -45,7 +45,7 @@ def merge_decision(pcoords, pcoords_to_merge, weights):
     ## each pair is a tuple of tuples
     pairs = []
     while merge_id:
-        print(merge_id)
+        #print(merge_id)
         traj1 = merge_id.pop(random.randrange(0, len(merge_id)))
         traj2 = merge_id.pop(random.randrange(0, len(merge_id)))
         pairs.append((traj1, traj2))
@@ -197,9 +197,9 @@ def LCAS_split(pcoords, weights, max_to_split=5, printout=False, saveplots=False
     max_id, min_id = get_max_min_cluster(clusters, labels)
     max_c_size, min_c_size = len(clusters[max_id]), len(clusters[min_id])
 
-    print('Total number of trajectories:', len(pcoords))
-    print('Most populated:', max_id, 'with size', len(clusters[max_id]))
-    print('Least populated:', min_id, 'with size', len(clusters[min_id]))
+    # print('Total number of trajectories:', len(pcoords))
+    # print('Most populated:', max_id, 'with size', len(clusters[max_id]))
+    # print('Least populated:', min_id, 'with size', len(clusters[min_id]))
 
 
     ### Get split and merge arrays ###
@@ -255,24 +255,25 @@ if __name__ == "__main__":
     N_CLUSTERS = 5
 
     ### Test xdim_split with test data ###
-    split_arr, merge_arr = xdim_split(pcoords, weights, max_to_split=MAX_TO_SPLIT, printout=True)
+    #split_arr, merge_arr = xdim_split(pcoords, weights, max_to_split=MAX_TO_SPLIT, printout=True)
 
 
     ### Test LCAS with test data ###
-    split_arr, merge_arr = LCAS_split(pcoords, weights, max_to_split=MAX_TO_SPLIT, printout=True)
+    split_arr, merge_arr = LCAS_split(pcoords, weights, max_to_split=MAX_TO_SPLIT, printout=False)
 
+    print(split_arr, "\n", merge_arr)
 
     ### Plot 100th LCAS iteration to see the clustering
-    f = open('LCAS_i100_pcoords.txt', 'r')
-    lines = f.readlines()
-    f.close()
-    pcoords = []
-    for i in range(len(lines)):
-        pcoords.append(float(lines[i].rstrip()))
+    # f = open('LCAS_i100_pcoords.txt', 'r')
+    # lines = f.readlines()
+    # f.close()
+    # pcoords = []
+    # for i in range(len(lines)):
+    #     pcoords.append(float(lines[i].rstrip()))
 
-    pcoords=np.array(pcoords)
-    pcoords = pcoords.reshape(-1,1)
-    k_clust = KMeans(n_clusters=N_CLUSTERS).fit(pcoords)
-    centers = k_clust.cluster_centers_
-    labels = k_clust.labels_
-    plot_on_odld(pcoords, labels, centers, show=True, savename='kmeans_ODLD_i100')
+    # pcoords=np.array(pcoords)
+    # pcoords = pcoords.reshape(-1,1)
+    # k_clust = KMeans(n_clusters=N_CLUSTERS).fit(pcoords)
+    # centers = k_clust.cluster_centers_
+    # labels = k_clust.labels_
+    # plot_on_odld(pcoords, labels, centers, show=True, savename='kmeans_ODLD_i100')

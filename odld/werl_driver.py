@@ -3,7 +3,9 @@ import logging
 import numpy as np
 import operator
 from westpa.core.we_driver import WEDriver
+
 from werl import WERL
+from split_test import LCAS_split
 
 ############################# SET WERL PARAMETERS #############################
 
@@ -133,11 +135,14 @@ class WERLDriver(WEDriver):
                 # but happens at random so it's hard to track down the root cause
                 
                 ### 
-                resample = WEVO(pcoords, weights, merge_dist=merge_dist, char_dist=char_dist,
-                                merge_alg=merge_alg, pmin=pmin, pmax=pmax, dist_exponent=dist_exponent)
-                split, merge, variation, walker_variations = resample.resample()
-                #split, merge = LCAS_split(pcoords, weights)
+                # resample = WEVO(pcoords, weights, merge_dist=merge_dist, char_dist=char_dist,
+                #                 merge_alg=merge_alg, pmin=pmin, pmax=pmax, dist_exponent=dist_exponent)
+                # split, merge, variation, walker_variations = resample.resample()
+                # resample = WERL(pcoords)
+                # split, merge = resample.LCAS()
+                split, merge = LCAS_split(pcoords, weights)
 
+                #print(f"LCAS split: {split}\nLCAS merge: {merge}")
                 #print(f"Final variation value after {resample.count} wevo cycles: ", variation)
 
                 # count each operation and segment as a check

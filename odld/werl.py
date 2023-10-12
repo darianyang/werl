@@ -97,13 +97,16 @@ class WERL:
                     self.to_split[i] += 1
                     # note that one of the requested splits is done
                     splits_remaining -= 1
+                # extra precaution
+                if splits_remaining == 0:
+                     break
             # once done looping through all cluster labels, if there are still more
             # to split, then do it again using the next lowest populated cluster label count
             lc_cluster_counter += 1
 
         # TODO: can this be consolidated with splitting code?
-        # merge (n_split * 2) times the highest count cluster(s)
-        merges_remaining = n_split * 2
+        # merge n_split times the highest count cluster(s)
+        merges_remaining = n_split
         # may need to go through multiple cluster labels
         lc_cluster_counter = 0
         #print(counts[lc_cluster_counter][0])
@@ -140,7 +143,8 @@ if __name__ == "__main__":
     pcoords = np.loadtxt('pcoords.txt')
     #weights = np.loadtxt('weights.txt')
     werl = WERL(pcoords)
-    print(werl.LCAS())
+    split, merge = werl.LCAS()
+    print(split, "\n", merge)
 
     # # test output
     # split = np.loadtxt('split.txt')
