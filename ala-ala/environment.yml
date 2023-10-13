@@ -1,0 +1,10 @@
+name: diala_synd
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - jupyterlab
+  - scikit-learn
+  - westpa 
+  - mdtraj
+  - mdanalysis
