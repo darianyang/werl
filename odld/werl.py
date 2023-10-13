@@ -137,6 +137,7 @@ class WERL:
             
             # once done looping through all cluster labels, if there are still more
             # to split, then do it again using the next lowest populated cluster label count
+            # to only split the lowest cluster, don't use the counter
             lc_cluster_counter += 1
 
         # TODO: can this be consolidated with splitting code?
@@ -221,6 +222,7 @@ if __name__ == "__main__":
     #werl._clustering()
     split, merge = werl.LCAS(15)
     print(split, "\n", merge)
+    print(werl.counts)
 
     # # test output
     # split = np.loadtxt('split.txt')
