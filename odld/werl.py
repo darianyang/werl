@@ -21,7 +21,7 @@ class WERL:
     Weighted Ensemble Reinforcement Learning (WERL).
     '''
 
-    def __init__(self, pcoords, n_clusters=5):
+    def __init__(self, pcoords, n_clusters=None, b=0.07, gamma=0.6, d=2):
         '''
         Parameters
         ----------
@@ -30,7 +30,15 @@ class WERL:
         pcoords : array
             Last pcoord value of each segment for the current iteration.
         n_clusters : int
-            for k-means, TODO: replace with dynamic TLSC heuristic n_cluster selection.
+            Number of clusters for k-means.
+            If self.n_clusters is None, calculating optimal n_clusters using a
+            heuristic approximation from Buenfil, Koelle, Meila, ICML (2021).
+        b : float, default 1e-4 (REAP) or 0.07 (TSLC)
+            Coefficient for n_clusters heuristic.
+        gamma : float, default 0.7
+            Exponent for n_clusters heuristic (should theoretically be in (0.5, 1)).
+        d : float, default 2 
+            Intrinsic dimensionality of slow manifold for the system. Used in n_clusters heuristic.
         '''
         # need to reshape 1d arrays from (n) to (n, 1) for kmeans fitting
         if pcoords.ndim == 1:
@@ -38,21 +46,46 @@ class WERL:
         else:
             self.pcoords = pcoords
 
-        self.n_clusters = n_clusters
-        
         # number of segments/walkers during the iteration
         self.n_segments = self.pcoords.shape[0]
+
+        if n_clusters is None:
+            # calculate optimal amount of n_clusters
+            #self.n_clusters = np.floor(b * self.n_segments ** (gamma * d)).astype(int)
+            self.n_clusters = int(b * (self.n_segments ** (gamma * d)))
+        else:
+            # otherwise use input n_cluster number
+            self.n_clusters = n_clusters
 
         # list of walker positions to split, begin as all zeros (no splitting)
         self.to_split = [0] * self.n_segments
         # list of lists for walker positions to merge, begin as all empty
         self.to_merge = [[] for _ in range(self.n_segments)]
-        # print(len(self.to_split))
-        # print(len(self.to_merge))
+
         # list of all possible merge pairs
         #self.merge_pairs = list(combinations([i for i in range(self.n_segments)], 2))
-        #print(self.merge_pairs)
 
+
+    def _clustering(self):
+        '''
+        Shared clustering method with k-means using self.n_clusters.
+        '''
+        # kmeans clustering
+        km = KMeans(n_clusters=self.n_clusters).fit(self.pcoords)
+        #self.centers = km.cluster_centers_
+        self.labels = km.labels_
+
+        # count each label amount
+        # example output: Counter({0: 21, 1: 20, 2: 4, 3: 3, 4: 2})
+        # then with most_common: [(0, 21), (1, 20), (2, 4), (3, 3), (4, 2)]
+        self.counts = Counter(self.labels).most_common()
+
+        # if less than the requested amount of clusters was generated
+        # then go with zero array return, currently useful for w_init
+        # basically, if the clustering fails, do no split/merge operations
+        if len(self.counts) < self.n_clusters:
+            return self.to_split, self.to_merge
+        
     def LCAS(self, n_split=5):
         '''
         Least Counts Adaptive Sampling. In LCAS, from segment data of the previous iteration, 
@@ -72,22 +105,8 @@ class WERL:
         Returns
         -------
         '''
-        # TODO: eventually move clustering and LC to shared class method
-        # kmeans clustering
-        km = KMeans(n_clusters=self.n_clusters, random_state=1).fit(self.pcoords)
-        centers = km.cluster_centers_
-        labels = km.labels_
-
-        # count each label amount
-        # example output: Counter({0: 21, 1: 20, 2: 4, 3: 3, 4: 2})
-        # then with most_common: [(0, 21), (1, 20), (2, 4), (3, 3), (4, 2)]
-        counts = Counter(labels).most_common()
-        #print(counts[-1][0])
-        # if less than the requested amount of clusters was generated
-        # then go with zero array return, currently useful for w_init
-        # TODO: is there a more robust way to account for init?
-        if len(counts) < self.n_clusters:
-            return self.to_split, self.to_merge
+        # do clustering
+        self._clustering()
         
         # split n_split times the lowest count cluster(s)
         splits_remaining = n_split
@@ -95,9 +114,9 @@ class WERL:
         lc_cluster_counter = 1
         while splits_remaining > 0:
             # go through each segment index label and tag to split
-            for i, seg_label in enumerate(labels):
+            for i, seg_label in enumerate(self.labels):
                 # if the segment is in the least count cluster
-                if seg_label == counts[-lc_cluster_counter][0]:
+                if seg_label == self.counts[-lc_cluster_counter][0]:
                     # increase split counter on this segment by 1
                     self.to_split[i] += 1
                     # note that one of the requested splits is done
@@ -118,14 +137,14 @@ class WERL:
         # keep going until no more merges needed or until no more cluster labels avail
         while merges_remaining > 0 and lc_cluster_counter < self.n_clusters:
             # go through each segment index label and tag to merge
-            for i, segi_label in enumerate(labels):
+            for i, segi_label in enumerate(self.labels):
                 #print(segi_label, lc_cluster_counter)
                 # if the segment is in the least count cluster
-                if segi_label == counts[lc_cluster_counter][0]:
+                if segi_label == self.counts[lc_cluster_counter][0]:
                     # now find a merge pair/partner (only merge within same cluster)
-                    for j, segj_label in enumerate(labels):
+                    for j, segj_label in enumerate(self.labels):
                         # if the segment is in the same least count cluster but not same seg index as i
-                        if segj_label == counts[lc_cluster_counter][0] and i != j:
+                        if segj_label == self.counts[lc_cluster_counter][0] and i != j:
                             # mark these as a merge pair
                             self.to_merge[i].append(j)
                             merges_remaining -= 1
@@ -145,14 +164,15 @@ class WERL:
 
 if __name__ == "__main__":
     # test data
-    #pcoords = np.loadtxt('pcoords.txt')
-    #weights = np.loadtxt('weights.txt')
+    pcoords = np.loadtxt('pcoords.txt')
+    weights = np.loadtxt('weights.txt')
 
     # test init data
-    pcoords = np.array([9.5] * 50).reshape(-1,1)
-    weights = np.array([0.02] * 50)
+    # pcoords = np.array([9.5] * 50).reshape(-1,1)
+    # weights = np.array([0.02] * 50)
 
     werl = WERL(pcoords)
+    #werl._clustering()
     split, merge = werl.LCAS()
     print(split, "\n", merge)
 
