@@ -139,7 +139,7 @@ class WERLDriver(WEDriver):
                 #                 merge_alg=merge_alg, pmin=pmin, pmax=pmax, dist_exponent=dist_exponent)
                 # split, merge, variation, walker_variations = resample.resample()
                 resample = WERL(pcoords)
-                split, merge = resample.LCAS()
+                split, merge = resample.LCAS(n_split=10)
                 #split, merge = LCAS_split(pcoords, weights)
 
                 print(f"LCAS split: {split}\nLCAS merge: {merge}")
@@ -160,6 +160,7 @@ class WERLDriver(WEDriver):
                         # I think revo doesn't count the current seg
                         self._split_decision(bin, seg, split[i] + 1)
                         splitting += split[i] + 1
+                        #splitting += split[i]
                     if len(merge[i]) != 0:
                         # list of all segs objects in the current merge list element
                         to_merge = [segment for num, segment in enumerate(segments) if num in merge[i]]
