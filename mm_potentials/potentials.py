@@ -298,3 +298,75 @@ def ring_potential(x, y):
     V = -b*np.exp(-d*a)
     
     return V
+
+def we_odld_2d(x, y):
+    sigma = 0.001 ** (0.5)  # friction coefficient
+
+    A = 2
+    B = 10
+    C = 0.5
+    x0 = 0
+    y0 = 0
+    PI = np.pi
+
+    twopi_by_A = 2 * PI / A
+    half_B = B / 2
+    gradfactor = sigma * sigma / 2
+
+    # x = coords[:, istep - 1, 0]
+    # y = coords[:, istep - 1, 1]
+
+    xarg = twopi_by_A * (x - x0)
+    yarg = twopi_by_A * (y - y0)
+
+    eCx = np.exp(C * x)
+    eCx_less_one = eCx - 1.0
+    eCy = np.exp(C * y)
+    eCy_less_one = eCy - 1.0
+
+    gradx = (
+        half_B
+        / (eCx_less_one * eCx_less_one)
+        * (twopi_by_A * eCx_less_one * np.sin(xarg) + C * eCx * np.cos(xarg))
+    )
+
+    grady = (
+        half_B
+        / (eCy_less_one * eCy_less_one)
+        * (twopi_by_A * eCy_less_one * np.sin(yarg) + C * eCy * np.cos(yarg))
+    )
+
+    return gradx + grady
+
+from sympy import diff, exp, symbols, lambdify
+
+def we_odld_2d_new(x, y):
+    def calc_gradient():
+        A = 50.5
+        B = 49.5
+        C = 10000
+        D = 51
+        E = 49
+        x0 = 1
+        y0 = 1
+
+        x, y = symbols('x y')
+        
+        logU1 = -A * ((x-.25)**2) - A * ((y-.75)**2) - 2 * B * (x-.25) * (y-.75)
+        dxU1 = diff(exp(logU1), x)
+        dyU1 = diff(exp(logU1), y)
+        
+        logU2 = -C * (x**2) * ((1-x)**2) * (y**2) * ((1-y)**2)
+        dxU2 = diff(exp(logU2), x)
+        dyU2 = diff(exp(logU2), y)
+        
+        logU3 = -D * (x**2) - D * (y**2) + 2 * E * x * y
+        dxU3 = diff(exp(logU3), x)
+        dyU3 = diff(exp(logU3), y)
+
+        gradx = (dxU1 + dxU2 + 0.5 * dxU3)
+        grady = (dyU1 + dyU2 + 0.5 * dyU3)
+
+        return lambdify([x, y], gradx, "numpy"), lambdify([x, y], grady, "numpy")
+    grad_x, grad_y = calc_gradient()
+    return grad_x(x, y) + grad_y(x, y)

@@ -17,7 +17,7 @@ def load_pickle(filename):
         return pickle.load(infile)
 
 
-def plot_potential(potential, xlim=None, ylim=None, granularity=1):
+def plot_potential(potential, xlim=None, ylim=None, granularity=1, vmax=None):
     '''
     Plots potential based on analytic function.
     '''
@@ -26,7 +26,7 @@ def plot_potential(potential, xlim=None, ylim=None, granularity=1):
     X, Y = np.meshgrid(x, y)  # grid of point
     Z = potential(X, Y)  # evaluation of the function on the grid
 
-    im = plt.imshow(Z, cmap=plt.cm.jet, #interpolation='None',
+    im = plt.imshow(Z, cmap=plt.cm.jet, vmax=vmax, #interpolation='None',
                     extent=[xlim[0], xlim[1], ylim[0], ylim[1]])  # drawing the function
 
     # adding the Contour lines with labels
