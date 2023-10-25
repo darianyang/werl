@@ -1,9 +1,11 @@
 from __future__ import print_function, division
 import logging
+from sympy import diff, exp, symbols, lambdify
 
 import numpy as np
 from numpy.random import normal as random_normal
-import openmm as mm
+
+import westpa
 
 from westpa.core.binning import RectilinearBinMapper
 from westpa.core.propagators import WESTPropagator
@@ -15,40 +17,59 @@ from westpa.core.binning import RectilinearBinMapper
 from westpa.core.binning import RecursiveBinMapper
 
 PI = np.pi
-log = logging.getLogger("westpa.rc")
-
-# THESE ARE THE FOUR THINGS YOU SHOULD CHANGE
-pcoord_len = 21
-pcoord_dtype = np.float32
-bintargetcount = 50  # number of walkers per bin
-nbins = [1]  # You will have prod(binsperdim)+numberofdim*(2*splitIsolated) bins total
-
-# wevo settings
-#bintargetcount = 100  # number of walkers per bin
-#nbins = [1]  # You will have prod(binsperdim)+numberofdim*(2*splitIsolated) bins total
+log = logging.getLogger(__name__)
 
 
 class ODLDPropagator(WESTPropagator):
+    def _calc_gradient(self):
+        A, B, C, D, E, x0, y0 = self.A, self.B, self.C, self.D, self.E, self.x0, self.y0
+
+        x, y = symbols('x y')
+        
+        logU1 = -A * ((x-.25)**2) - A * ((y-.75)**2) - 2 * B * (x-.25) * (y-.75)
+        dxU1 = diff(exp(logU1), x)
+        dyU1 = diff(exp(logU1), y)
+        
+        logU2 = -C * (x**2) * ((1-x)**2) * (y**2) * ((1-y)**2)
+        dxU2 = diff(exp(logU2), x)
+        dyU2 = diff(exp(logU2), y)
+        
+        logU3 = -D * (x**2) - D * (y**2) + 2 * E * x * y
+        dxU3 = diff(exp(logU3), x)
+        dyU3 = diff(exp(logU3), y)
+
+        gradx = (dxU1 + dxU2 + 0.5 * dxU3)
+        grady = (dyU1 + dyU2 + 0.5 * dyU3)
+
+        return lambdify([x, y], gradx, "numpy"), lambdify([x, y], grady, "numpy")
+
     def __init__(self, rc=None):
         super().__init__(rc)
 
-        self.coord_len = pcoord_len
-        self.coord_dtype = pcoord_dtype
-        self.coord_ndim = 1
+        self.coord_len = 5
+        self.coord_dtype = np.float32
+        self.coord_ndim = 2
+		
+        self.initial_pcoord = np.array([0.1,0.5], dtype=self.coord_dtype)
 
-        self.initial_pcoord = np.array([9.5], dtype=self.coord_dtype)
+        self.sigma = 0.0001 ** (0.5)  # friction coefficient
 
-        self.sigma = 0.001 ** (0.5)  # friction coefficient
-
-        self.A = 2
-        # 30 for a more difficult system, 5 for easier barrier
-        self.B = 5
-        self.C = 0.5
+        self.A = 50.5
+        self.B = 49.5
+        self.C = 10000
+        self.D = 51
+        self.E = 49
         self.x0 = 1
+        self.y0 = 1
+
+        self.grad_x, self.grad_y = self._calc_gradient()
 
         # Implement a reflecting boundary at this x value
         # (or None, for no reflection)
-        self.reflect_at = 10.0
+        self.reflect_at_x0 = None
+        self.reflect_at_x = None
+        self.reflect_at_y0 = None
+        self.reflect_at_y = None
 
     def get_pcoord(self, state):
         """Get the progress coordinate of the given basis or initial state."""
@@ -59,59 +80,63 @@ class ODLDPropagator(WESTPropagator):
         initial_state.istate_status = initial_state.ISTATE_STATUS_PREPARED
         return initial_state
 
+    def _reflect(self, coord_array, min_bound, max_bound):
+        # Variable wrangling...
+        if min_bound is None:
+            min_bound = -np.inf
+        if max_bound is None:
+            max_bound = np.inf
+
+        # Loop through each coord and reflect the same amount at that direction.
+        for idx, coord in enumerate(coord_array):
+            if coord < min_bound:
+                coord_array[idx] += 2 * (min_bound - coord)
+            elif coord > max_bound:
+                coord_array[idx] -= 2 * (min_bound - coord)
+
+        return coord_array
+
     def propagate(self, segments):
-
-        A, B, C, x0 = self.A, self.B, self.C, self.x0
-
+        # log.info(segments)
+        # Create empty array for coords
         n_segs = len(segments)
-
         coords = np.empty(
             (n_segs, self.coord_len, self.coord_ndim), dtype=self.coord_dtype
         )
 
+        # Update each one with corresponding pcoord
         for iseg, segment in enumerate(segments):
             coords[iseg, 0] = segment.pcoord[0]
 
-        twopi_by_A = 2 * PI / A
-        half_B = B / 2
         sigma = self.sigma
         gradfactor = self.sigma * self.sigma / 2
         coord_len = self.coord_len
-        reflect_at = self.reflect_at
+        
         all_displacements = np.zeros(
             (n_segs, self.coord_len, self.coord_ndim), dtype=self.coord_dtype
         )
-        for istep in range(1, coord_len):
-            x = coords[:, istep - 1, 0]
 
-            xarg = twopi_by_A * (x - x0)
+        for istep in range(0, coord_len):
+            xi = coords[:, istep - 1, 0]
+            yi = coords[:, istep - 1, 1]
+            # log.info(f'{xi}, {yi}')
 
-            eCx = np.exp(C * x)
-            eCx_less_one = eCx - 1.0
+            #print(xi, yi)
 
-            all_displacements[:, istep, 0] = displacements = random_normal(
+            all_displacements[:, istep, 0] = x_displacements = random_normal(
                 scale=sigma, size=(n_segs,)
             )
-            grad = (
-                half_B
-                / (eCx_less_one * eCx_less_one)
-                * (twopi_by_A * eCx_less_one * np.sin(xarg) + C * eCx * np.cos(xarg))
+            all_displacements[:, istep, 1] = y_displacements = random_normal(
+                scale=sigma, size=(n_segs,)
             )
 
-            newx = x - gradfactor * grad + displacements
-            if reflect_at is not None:
-                # Anything that has moved beyond reflect_at must move back that much
-
-                # boolean array of what to reflect
-                to_reflect = newx > reflect_at
-
-                # how far the things to reflect are beyond our boundary
-                reflect_by = newx[to_reflect] - reflect_at
-
-                # subtract twice how far they exceed the boundary by
-                # puts them the same distance from the boundary, on the other side
-                newx[to_reflect] -= 2 * reflect_by
-            coords[:, istep, 0] = newx
+            # log.info(f'{xi}, {yi}')
+            newx = xi - (gradfactor * self.grad_x(xi, yi)) + x_displacements
+            newy = yi - (gradfactor * self.grad_y(xi, yi)) + y_displacements
+   
+            # Update coords, return reflected coords
+            coords[:, istep, 0] = self._reflect(newx, self.reflect_at_x0, self.reflect_at_x)
+            coords[:, istep, 1] = self._reflect(newy, self.reflect_at_y0, self.reflect_at_y)
 
         for iseg, segment in enumerate(segments):
             segment.pcoord[...] = coords[iseg, :]
@@ -119,29 +144,3 @@ class ODLDPropagator(WESTPropagator):
             segment.status = segment.SEG_STATUS_COMPLETE
 
         return segments
-    
-    # run toy potential using OpenMM
-    # TODO: try to integrate into odld_system.py propagate subclass method
-    #       if it's too difficult, could just use with runseg.sh
-    def run_simulation(n_steps=10000, potential='', platform='CPU'):
-        '''
-        Simulate a single particle under Langevin dynamics.
-        '''
-        system = mm.System()
-        # Added particle with mass of 1 amu
-        system.addParticle(100)
-        force = mm.CustomExternalForce(potential)
-        force.addParticle(0, [])
-        system.addForce(force)
-        # Langevin integrator with 300K temperature, gamma=1, step size = 0.02
-        integrator = mm.LangevinIntegrator(300, 1,
-                                        0.02)  
-        platform = mm.Platform.getPlatformByName(platform)
-        context = mm.Context(system, integrator, platform)
-        context.setPositions([[0, 0, 0]])
-        context.setVelocitiesToTemperature(300)
-        x = np.zeros((n_steps, 3))
-        for i in range(n_steps):
-            x[i] = context.getState(getPositions=True).getPositions(asNumpy=True)._value
-            integrator.step(1)
-        return x

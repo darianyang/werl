@@ -17,14 +17,19 @@ def load_pickle(filename):
         return pickle.load(infile)
 
 
-def plot_potential(potential, xlim=None, ylim=None, granularity=1, vmax=None):
+def plot_potential(potential, xlim=None, ylim=None, granularity=1, vmax=None,
+                   single_param=False):
     '''
     Plots potential based on analytic function.
     '''
     x = np.arange(*xlim, granularity)
     y = np.arange(*ylim, granularity)
     X, Y = np.meshgrid(x, y)  # grid of point
-    Z = potential(X, Y)  # evaluation of the function on the grid
+    # Python unpacking for multi dimensional output using single input
+    if single_param:
+        Z = potential([X, Y])  # evaluation of the function on the grid
+    else:
+        Z = potential(X, Y)  # evaluation of the function on the grid
 
     im = plt.imshow(Z, cmap=plt.cm.jet, vmax=vmax, #interpolation='None',
                     extent=[xlim[0], xlim[1], ylim[0], ylim[1]])  # drawing the function
@@ -35,7 +40,6 @@ def plot_potential(potential, xlim=None, ylim=None, granularity=1, vmax=None):
     plt.colorbar(im)  # adding the colobar on the right
     plt.show()
     plt.close()
-
 
 # Simulation run snippet --> For long unbiased simulation only
 
