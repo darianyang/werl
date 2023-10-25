@@ -1,6 +1,8 @@
 from __future__ import print_function, division
 import logging
-from sympy import diff, exp, symbols, lambdify
+
+#from sympy import diff, exp, symbols, lambdify
+from potentials import *
 
 import numpy as np
 from numpy.random import normal as random_normal
@@ -19,50 +21,22 @@ from westpa.core.binning import RecursiveBinMapper
 PI = np.pi
 log = logging.getLogger(__name__)
 
-
 class ODLDPropagator(WESTPropagator):
-    def _calc_gradient(self):
-        A, B, C, D, E, x0, y0 = self.A, self.B, self.C, self.D, self.E, self.x0, self.y0
 
-        x, y = symbols('x y')
-        
-        logU1 = -A * ((x-.25)**2) - A * ((y-.75)**2) - 2 * B * (x-.25) * (y-.75)
-        dxU1 = diff(exp(logU1), x)
-        dyU1 = diff(exp(logU1), y)
-        
-        logU2 = -C * (x**2) * ((1-x)**2) * (y**2) * ((1-y)**2)
-        dxU2 = diff(exp(logU2), x)
-        dyU2 = diff(exp(logU2), y)
-        
-        logU3 = -D * (x**2) - D * (y**2) + 2 * E * x * y
-        dxU3 = diff(exp(logU3), x)
-        dyU3 = diff(exp(logU3), y)
-
-        gradx = (dxU1 + dxU2 + 0.5 * dxU3)
-        grady = (dyU1 + dyU2 + 0.5 * dyU3)
-
-        return lambdify([x, y], gradx, "numpy"), lambdify([x, y], grady, "numpy")
+    ### SET PARAMETERS HERE ###
+    # initial XY position
+    xy_position = [10, 10]
+    # pcoord params
+    coord_len = 5
+    coord_dtype = np.float32
+    coord_ndim = 2
 
     def __init__(self, rc=None):
         super().__init__(rc)
-
-        self.coord_len = 5
-        self.coord_dtype = np.float32
-        self.coord_ndim = 2
 		
-        self.initial_pcoord = np.array([0.1,0.5], dtype=self.coord_dtype)
+        self.initial_pcoord = np.array(self.xy_position, dtype=self.coord_dtype)
 
         self.sigma = 0.0001 ** (0.5)  # friction coefficient
-
-        self.A = 50.5
-        self.B = 49.5
-        self.C = 10000
-        self.D = 51
-        self.E = 49
-        self.x0 = 1
-        self.y0 = 1
-
-        self.grad_x, self.grad_y = self._calc_gradient()
 
         # Implement a reflecting boundary at this x value
         # (or None, for no reflection)
@@ -70,6 +44,11 @@ class ODLDPropagator(WESTPropagator):
         self.reflect_at_x = None
         self.reflect_at_y0 = None
         self.reflect_at_y = None
+
+    ### adjust for different potential functions or unpacking settings ###
+    def _calc_gradient(self, x, y):
+        grad = we_odld_2d(x, y)
+        return grad
 
     def get_pcoord(self, state):
         """Get the progress coordinate of the given basis or initial state."""
@@ -130,9 +109,11 @@ class ODLDPropagator(WESTPropagator):
                 scale=sigma, size=(n_segs,)
             )
 
-            # log.info(f'{xi}, {yi}')
-            newx = xi - (gradfactor * self.grad_x(xi, yi)) + x_displacements
-            newy = yi - (gradfactor * self.grad_y(xi, yi)) + y_displacements
+            ### ADJUST GRAD ###
+            #log.info(f'XY vars: {xi}, {yi}')
+            grad = self._calc_gradient(xi, yi)
+            newx = xi - (gradfactor * grad) + x_displacements
+            newy = yi - (gradfactor * grad) + y_displacements
    
             # Update coords, return reflected coords
             coords[:, istep, 0] = self._reflect(newx, self.reflect_at_x0, self.reflect_at_x)

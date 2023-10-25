@@ -11,6 +11,6 @@ BSTATES="--bstate initial,1,9.5"
 #w_init $BSTATES --segs-per-state 50 "$@"
 
 #BSTATES="--bstate-file bstates.txt"
-TSTATES="--tstate-file tstates.txt"
+#TSTATES="--tstate-file tstates.txt"
 #w_init $BSTATES $TSTATES "$@"
 w_init $BSTATES "$@"

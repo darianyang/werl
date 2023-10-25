@@ -1,0 +1,29 @@
+System building only off of the configuration file
+Maximum wallclock time: 1:00:00
+
+Wed Oct 25 18:05:41 2023
+Iteration 1 (100 requested)
+Beginning iteration 1
+5 segments remain in iteration 1 (5 total)
+1 of 100 (1.000000%) active bins are populated
+per-bin minimum non-zero probability:       1
+per-bin maximum probability:                1
+per-bin probability dynamic range (kT):     0
+per-segment minimum non-zero probability:   0.2
+per-segment maximum non-zero probability:   0.2
+per-segment probability dynamic range (kT): 0
+norm = 1, error in norm = 0 (0*epsilon)
+Waiting for segments to complete...
+exception caught; shutting down
+-- ERROR    [w_run] -- error message: index 902 is out of bounds for axis 0 with size 100
+-- ERROR    [w_run] -- Traceback (most recent call last):
+  File "/Users/darian/github/wevo/westpa/src/westpa/cli/core/w_run.py", line 62, in run_simulation
+    sim_manager.run()
+  File "/Users/darian/github/wevo/westpa/src/westpa/core/sim_manager.py", line 750, in run
+    self.propagate()
+  File "/Users/darian/github/wevo/westpa/src/westpa/core/sim_manager.py", line 601, in propagate
+    self.we_driver.assign(incoming)
+  File "/Users/darian/github/wevo/westpa/src/westpa/core/we_driver.py", line 355, in assign
+    initial_binning[iidx].add(segment)
+IndexError: index 902 is out of bounds for axis 0 with size 100
+
