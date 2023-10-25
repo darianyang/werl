@@ -199,7 +199,6 @@ four_wells_symmetric = gaussian_bivariate_string().replace('-80', '-25', 1)
 
 
 # Potential for TSLC
-
 def circular_potential_func(v, r=2, c=-250, a=-10):
     '''
     Computes circular potential value at point v = (x, y ,z).
@@ -232,3 +231,70 @@ def circular_potential_string(r=2, c=-250, a=-10):
 
 
 circular_potential = circular_potential_string()
+
+
+# potentials from REAP paper
+
+def I_potential(x, y):
+    # parameters in Mueller potential
+
+    aa = [-1.5, -10, -1.5] # inverse radius in x
+    bb = [0, 0, 0] # radius in xy
+    cc = [-20, -1, -20] # inverse radius in y
+    AA = [-80, -80, -80] # strength
+
+    XX = [0, 0, 0] # center_x
+    YY = [0.5, 2, 3.5] # center_y
+
+    V1 = AA[0]*np.exp(aa[0] * np.square(x-XX[0]) + bb[0] * (x-XX[0]) * (y-YY[0]) +cc[0]*np.square(y-YY[0]))
+
+    for j in range(1,3):
+        V1 =  V1 + AA[j]*np.exp(aa[j]*np.square(x-XX[j]) + bb[j]*(x-XX[j])*(y-YY[j]) + cc[j]*np.square(y-YY[j]))
+
+    return V1
+
+def L_potential(x, y):
+    # parameters in Mueller potential
+
+    aa = [-2, -20, -20, -20, -20] # inverse radius in x
+    bb = [0, 0, 0, 0, 0] # radius in xy
+    cc = [-20, -20, -2, -20, -20] # inverse radius in y
+    AA = 30*[-200, -120, -200, -80, -80] # strength
+
+    XX = [1, 0, 0, 0, 0.4] # center_x
+    YY = [0, 0, 1, 0.4, 0] # center_y
+
+    V1 = AA[0]*np.exp(aa[0] * np.square(x-XX[0]) + bb[0] * (x-XX[0]) * (y-YY[0]) +cc[0]*np.square(y-YY[0]))
+    for j in range(1,5):
+            V1 =  V1 + AA[j]*np.exp(aa[j]*np.square(x-XX[j]) + bb[j]*(x-XX[j])*(y-YY[j]) + cc[j]*np.square(y-YY[j]))
+
+    return V1
+
+def O_potential(x, y):
+    # parameters in Mueller potential
+
+    aa = [-1] # inverse radius in x
+    bb = [0] # radius in xy
+    cc = [-1] # inverse radius in y
+    AA = 3*[-200] # strength
+
+    XX = [0] # center_x
+    YY = [0] # center_y
+
+    V1 = AA[0]*np.exp(aa[0] * np.square(x-XX[0]) + bb[0] * (x-XX[0]) * (y-YY[0]) +cc[0]*np.square(y-YY[0]))
+    return V1
+
+# from TSLC paper
+def ring_potential(x, y):
+    #Potential Parameters:
+    a=10
+    
+    b=250
+    
+    rad=2 #rad is radius of circle
+    
+    #distance to circle
+    d = np.square(np.sqrt(np.square(x)+np.square(y)) - rad)
+    V = -b*np.exp(-d*a)
+    
+    return V

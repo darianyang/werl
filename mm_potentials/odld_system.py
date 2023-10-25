@@ -3,6 +3,7 @@ import logging
 
 import numpy as np
 from numpy.random import normal as random_normal
+import openmm as mm
 
 from westpa.core.binning import RectilinearBinMapper
 from westpa.core.propagators import WESTPropagator
@@ -118,3 +119,29 @@ class ODLDPropagator(WESTPropagator):
             segment.status = segment.SEG_STATUS_COMPLETE
 
         return segments
+    
+    # run toy potential using OpenMM
+    # TODO: try to integrate into odld_system.py propagate subclass method
+    #       if it's too difficult, could just use with runseg.sh
+    def run_simulation(n_steps=10000, potential='', platform='CPU'):
+        '''
+        Simulate a single particle under Langevin dynamics.
+        '''
+        system = mm.System()
+        # Added particle with mass of 1 amu
+        system.addParticle(100)
+        force = mm.CustomExternalForce(potential)
+        force.addParticle(0, [])
+        system.addForce(force)
+        # Langevin integrator with 300K temperature, gamma=1, step size = 0.02
+        integrator = mm.LangevinIntegrator(300, 1,
+                                        0.02)  
+        platform = mm.Platform.getPlatformByName(platform)
+        context = mm.Context(system, integrator, platform)
+        context.setPositions([[0, 0, 0]])
+        context.setVelocitiesToTemperature(300)
+        x = np.zeros((n_steps, 3))
+        for i in range(n_steps):
+            x[i] = context.getState(getPositions=True).getPositions(asNumpy=True)._value
+            integrator.step(1)
+        return x
