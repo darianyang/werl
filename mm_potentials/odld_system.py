@@ -71,7 +71,7 @@ class ODLDPropagator(WESTPropagator):
             if coord < min_bound:
                 coord_array[idx] += 2 * (min_bound - coord)
             elif coord > max_bound:
-                coord_array[idx] -= 2 * (min_bound - coord)
+                coord_array[idx] += 2 * (max_bound - coord)
 
         return coord_array
 
@@ -95,7 +95,7 @@ class ODLDPropagator(WESTPropagator):
             (n_segs, self.coord_len, self.coord_ndim), dtype=self.coord_dtype
         )
 
-        for istep in range(0, coord_len):
+        for istep in range(1, coord_len):
             xi = coords[:, istep - 1, 0]
             yi = coords[:, istep - 1, 1]
             # log.info(f'{xi}, {yi}')

@@ -17,6 +17,7 @@ rm -f west.h5 binbounds.txt
 rm -f west.h5 binbounds.txt
 #BSTATES="--bstate-file bstates.txt"
 BSTATES="--bstate start,1,0.1"
-TSTATES="--tstate final,2.51,2.51"
+#TSTATES="--tstate final,2.51,2.51"
 #w_init --segs-per-state 40 $BSTATES $TSTATES "$@"
-w_init $BSTATES $TSTATES "$@"
+#w_init $BSTATES $TSTATES "$@"
+w_init $BSTATES "$@"

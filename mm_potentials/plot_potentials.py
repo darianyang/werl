@@ -17,7 +17,7 @@ from utils import plot_potential
 #plot_potential(ring_potential, (-3, 3), (-3, 3), granularity=0.01)
 
 # WE 2D ODLDs
-plot_potential(we_odld_2d, (0, 10), (0, 10), granularity=0.01, vmax=20)
+#plot_potential(we_odld_2d, (0, 10), (0, 10), granularity=0.01, vmax=20)
 #plot_potential(we_odld_2d_new, (0, 1), (0, 1), granularity=0.01)
 
 # from Gideon Simpson Julia landscapes code
