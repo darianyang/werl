@@ -5,7 +5,7 @@ from utils import plot_potential
 
 # from MA-REAP
 #plot_potential(two_wells_complex_func, (0,100), (0,100))
-#plot_potential(four_wells_symmetric_func, (0,2), (0,2), granularity=0.01)
+plot_potential(four_wells_symmetric_func, (0,2), (0,2), granularity=0.01)
 #plot_potential(four_wells_asymmetric_func, (0,2), (0,2), granularity=0.01)
 
 # from REAP

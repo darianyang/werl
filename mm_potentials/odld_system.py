@@ -25,7 +25,7 @@ class ODLDPropagator(WESTPropagator):
 
     ### SET PARAMETERS HERE ###
     # initial XY position
-    xy_position = [10, 10]
+    xy_position = [0.5, 0.5]
     # pcoord params
     coord_len = 5
     coord_dtype = np.float32
@@ -40,14 +40,14 @@ class ODLDPropagator(WESTPropagator):
 
         # Implement a reflecting boundary at this x value
         # (or None, for no reflection)
-        self.reflect_at_x0 = None
-        self.reflect_at_x = None
-        self.reflect_at_y0 = None
-        self.reflect_at_y = None
+        self.reflect_at_x0 = -1
+        self.reflect_at_x = 3
+        self.reflect_at_y0 = -1
+        self.reflect_at_y = 3
 
     ### adjust for different potential functions or unpacking settings ###
     def _calc_gradient(self, x, y):
-        grad = we_odld_2d(x, y)
+        grad = four_wells_symmetric_func(x, y)
         return grad
 
     def get_pcoord(self, state):

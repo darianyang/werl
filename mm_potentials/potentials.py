@@ -78,7 +78,7 @@ def four_wells_asymmetric_func(x, y):
     for c, mean, std in zip(cs, means, stds):
         potential += gaussian_bivariate(c, mean, std, x, y)
 
-    return potential
+    return -potential
 
 
 def gaussian_bivariate_string():
@@ -191,7 +191,7 @@ def four_wells_symmetric_func(x, y):
     for c, mean, std in zip(cs, means, stds):
         potential += gaussian_bivariate(c, mean, std, x, y)
 
-    return potential
+    return -potential
 
 
 four_wells_symmetric = gaussian_bivariate_string().replace('-80', '-25', 1)
