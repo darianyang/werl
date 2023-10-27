@@ -267,7 +267,7 @@ def L_potential(x, y):
     for j in range(1,5):
             V1 =  V1 + AA[j]*np.exp(aa[j]*np.square(x-XX[j]) + bb[j]*(x-XX[j])*(y-YY[j]) + cc[j]*np.square(y-YY[j]))
 
-    return V1
+    return (V1 / 10) + 15
 
 def O_potential(x, y):
     # parameters in Mueller potential

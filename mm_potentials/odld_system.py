@@ -24,7 +24,8 @@ log = logging.getLogger(__name__)
 ##########################
 ### SET POTENTIAL HERE ###
 ##########################
-potential = L_potential
+potential = we_odld_2d
+#potential = L_potential
 ##########################
 ##########################
 ##########################
@@ -35,17 +36,22 @@ class ODLDPropagator(WESTPropagator):
     ### SET PARAMETERS HERE ###
     ###########################
     # initial XY position
-    xy_position = [0.0, 0.0]
+    #xy_position = [0, 0]
+    xy_position = [9.5, 1.2]
     # pcoord params
     coord_len = 5
     coord_dtype = np.float32
     coord_ndim = 2
     # Implement a reflecting boundary at this xy value
     # (or None, for no reflection)
-    reflect_at_x0 = -0.5
-    reflect_at_x = 1.5
-    reflect_at_y0 = -0.5
-    reflect_at_y = 1.5
+    #reflect_at_x0 = -0.5
+    #reflect_at_x = 1.5
+    #reflect_at_y0 = -0.5
+    #reflect_at_y = 1.5
+    reflect_at_x0 = None
+    reflect_at_x = 10
+    reflect_at_y0 = None
+    reflect_at_y = 10
     # friction coefficient
     sigma = 0.0001 ** (0.5)  
     ###########################
@@ -100,15 +106,13 @@ class ODLDPropagator(WESTPropagator):
         for iseg, segment in enumerate(segments):
             coords[iseg, 0] = segment.pcoord[0]
 
-        sigma = self.sigma
         gradfactor = self.sigma * self.sigma / 2
-        coord_len = self.coord_len
         
         all_displacements = np.zeros(
             (n_segs, self.coord_len, self.coord_ndim), dtype=self.coord_dtype
         )
 
-        for istep in range(1, coord_len):
+        for istep in range(1, self.coord_len):
             xi = coords[:, istep - 1, 0]
             yi = coords[:, istep - 1, 1]
             # log.info(f'{xi}, {yi}')
@@ -116,15 +120,16 @@ class ODLDPropagator(WESTPropagator):
             #print(xi, yi)
 
             all_displacements[:, istep, 0] = x_displacements = random_normal(
-                scale=sigma, size=(n_segs,)
+                scale=self.sigma, size=(n_segs,)
             )
             all_displacements[:, istep, 1] = y_displacements = random_normal(
-                scale=sigma, size=(n_segs,)
+                scale=self.sigma, size=(n_segs,)
             )
 
             ### ADJUST GRAD ###
             #log.info(f'XY vars: {xi}, {yi}')
             grad = self._calc_gradient(xi, yi)
+            # gradfactor = sigma**2 / 2 = 0.00005
             newx = xi - (gradfactor * grad) + x_displacements
             newy = yi - (gradfactor * grad) + y_displacements
    
