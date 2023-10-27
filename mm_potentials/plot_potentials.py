@@ -1,16 +1,39 @@
 
-#import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 from potentials import *
-from utils import plot_potential
+
+def plot_potential(potential, xlim=None, ylim=None, granularity=1, vmax=None,
+                   single_param=False):
+    '''
+    Plots potential based on analytic function.
+    '''
+    x = np.arange(*xlim, granularity)
+    y = np.arange(*ylim, granularity)
+    X, Y = np.meshgrid(x, y)  # grid of point
+    # Python unpacking for multi dimensional output using single input
+    if single_param:
+        Z = potential([X, Y])  # evaluation of the function on the grid
+    else:
+        Z = potential(X, Y)  # evaluation of the function on the grid
+
+    im = plt.imshow(Z, cmap=plt.cm.jet, vmax=vmax, #interpolation='None',
+                    extent=[xlim[0], xlim[1], ylim[0], ylim[1]])  # drawing the function
+
+    # adding the Contour lines with labels
+    # cset = plt.contour(Z, [-2, -1, 0, 1, 2, 3], linewidths=2, cmap=plt.cm.binary, extent=[xlim[0], xlim[1], ylim[1], ylim[0]])
+    # plt.clabel(cset, inline=True,fmt='%1.1f', fontsize=10)
+    plt.colorbar(im)  # adding the colobar on the right
+    plt.show()
+    plt.close()
 
 # from MA-REAP
 #plot_potential(two_wells_complex_func, (0,100), (0,100))
-plot_potential(four_wells_symmetric_func, (0,2), (0,2), granularity=0.01)
+#plot_potential(four_wells_symmetric_func, (0,2), (0,2), granularity=0.01)
 #plot_potential(four_wells_asymmetric_func, (0,2), (0,2), granularity=0.01)
 
 # from REAP
 #plot_potential(I_potential, (-2, 2), (0, 4), granularity=0.01)
-#plot_potential(L_potential, (-0.5, 1.5), (-0.5, 1.5), granularity=0.01)
+plot_potential(L_potential, (-0.5, 1.5), (-0.5, 1.5), granularity=0.01)
 #plot_potential(O_potential, (-1.5, 1.5), (-1.5, 1.5), granularity=0.01)
 
 # from TSLC

@@ -21,33 +21,46 @@ from westpa.core.binning import RecursiveBinMapper
 PI = np.pi
 log = logging.getLogger(__name__)
 
+##########################
+### SET POTENTIAL HERE ###
+##########################
+potential = L_potential
+##########################
+##########################
+##########################
+
 class ODLDPropagator(WESTPropagator):
 
+    ###########################
     ### SET PARAMETERS HERE ###
+    ###########################
     # initial XY position
-    xy_position = [0.5, 0.5]
+    xy_position = [0.0, 0.0]
     # pcoord params
     coord_len = 5
     coord_dtype = np.float32
     coord_ndim = 2
+    # Implement a reflecting boundary at this xy value
+    # (or None, for no reflection)
+    reflect_at_x0 = -0.5
+    reflect_at_x = 1.5
+    reflect_at_y0 = -0.5
+    reflect_at_y = 1.5
+    # friction coefficient
+    sigma = 0.0001 ** (0.5)  
+    ###########################
+    ###########################
+    ###########################
 
     def __init__(self, rc=None):
         super().__init__(rc)
-		
         self.initial_pcoord = np.array(self.xy_position, dtype=self.coord_dtype)
 
-        self.sigma = 0.0001 ** (0.5)  # friction coefficient
-
-        # Implement a reflecting boundary at this x value
-        # (or None, for no reflection)
-        self.reflect_at_x0 = -1
-        self.reflect_at_x = 3
-        self.reflect_at_y0 = -1
-        self.reflect_at_y = 3
-
-    ### adjust for different potential functions or unpacking settings ###
+    ##################################################################
+    ### adjust for different potential function unpacking settings ###
+    ##################################################################
     def _calc_gradient(self, x, y):
-        grad = four_wells_symmetric_func(x, y)
+        grad = potential(x, y)
         return grad
 
     def get_pcoord(self, state):
