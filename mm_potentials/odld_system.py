@@ -37,7 +37,8 @@ class ODLDPropagator(WESTPropagator):
     ###########################
     # initial XY position
     #xy_position = [0, 0]
-    xy_position = [9.5, 1.2]
+    #xy_position = [9.5, 9.5]
+    xy_position = [1.8, 1.8]
     # pcoord params
     coord_len = 5
     coord_dtype = np.float32
@@ -53,7 +54,7 @@ class ODLDPropagator(WESTPropagator):
     reflect_at_y0 = None
     reflect_at_y = 10
     # friction coefficient
-    sigma = 0.0001 ** (0.5)  
+    sigma = 0.001 ** (0.5)  
     ###########################
     ###########################
     ###########################

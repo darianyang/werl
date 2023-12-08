@@ -78,7 +78,7 @@ def four_wells_asymmetric_func(x, y):
     for c, mean, std in zip(cs, means, stds):
         potential += gaussian_bivariate(c, mean, std, x, y)
 
-    return -potential
+    return potential
 
 
 def gaussian_bivariate_string():
@@ -191,7 +191,7 @@ def four_wells_symmetric_func(x, y):
     for c, mean, std in zip(cs, means, stds):
         potential += gaussian_bivariate(c, mean, std, x, y)
 
-    return -potential
+    return potential
 
 
 four_wells_symmetric = gaussian_bivariate_string().replace('-80', '-25', 1)
@@ -267,7 +267,8 @@ def L_potential(x, y):
     for j in range(1,5):
             V1 =  V1 + AA[j]*np.exp(aa[j]*np.square(x-XX[j]) + bb[j]*(x-XX[j])*(y-YY[j]) + cc[j]*np.square(y-YY[j]))
 
-    return (V1 / 10) + 15
+    #return (V1 / 10) + 15
+    return V1
 
 def O_potential(x, y):
     # parameters in Mueller potential

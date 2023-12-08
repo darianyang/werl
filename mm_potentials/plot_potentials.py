@@ -43,7 +43,7 @@ def plot_potential(potential, xlim=None, ylim=None, granularity=1, vmax=None,
 #plot_potential(ring_potential, (-3, 3), (-3, 3), granularity=0.01)
 
 # WE 2D ODLDs
-plot_potential(we_odld_2d, (0, 10), (0, 10), granularity=0.01, vmax=15)
+#plot_potential(we_odld_2d, (0, 10), (0, 10), granularity=0.01, vmax=15)
 #plot_potential(we_odld_2d_new, (0, 1), (0, 1), granularity=0.01)
 
 # from Gideon Simpson Julia landscapes code
@@ -53,5 +53,5 @@ plot_potential(we_odld_2d, (0, 10), (0, 10), granularity=0.01, vmax=15)
 #plot_potential(SymmetricTwoChannel, (-3, 3), (-3, 3), granularity=0.01, single_param=True, vmax=4)
 #plot_potential(Muller, (-3, 3), (-3, 3), granularity=0.01, single_param=True, vmax=10)
 #plot_potential(Rosenbrock, (-2, 2), (-2, 2), granularity=0.01, single_param=True, vmax=100)
-#plot_potential(Zpotential, (-10, 10), (-10, 10), granularity=0.01, single_param=True, vmax=10)
+#plot_potential(Zpotential, (-10, 10), (-10, 10), granularity=0.1, single_param=True, vmax=10)
 #plot_potential(EntropicBox, (-1, 1), (-1, 1), granularity=0.01, single_param=True)
