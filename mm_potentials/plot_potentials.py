@@ -36,7 +36,7 @@ def plot_potential(potential, xlim=None, ylim=None, granularity=1, vmax=None,
 
 # from REAP
 #plot_potential(I_potential, (-2, 2), (0, 4), granularity=0.01)
-#plot_potential(L_potential, (-0.5, 1.5), (-0.5, 1.5), granularity=0.01)
+plot_potential(L_potential, (-1, 3), (-1, 3), granularity=0.01, vmax=50)
 #plot_potential(O_potential, (-1.5, 1.5), (-1.5, 1.5), granularity=0.01)
 
 # from TSLC

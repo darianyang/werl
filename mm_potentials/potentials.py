@@ -267,8 +267,15 @@ def L_potential(x, y):
     for j in range(1,5):
             V1 =  V1 + AA[j]*np.exp(aa[j]*np.square(x-XX[j]) + bb[j]*(x-XX[j])*(y-YY[j]) + cc[j]*np.square(y-YY[j]))
 
-    #return (V1 / 10) + 15
+    # shift to a scale similar to standard ODLD potential
+    #V1 = (V1 / 5) + 15
+    #V1 += 1
+    # make upper limit huge just like ODLD
+    #V1[V1 >= 0] = 200000
+
     return V1
+
+    #return V1
 
 def O_potential(x, y):
     # parameters in Mueller potential
