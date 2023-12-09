@@ -7,16 +7,7 @@ from potentials import *
 import numpy as np
 from numpy.random import normal as random_normal
 
-import westpa
-
-from westpa.core.binning import RectilinearBinMapper
 from westpa.core.propagators import WESTPropagator
-from westpa.core.systems import WESTSystem
-
-from westpa.core.propagators import WESTPropagator
-from westpa.core.systems import WESTSystem
-from westpa.core.binning import RectilinearBinMapper
-from westpa.core.binning import RecursiveBinMapper
 
 PI = np.pi
 log = logging.getLogger(__name__)
@@ -24,8 +15,8 @@ log = logging.getLogger(__name__)
 ##########################
 ### SET POTENTIAL HERE ###
 ##########################
-#potential = we_odld_2d
-potential = L_potential
+potential = we_odld_2d
+#potential = L_potential
 ##########################
 ##########################
 ##########################
@@ -36,8 +27,8 @@ class ODLDPropagator(WESTPropagator):
     ### SET PARAMETERS HERE ###
     ###########################
     # initial XY position
-    xy_position = [0, 0]
-    #xy_position = [9.5, 9.5]
+    #xy_position = [0, 0]
+    xy_position = [9.5, 9.5]
     #xy_position = [1.8, 1.8]
     # pcoord params
     coord_len = 5
@@ -45,15 +36,15 @@ class ODLDPropagator(WESTPropagator):
     coord_ndim = 2
     # Implement a reflecting boundary at this xy value
     # (or None, for no reflection)
-    reflect_at_x0 = -0.5
-    reflect_at_x = 2.5
-    reflect_at_y0 = -0.5
-    reflect_at_y = 2.5
+    # reflect_at_x0 = -0.5
+    # reflect_at_x = 2.5
+    # reflect_at_y0 = -0.5
+    # reflect_at_y = 2.5
 
-    # reflect_at_x0 = None
-    # reflect_at_x = None
-    # reflect_at_y0 = None
-    # reflect_at_y = None
+    reflect_at_x0 = 0
+    reflect_at_x = 10
+    reflect_at_y0 = 0
+    reflect_at_y = 10
 
     # friction coefficient
     sigma = 0.001 ** (0.5)  
