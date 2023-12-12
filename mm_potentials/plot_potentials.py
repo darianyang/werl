@@ -2,7 +2,7 @@
 import matplotlib.pyplot as plt
 from potentials import *
 
-def plot_potential(potential, xlim=None, ylim=None, granularity=1, vmax=None,
+def plot_potential(potential, xlim=None, ylim=None, granularity=1, vmax=None, vmin=None,
                    single_param=False):
     '''
     Plots potential based on analytic function.
@@ -19,7 +19,10 @@ def plot_potential(potential, xlim=None, ylim=None, granularity=1, vmax=None,
     #im = plt.imshow(Z, cmap=plt.cm.jet, vmax=vmax, #interpolation='None',
     #                extent=[xlim[0], xlim[1], ylim[0], ylim[1]])  # drawing the function
 
-    im = plt.pcolormesh(x, y, Z, cmap=plt.cm.jet, vmax=vmax)
+    # note that to accurately get the potential needs to be plotted as negative
+    # TODO: not certain why yet
+    im = plt.pcolormesh(x, y, -Z, cmap=plt.cm.jet, vmax=vmax, vmin=vmin)
+    #im = plt.pcolormesh(x, y, -np.log(Z/np.max(Z)), cmap=plt.cm.jet, vmax=vmax, vmin=vmin)
     #plt.xlim(xlim)
     #plt.ylim(ylim)
 
@@ -36,7 +39,7 @@ def plot_potential(potential, xlim=None, ylim=None, granularity=1, vmax=None,
 
 # from REAP
 #plot_potential(I_potential, (-2, 2), (0, 4), granularity=0.01)
-plot_potential(L_potential, (-1, 3), (-1, 3), granularity=0.01, vmax=50)
+plot_potential(L_potential, (-1, 3), (-1, 3), granularity=0.01)
 #plot_potential(O_potential, (-1.5, 1.5), (-1.5, 1.5), granularity=0.01)
 
 # from TSLC
@@ -44,6 +47,8 @@ plot_potential(L_potential, (-1, 3), (-1, 3), granularity=0.01, vmax=50)
 
 # WE 2D ODLDs
 #plot_potential(we_odld_2d, (0, 10), (0, 10), granularity=0.01, vmax=15)
+#plot_potential(we_odld_2d, (-15, 0), (-15, 0), granularity=0.01, vmax=15)
+#plot_potential(we_odld_2d, (0, 10), (0, 10), granularity=0.01, vmin=-15)
 #plot_potential(we_odld_2d_new, (0, 1), (0, 1), granularity=0.01)
 
 # from Gideon Simpson Julia landscapes code

@@ -32,7 +32,8 @@ class ODLDPropagator(WESTPropagator):
         self.coord_dtype = pcoord_dtype
         self.coord_ndim = 2
 
-        self.initial_pcoord = np.array([9.5,9.5], dtype=self.coord_dtype)
+        #self.initial_pcoord = np.array([9.5,9.5], dtype=self.coord_dtype)
+        self.initial_pcoord = np.array([1,1], dtype=self.coord_dtype)
 
         self.sigma = 0.001 ** (0.5)  # friction coefficient
 
