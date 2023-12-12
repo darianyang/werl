@@ -15,8 +15,8 @@ log = logging.getLogger(__name__)
 ##########################
 ### SET POTENTIAL HERE ###
 ##########################
-#potential = we_odld_2d
-potential = L_potential
+potential = we_odld_2d
+#potential = L_potential
 ##########################
 ##########################
 ##########################
@@ -27,9 +27,10 @@ class ODLDPropagator(WESTPropagator):
     ### SET PARAMETERS HERE ###
     ###########################
     # initial XY position
-    xy_position = [0, 0]
+    #xy_position = [0, 0]
     #xy_position = [1, 1]
     #xy_position = [9.5, 9.5]
+    xy_position = [-9.5, -9.5]
     #xy_position = [1.8, 1.8]
     # pcoord params
     coord_len = 5
@@ -37,15 +38,20 @@ class ODLDPropagator(WESTPropagator):
     coord_ndim = 2
     # Implement a reflecting boundary at this xy value
     # (or None, for no reflection)
-    reflect_at_x0 = -0.5
-    reflect_at_x = 2.5
-    reflect_at_y0 = -0.5
-    reflect_at_y = 2.5
+    # reflect_at_x0 = -0.5
+    # reflect_at_x = 2.5
+    # reflect_at_y0 = -0.5
+    # reflect_at_y = 2.5
 
     # reflect_at_x0 = 0
     # reflect_at_x = 10
     # reflect_at_y0 = 0
     # reflect_at_y = 10
+
+    reflect_at_x0 = -10
+    reflect_at_x = 0
+    reflect_at_y0 = -10
+    reflect_at_y = 0
 
     # reflect_at_x0 = None
     # reflect_at_x = None
@@ -53,7 +59,7 @@ class ODLDPropagator(WESTPropagator):
     # reflect_at_y = None
 
     # friction coefficient
-    sigma = 0.001 ** (0.5)  
+    sigma = 0.01 ** (0.5)  
     ###########################
     ###########################
     ###########################

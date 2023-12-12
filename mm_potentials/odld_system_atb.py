@@ -32,10 +32,11 @@ class ODLDPropagator(WESTPropagator):
         self.coord_dtype = pcoord_dtype
         self.coord_ndim = 2
 
-        #self.initial_pcoord = np.array([9.5,9.5], dtype=self.coord_dtype)
-        self.initial_pcoord = np.array([1,1], dtype=self.coord_dtype)
+        self.initial_pcoord = np.array([9.5,9.5], dtype=self.coord_dtype)
+        #self.initial_pcoord = np.array([1,1], dtype=self.coord_dtype)
 
-        self.sigma = 0.001 ** (0.5)  # friction coefficient
+        # self.sigma = 0.001 ** (0.5)  # friction coefficient
+        self.sigma = 0.01 ** (0.5)
 
         self.A = 2
         self.B = 10
@@ -46,6 +47,7 @@ class ODLDPropagator(WESTPropagator):
         # Implement a reflecting boundary at this x value
         # (or None, for no reflection)
         self.reflect_at = 10.0
+        #self.reflect_at = 0
 
     def get_pcoord(self, state):
         """Get the progress coordinate of the given basis or initial state."""

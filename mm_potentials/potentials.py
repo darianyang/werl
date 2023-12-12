@@ -273,9 +273,9 @@ def L_potential(x, y):
     # make upper limit huge just like ODLD
     #V1[V1 >= 0] = 200000
 
-    return -V1 - 100
+    #return -V1 - 100
 
-    #return V1
+    return V1
 
 def O_potential(x, y):
     # parameters in Mueller potential
@@ -339,7 +339,8 @@ def we_odld_2d(x, y):
         * (twopi_by_A * eCy_less_one * np.sin(yarg) + C * eCy * np.cos(yarg))
     )
 
-    return -(gradx + grady)
+    #return -(gradx + grady)
+    return gradx + grady
 
 from sympy import diff, exp, symbols, lambdify
 
