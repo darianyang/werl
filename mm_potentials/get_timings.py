@@ -5,8 +5,9 @@ import h5py
 tau=5
 
 #f = h5py.File('west_egg_stdMD.h5', 'r')
-#f = h5py.File('west_egg_stdHK.h5', 'r')
-f = h5py.File('west_egg_mab.h5', 'r')
+f = h5py.File('west_egg_stdHK.h5', 'r')
+#f = h5py.File('west_egg_mab.h5', 'r')
+#f = h5py.File('west_egg_lc.h5', 'r')
 
 #walltime = f['summary']['walltime'][:500].sum()
 #aggtime = f['summary']['n_particles'][:500].sum()
