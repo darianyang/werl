@@ -113,7 +113,15 @@ class WERLDriver(WEDriver):
                 #nsegs = pcoords.shape[0]
                 #nframes = pcoords.shape[1]
                 #ndims = pcoords.shape[2]
-                
+
+                # TODO: this will allow you to get the pcoords for all frames
+                current_iter_segments = self.current_iter_segments
+
+                curr_segments = np.array(sorted(current_iter_segments, key=operator.attrgetter('weight')), dtype=np.object_)
+                curr_pcoords = np.array(list(map(operator.attrgetter('pcoord'), curr_segments)))
+                curr_weights = np.array(list(map(operator.attrgetter('weight'), curr_segments)))
+
+                #np.save("pcoords_full.npy", curr_pcoords)
                 # pcoord for the last frame of previous iteration
                 # or the first frame of current iteration
                 pcoords = pcoords[:,0,:]
@@ -138,7 +146,8 @@ class WERLDriver(WEDriver):
                 # resample = WEVO(pcoords, weights, merge_dist=merge_dist, char_dist=char_dist,
                 #                 merge_alg=merge_alg, pmin=pmin, pmax=pmax, dist_exponent=dist_exponent)
                 # split, merge, variation, walker_variations = resample.resample()
-                resample = WERL(pcoords, n_clusters=5)
+                #resample = WERL(pcoords, n_clusters=5)
+                resample = WERL(curr_pcoords, n_clusters=None)
                 split, merge = resample.lcas()
                 #split, merge = LCAS_split(pcoords, weights)
 

@@ -45,6 +45,10 @@ class WERL:
         # need to reshape 1d arrays from (n) to (n, 1)+ for kmeans fitting
         if pcoords.ndim == 1:
             self.pcoords = pcoords.reshape(-1, 1)
+        # when using the full 3D pcoord array (walkers, frames, pcoords)
+        # need to condense to 2D for km clustering
+        elif pcoords.ndim == 3:
+            self.pcoords = pcoords.reshape(pcoords.shape[0], )
         else:
             self.pcoords = pcoords
 
@@ -249,6 +253,7 @@ class WERL:
         reward = (weights * np.abs(selected_points - mu) / sigma)
         # make sure 2d array sum axis indexable
         reward = np.atleast_2d(reward)
+        print("Reward shape: ", reward.shape)
         return reward.sum(axis=1)
 
     def compute_cumulative_reward(self, weights, selected_points):
@@ -268,7 +273,8 @@ class WERL:
 
     def tune_weights(self, rewards_function, weights, delta=0.02):
         '''
-        Defines constraints for optimization and maximizes rewards function. Returns OptimizeResult object.
+        Defines constraints for optimization and maximizes rewards function. 
+        Returns OptimizeResult object.
         '''
         weights_prev = weights
 
@@ -303,7 +309,6 @@ class WERL:
 
         return results
 
-
     def reap(self):
         '''
         WE version of the REinforcement learning based Adaptive SamPling (REAP) algorithm.
@@ -325,12 +330,13 @@ class WERL:
         # Step 1: define some hyperparameters and initialize arrays --> To be provided via init_variables
         n_agents = 1  # Forced
         delta = 0.02  # Upper boundary for learning step
-        n_features = 2  # Number of variables in OP space (in this case it's x, y, z where z is irrelevant to the potential)
+        n_features = 2  # Number of variables in OP space (2d pcoord for now)
 
         # Step 2: set initial OP weights (not WE traj weights)
         weights = [np.ones((n_features)) / n_features for _ in range(n_agents)]
 
         # WERL: data is already collected from WE iteration
+        # TODO: Could use the full trajectory data from WE instead of just the endpoints
         # Step 3: collect some initial data
         # trajectories = [[] for _ in range(n_agents)]
         # trajectories = collect_initial_data(num_spawn * 2, traj_len, potential, initial_positions,
@@ -346,15 +352,30 @@ class WERL:
         individual_rewards_log = [[] for _ in range(n_agents)]
 
         # TODO: the agents are kinda like different renditions of the REAP workflow
-        #       with subsets of trajectory data, I feel like this could work well
+        #       with subsets of trajectories, I feel like this could work well
         #       in the context of basis states, so each basis state would get a REAP agent?
-        #       for now not using multi (just using 1).
+        #       Or each group of trajectories from the same parent would get it's own REAP agent?
+        #       for now not using "multi-agent" (just using 1).
+        #       If I were to switch to using multiple sets of traj data from WE bstates/parents,
+        #       I would also need to parse and update the pcoords array, 
+        #       equivalent to the trajectories array here.
         for i in range(n_agents):
 
-            #clusters = clustering(trajectories[i], n_select, max_frames=max_frames, b=b, gamma=gamma, d=d)
+            #clusters = clustering(self.pcoords, self.n_clusters, max_frames=max_frames, b=b, gamma=gamma, d=d)
             self._clustering()
 
+            # TODO: REAP will only select and continue from the least count cluster.
+            #       for WERL, I have a few options:
+            #           * I can just split the least count cluster only
+            #               - but I know from LCAS this isn't super effective
+            #           * I can split n_cluster amount of times starting from the LC cluster
+            #               - this is the current LCAS setup that works better than just LC split
+            #           * I can also optimize the reward, choosing the subset of trajectories that 
+            #             would maximize cumulative reward
+            #           * I can also skip the LC clusters and just split/merge based on reward,
+            #             similar to how REVO does it based on variation
             least_counts_clusters, least_counts_points = self.select_least_counts()
+            print("LC CLUSTERS: ", least_counts_clusters)
 
             least_counts_points_log[i].append(least_counts_points)
 
@@ -365,6 +386,7 @@ class WERL:
             optimization_results = self.tune_weights(reward_fun, weights[i], delta=delta)
             # Check if optimization worked
             if optimization_results.success:
+                print(optimization_results)
                 pass
             else:
                 print("ERROR: CHECK OPTIMIZATION RESULTS")
@@ -386,21 +408,34 @@ class WERL:
         print("Individual reward log:", individual_rewards_log)
 
 if __name__ == "__main__":
-    # test data
-    pcoords = np.loadtxt('pcoords.txt')
-    weights = np.loadtxt('weights.txt')
+    # test data (1D array of 1D ODLD endpoints)
+    #pcoords = np.loadtxt('pcoords.txt')
+    #weights = np.loadtxt('weights.txt')
+    # this is the full pcoord array, in this case (80, 5, 2)
+    # for 80 walkers, 5 frames of simulation each, and 2 pcoords (X and Y)
+    pcoords = np.load('pcoords_full.npy')
+    print(pcoords[0])
+    pcoords = pcoords.reshape(-1, 2)
+    #pcoords = np.squeeze(pcoords, 1)
+    print(pcoords[0:5])
+    print(pcoords.shape)
 
     # test init data
     # pcoords = np.array([9.5] * 50).reshape(-1,1)
     # weights = np.array([0.02] * 50)
 
-    werl = WERL(pcoords)
+    # LCAS test
+    #werl = WERL(pcoords)
     #werl._clustering()
     # split, merge = werl.lcas(15)
     # print(split, "\n", merge)
     # print(werl.counts)
 
-    werl.reap()
+    # REAP test
+    # werl = WERL(pcoords)
+    # print("N_CLUSTERS: ", werl.n_clusters)
+    # werl.reap()
+    # print("CLUSTER COUNTS: ", werl.counts)
 
     # # test output
     # split = np.loadtxt('split.txt')
