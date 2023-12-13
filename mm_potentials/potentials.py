@@ -1,5 +1,5 @@
 import numpy as np
-
+from sympy import diff, exp, symbols, lambdify
 
 # Potential definitions
 
@@ -340,8 +340,6 @@ def we_odld_2d(x, y):
     #return -(gradx + grady)
     return gradx + grady
 
-from sympy import diff, exp, symbols, lambdify
-
 def we_odld_2d_new_energy(x, y):
     """
     Just the energy.
@@ -363,7 +361,7 @@ def we_odld_2d_new_energy(x, y):
 
     return np.exp(logU1) + np.exp(logU2) + (0.5 * np.exp(logU3))
 
-def we_odld_2d_new(x, y):
+def we_odld_2d_new_grad(x, y):
     def calc_gradient():
         A = 50.5
         B = 49.5

@@ -2,16 +2,49 @@
 import matplotlib.pyplot as plt
 from potentials import *
 
+def calculate_gradient(func, x, y, epsilon=1e-6):
+    '''
+    Use finite differencing to approx the gradient of each energy potential.
+
+    Finite differencing is a numerical technique used to approximate the derivative
+    of a function at a particular point. The basic idea is to estimate the rate of 
+    change of a function by considering small changes in its input. 
+
+    Parameters
+    ----------
+    func : Python function
+        Potential energy function.
+    x : array
+        X position(s) of the particle.
+    y : array
+        Y position(s) of the particle.
+    epsilon : float
+        The step size, used to perturb the input values (x, y) in both positive 
+        and negative directions to approximate the partial derivatives with 
+        respect to x and y. Default 1e-6.
+    '''
+    grad_x = (func(x + epsilon, y) - func(x - epsilon, y)) / (2 * epsilon)
+    grad_y = (func(x, y + epsilon) - func(x, y - epsilon)) / (2 * epsilon)
+    return grad_x, grad_y
+
+# TODO: calc using sympy and compare, may be better to save and use the analytical solution
+
 def plot_potential(potential, xlim=None, ylim=None, granularity=1, vmax=None, vmin=None,
-                   single_param=False):
+                   single_param=False, calc_grad=False):
     '''
     Plots potential based on analytic function.
     '''
     x = np.arange(*xlim, granularity)
     y = np.arange(*ylim, granularity)
     X, Y = np.meshgrid(x, y)  # grid of point
+
+    # calc gradient if needed
+    if calc_grad:
+        gradX, gradY = calculate_gradient(potential, X, Y)
+        Z = gradX + gradY
+
     # Python unpacking for multi dimensional output using single input
-    if single_param:
+    elif single_param:
         Z = potential([X, Y])  # evaluation of the function on the grid
     else:
         Z = potential(X, Y)  # evaluation of the function on the grid
@@ -51,8 +84,8 @@ def plot_potential(potential, xlim=None, ylim=None, granularity=1, vmax=None, vm
 #plot_potential(we_odld_2d, (0, 10), (0, 10), granularity=0.01, vmax=15)
 #plot_potential(we_odld_2d, (-10, 0), (-10, 0), granularity=0.01, vmax=15)
 #plot_potential(we_odld_2d, (0, 10), (0, 10), granularity=0.01, vmin=-15)
-#plot_potential(we_odld_2d_new, (0, 1), (0, 1), granularity=0.01)
-plot_potential(we_odld_2d_new_energy, (0, 1), (0, 1), granularity=0.01)
+#plot_potential(we_odld_2d_new_grad, (0, 1), (0, 1), granularity=0.01)
+plot_potential(we_odld_2d_new_energy, (0, 1), (0, 1), granularity=0.01, calc_grad=True)
 
 # from Gideon Simpson Julia landscapes code
 # using a single x var and Python unpacking
