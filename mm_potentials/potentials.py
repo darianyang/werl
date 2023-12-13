@@ -307,8 +307,6 @@ def ring_potential(x, y):
     return V
 
 def we_odld_2d(x, y):
-    sigma = 0.001 ** (0.5)  # friction coefficient
-
     A = 2
     B = 10
     C = 0.5
@@ -344,11 +342,33 @@ def we_odld_2d(x, y):
 
 from sympy import diff, exp, symbols, lambdify
 
+def we_odld_2d_new_energy(x, y):
+    """
+    Just the energy.
+    """
+    A = 50.5
+    B = 49.5
+    #C = 10000
+    C = 10**5
+    D = 51
+    E = 49
+
+    #x, y = symbols('x y')
+    
+    logU1 = -A * ((x-.25)**2) - A * ((y-.75)**2) - 2 * B * (x-.25) * (y-.75)
+    
+    logU2 = -C * (x**2) * ((1-x)**2) * (y**2) * ((1-y)**2)
+    
+    logU3 = -D * (x**2) - D * (y**2) + 2 * E * x * y
+
+    return np.exp(logU1) + np.exp(logU2) + (0.5 * np.exp(logU3))
+
 def we_odld_2d_new(x, y):
     def calc_gradient():
         A = 50.5
         B = 49.5
-        C = 10000
+        #C = 10000
+        C = 10**5
         D = 51
         E = 49
 

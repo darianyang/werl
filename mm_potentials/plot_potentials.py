@@ -21,8 +21,8 @@ def plot_potential(potential, xlim=None, ylim=None, granularity=1, vmax=None, vm
 
     # note that to accurately get the potential needs to be plotted as negative
     # TODO: not certain why yet
-    im = plt.pcolormesh(x, y, np.abs(Z), cmap=plt.cm.jet, vmax=vmax, vmin=vmin)
-    #im = plt.pcolormesh(x, y, Z, cmap=plt.cm.jet, vmax=vmax, vmin=vmin)
+    #im = plt.pcolormesh(x, y, np.abs(Z), cmap=plt.cm.jet, vmax=vmax, vmin=vmin)
+    im = plt.pcolormesh(x, y, Z, cmap=plt.cm.jet, vmax=vmax, vmin=vmin)
     #im = plt.pcolormesh(x, y, -np.log((np.min(np.abs(Z))+np.abs(Z))), cmap=plt.cm.jet, vmax=vmax, vmin=vmin)
     #im = plt.pcolormesh(x, y, -np.log(Z/np.max(Z)), cmap=plt.cm.jet, vmax=vmax, vmin=vmin)
     #plt.xlim(xlim)
@@ -48,10 +48,11 @@ def plot_potential(potential, xlim=None, ylim=None, granularity=1, vmax=None, vm
 #plot_potential(ring_potential, (-3, 3), (-3, 3), granularity=0.01)
 
 # WE 2D ODLDs
-plot_potential(we_odld_2d, (0, 10), (0, 10), granularity=0.01, vmax=15)
+#plot_potential(we_odld_2d, (0, 10), (0, 10), granularity=0.01, vmax=15)
 #plot_potential(we_odld_2d, (-10, 0), (-10, 0), granularity=0.01, vmax=15)
 #plot_potential(we_odld_2d, (0, 10), (0, 10), granularity=0.01, vmin=-15)
 #plot_potential(we_odld_2d_new, (0, 1), (0, 1), granularity=0.01)
+plot_potential(we_odld_2d_new_energy, (0, 1), (0, 1), granularity=0.01)
 
 # from Gideon Simpson Julia landscapes code
 # using a single x var and Python unpacking

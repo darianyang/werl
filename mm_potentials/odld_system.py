@@ -73,6 +73,7 @@ class ODLDPropagator(WESTPropagator):
     ##################################################################
     def _calc_gradient(self, x, y):
         grad = potential(x, y)
+        # TODO: calc derivative of the potential to return the gradient
         return grad
 
     def get_pcoord(self, state):
