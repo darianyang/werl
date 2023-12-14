@@ -326,14 +326,9 @@ def we_odld_2d_energy(x, y):
     eCy = np.exp(C * y)
     eCy_less_one = eCy - 1.0
 
-    potential = (
-        half_B * (
-            (eCx_less_one / C) * np.sin(xarg) +
-            (eCy_less_one / C) * np.sin(yarg)
-        )
-    )
-
-    return potential
+    potentialx = -half_B / eCx_less_one * np.cos(xarg)
+    potentialy = -half_B / eCy_less_one * np.cos(yarg)
+    return potentialx + potentialy
 
 def we_odld_2d_grad(x, y):
     A = 2
