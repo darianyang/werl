@@ -307,7 +307,35 @@ def ring_potential(x, y):
     
     return V
 
-def we_odld_2d(x, y):
+def we_odld_2d_energy(x, y):
+    A = 2
+    B = 10
+    C = 0.5
+    x0 = 0
+    y0 = 0
+    PI = np.pi
+
+    twopi_by_A = 2 * PI / A
+    half_B = B / 2
+
+    xarg = twopi_by_A * (x - x0)
+    yarg = twopi_by_A * (y - y0)
+
+    eCx = np.exp(C * x)
+    eCx_less_one = eCx - 1.0
+    eCy = np.exp(C * y)
+    eCy_less_one = eCy - 1.0
+
+    potential = (
+        half_B * (
+            (eCx_less_one / C) * np.sin(xarg) +
+            (eCy_less_one / C) * np.sin(yarg)
+        )
+    )
+
+    return potential
+
+def we_odld_2d_grad(x, y):
     A = 2
     B = 10
     C = 0.5
@@ -340,34 +368,6 @@ def we_odld_2d(x, y):
 
     #return -(gradx + grady)
     return gradx + grady
-
-def we_odld_2d_energy(x, y):
-    A = 2
-    B = 10
-    C = 0.5
-    x0 = 0
-    y0 = 0
-    PI = np.pi
-
-    twopi_by_A = 2 * PI / A
-    half_B = B / 2
-
-    xarg = twopi_by_A * (x - x0)
-    yarg = twopi_by_A * (y - y0)
-
-    eCx = np.exp(C * x)
-    eCx_less_one = eCx - 1.0
-    eCy = np.exp(C * y)
-    eCy_less_one = eCy - 1.0
-
-    potential = (
-        half_B * (
-            (eCx_less_one / C) * np.sin(xarg) +
-            (eCy_less_one / C) * np.sin(yarg)
-        )
-    )
-
-    return potential
 
 def we_odld_2d_new_energy(x, y):
     """
