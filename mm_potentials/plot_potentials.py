@@ -1,6 +1,7 @@
 
 import matplotlib.pyplot as plt
 from potentials import *
+import sympy as sp
 
 def calculate_gradient(func, x, y, epsilon=1e-6):
     '''
@@ -28,6 +29,33 @@ def calculate_gradient(func, x, y, epsilon=1e-6):
     return grad_x, grad_y
 
 # TODO: calc using sympy and compare, may be better to save and use the analytical solution
+def calculate_gradient_sympy(func, x, y):
+    '''
+    Parameters
+    ----------
+    func : Python function
+        Potential energy function.
+    x : array
+        X position(s) of the particle.
+    y : array
+        Y position(s) of the particle.
+    '''
+    # Define symbolic variables
+    x_sym, y_sym = sp.symbols('x y')
+
+    # Define the energy landscape function symbolically
+    energy_landscape_sym = func(x_sym, y_sym)
+
+    # Calculate the gradient symbolically
+    gradient_sym = [sp.diff(energy_landscape_sym, var) for var in (x_sym, y_sym)]
+
+    # Define a function to evaluate the symbolic expression
+    calculate_gradient_lambda = sp.lambdify((x_sym, y_sym), gradient_sym, 'numpy')
+
+    # Evaluate the gradient at the given positions
+    gradients = calculate_gradient_lambda(x, y)
+    
+    return gradients
 
 def plot_potential(potential, xlim=None, ylim=None, granularity=1, vmax=None, vmin=None,
                    single_param=False, calc_grad=False):
@@ -42,6 +70,7 @@ def plot_potential(potential, xlim=None, ylim=None, granularity=1, vmax=None, vm
     if calc_grad:
         gradX, gradY = calculate_gradient(potential, X, Y)
         Z = gradX + gradY
+        #Z = calculate_gradient_sympy(potential, X, Y)
 
     # Python unpacking for multi dimensional output using single input
     elif single_param:
@@ -75,17 +104,19 @@ def plot_potential(potential, xlim=None, ylim=None, granularity=1, vmax=None, vm
 # from REAP
 #plot_potential(I_potential, (-2, 2), (0, 4), granularity=0.01)
 #plot_potential(L_potential, (-1, 3), (-1, 3), granularity=0.01)
+#plot_potential(L_potential, (-1, 3), (-1, 3), granularity=0.01, calc_grad=True)
 #plot_potential(O_potential, (-1.5, 1.5), (-1.5, 1.5), granularity=0.01)
 
 # from TSLC
 #plot_potential(ring_potential, (-3, 3), (-3, 3), granularity=0.01)
 
 # WE 2D ODLDs
-#plot_potential(we_odld_2d, (0, 10), (0, 10), granularity=0.01, vmax=15)
+#plot_potential(we_odld_2d_energy, (0, 10), (0, 10), granularity=0.01)
 #plot_potential(we_odld_2d, (-10, 0), (-10, 0), granularity=0.01, vmax=15)
+#plot_potential(we_odld_2d_energy, (-10, 0), (-10, 0), granularity=0.01, vmax=15)
 #plot_potential(we_odld_2d, (0, 10), (0, 10), granularity=0.01, vmin=-15)
 #plot_potential(we_odld_2d_new_grad, (0, 1), (0, 1), granularity=0.01)
-plot_potential(we_odld_2d_new_energy, (0, 1), (0, 1), granularity=0.01, calc_grad=True)
+plot_potential(we_odld_2d_new_energy, (0, 1), (0, 1), granularity=0.01, calc_grad=True, vmin=-10, vmax=10)
 
 # from Gideon Simpson Julia landscapes code
 # using a single x var and Python unpacking

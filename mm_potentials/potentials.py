@@ -1,5 +1,6 @@
 import numpy as np
 from sympy import diff, exp, symbols, lambdify
+import math
 
 # Potential definitions
 
@@ -340,6 +341,34 @@ def we_odld_2d(x, y):
     #return -(gradx + grady)
     return gradx + grady
 
+def we_odld_2d_energy(x, y):
+    A = 2
+    B = 10
+    C = 0.5
+    x0 = 0
+    y0 = 0
+    PI = np.pi
+
+    twopi_by_A = 2 * PI / A
+    half_B = B / 2
+
+    xarg = twopi_by_A * (x - x0)
+    yarg = twopi_by_A * (y - y0)
+
+    eCx = np.exp(C * x)
+    eCx_less_one = eCx - 1.0
+    eCy = np.exp(C * y)
+    eCy_less_one = eCy - 1.0
+
+    potential = (
+        half_B * (
+            (eCx_less_one / C) * np.sin(xarg) +
+            (eCy_less_one / C) * np.sin(yarg)
+        )
+    )
+
+    return potential
+
 def we_odld_2d_new_energy(x, y):
     """
     Just the energy.
@@ -359,6 +388,7 @@ def we_odld_2d_new_energy(x, y):
     
     logU3 = -D * (x**2) - D * (y**2) + 2 * E * x * y
 
+    # use math instead of np to be compatible with sympy differentiation later
     return np.exp(logU1) + np.exp(logU2) + (0.5 * np.exp(logU3))
 
 def we_odld_2d_new_grad(x, y):

@@ -43,15 +43,24 @@ class WERL:
             Intrinsic dimensionality of slow manifold for the system. Used in n_clusters heuristic.
         '''
         # need to reshape 1d arrays from (n) to (n, 1)+ for kmeans fitting
+        # this is the case where you have 1 frame per walker and 1 pcoord dim
         if pcoords.ndim == 1:
             self.pcoords = pcoords.reshape(-1, 1)
+        # case where you just have 1 frame per walker and 2 pcoord dims
+        elif pcoords.ndim == 2:
+            self.pcoords = pcoords
         # when using the full 3D pcoord array (walkers, frames, pcoords)
         # need to condense to 2D for km clustering
         elif pcoords.ndim == 3:
-            self.pcoords = pcoords.reshape(pcoords.shape[0], )
+            # keep the columns as each pcoord dim but string all frames in rows
+            self.pcoords = pcoords.reshape(-1, pcoords.shape[2])
         else:
-            self.pcoords = pcoords
+            raise ValueError(f"pcoord input array has {pcoords.ndim} dimensions, must be 1-3.")
 
+        # TODO: need to fix this, so maybe I can first make a label array of the 3d pcoords
+        #       then look at the label uniques to find the self.n_segments
+        #       or I could just look before reshaping and reshape upon clustering
+        #       I need to be able to get the original segment id / index using the label array
         # number of segments/walkers during the iteration
         self.n_segments = self.pcoords.shape[0]
 
@@ -70,7 +79,6 @@ class WERL:
 
         # list of all possible merge pairs
         #self.merge_pairs = list(combinations([i for i in range(self.n_segments)], 2))
-
 
     def _clustering(self):
         '''
@@ -95,6 +103,7 @@ class WERL:
         
     def lcas(self, n_split=None):
         '''
+        (TODO: Note LCAS not compatible with full pcoord array yet, just final frames)
         Least Counts Adaptive Sampling. In LCAS, from segment data of the previous iteration, 
         cluster the trajectory endpoint pcoord (aux? TODO) data, then select the next starting 
         states from the smallest, or least count, clusters. The idea being that clusters with 
@@ -401,9 +410,10 @@ class WERL:
             individual_rewards_log[i].append(rewards)
 
         ### print results ###
-        print("pcoords:", pcoords)
+        #print("pcoords:", pcoords)
         print("OP weight log:", weights_log)
         print("LC point log:", least_counts_points_log)
+        print("LC point log shape:", np.array(least_counts_points_log).shape)
         print("Cumulative reward log:", cumulative_reward_log)
         print("Individual reward log:", individual_rewards_log)
 
@@ -414,28 +424,23 @@ if __name__ == "__main__":
     # this is the full pcoord array, in this case (80, 5, 2)
     # for 80 walkers, 5 frames of simulation each, and 2 pcoords (X and Y)
     pcoords = np.load('pcoords_full.npy')
-    print(pcoords[0])
-    pcoords = pcoords.reshape(-1, 2)
-    #pcoords = np.squeeze(pcoords, 1)
-    print(pcoords[0:5])
-    print(pcoords.shape)
 
     # test init data
     # pcoords = np.array([9.5] * 50).reshape(-1,1)
     # weights = np.array([0.02] * 50)
 
     # LCAS test
-    #werl = WERL(pcoords)
-    #werl._clustering()
+    # werl = WERL(pcoords)
+    # werl._clustering()
     # split, merge = werl.lcas(15)
     # print(split, "\n", merge)
     # print(werl.counts)
 
     # REAP test
-    # werl = WERL(pcoords)
-    # print("N_CLUSTERS: ", werl.n_clusters)
-    # werl.reap()
-    # print("CLUSTER COUNTS: ", werl.counts)
+    werl = WERL(pcoords)
+    print("N_CLUSTERS: ", werl.n_clusters)
+    werl.reap()
+    print("CLUSTER COUNTS: ", werl.counts)
 
     # # test output
     # split = np.loadtxt('split.txt')
