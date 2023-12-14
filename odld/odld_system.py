@@ -19,12 +19,6 @@ log = logging.getLogger("westpa.rc")
 # THESE ARE THE FOUR THINGS YOU SHOULD CHANGE
 pcoord_len = 21
 pcoord_dtype = np.float32
-bintargetcount = 50  # number of walkers per bin
-nbins = [1]  # You will have prod(binsperdim)+numberofdim*(2*splitIsolated) bins total
-
-# wevo settings
-#bintargetcount = 100  # number of walkers per bin
-#nbins = [1]  # You will have prod(binsperdim)+numberofdim*(2*splitIsolated) bins total
 
 
 class ODLDPropagator(WESTPropagator):
@@ -37,7 +31,8 @@ class ODLDPropagator(WESTPropagator):
 
         self.initial_pcoord = np.array([9.5], dtype=self.coord_dtype)
 
-        self.sigma = 0.001 ** (0.5)  # friction coefficient
+        #self.sigma = 0.001 ** (0.5)  # friction coefficient
+        self.sigma = 0.01 ** (0.5)  # friction coefficient
 
         self.A = 2
         # 30 for a more difficult system, 5 for easier barrier
