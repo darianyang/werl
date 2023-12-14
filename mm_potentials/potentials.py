@@ -313,6 +313,8 @@ def we_odld_2d_energy(x, y):
     C = 0.5
     x0 = 0
     y0 = 0
+    # x0 = 1
+    # y0 = 1
     PI = np.pi
 
     twopi_by_A = 2 * PI / A
@@ -328,6 +330,8 @@ def we_odld_2d_energy(x, y):
 
     potentialx = -half_B / eCx_less_one * np.cos(xarg)
     potentialy = -half_B / eCy_less_one * np.cos(yarg)
+    potentialx -= np.min(potentialx)
+    potentialy -= np.min(potentialy)
     return potentialx + potentialy
 
 def we_odld_2d_grad(x, y):
