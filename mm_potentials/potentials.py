@@ -315,9 +315,8 @@ def we_odld_2d_energy(x, y):
     y0 = 0
     # x0 = 1
     # y0 = 1
-    PI = np.pi
 
-    twopi_by_A = 2 * PI / A
+    twopi_by_A = 2 * np.pi / A
     half_B = B / 2
 
     xarg = twopi_by_A * (x - x0)
