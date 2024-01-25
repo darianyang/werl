@@ -152,6 +152,8 @@ class WERLDriver(WEDriver):
                 #split, merge = LCAS_split(pcoords, weights)
 
                 print(f"LCAS split: {split}\nLCAS merge: {merge}")
+                print("split sum: ", np.sum(split))
+                print("merge sum: ", np.sum([np.count_nonzero(i) for i in merge]))
                 #print(f"Final variation value after {resample.count} wevo cycles: ", variation)
 
                 # count each operation and segment as a check

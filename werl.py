@@ -102,7 +102,7 @@ class WERL:
         # TODO: universal reshape step here needed before clustering and for REAP?
         #       could also move to init
         # keep the columns as each pcoord dim but string all frames in rows
-        self.pcoords = self.pcoords.reshape(-1, pcoords.shape[2])
+        self.pcoords = self.pcoords.reshape(-1, self.pcoords.shape[2])
 
         # kmeans clustering
         km = KMeans(n_clusters=self.n_clusters, random_state=1).fit(self.pcoords)
@@ -147,7 +147,7 @@ class WERL:
         '''        
         # do clustering
         self._clustering()
-        print("shape labels: ", self.labels.shape)
+        #print("shape labels: ", self.labels.shape)
 
         # if less than the requested amount of clusters was generated
         # then go with zero array return, currently useful for w_init
@@ -188,7 +188,9 @@ class WERL:
                         self.to_split[i] += 1
                         # note that one of the requested splits is done
                         splits_remaining -= 1
-                    
+                        # TODO: test, only splitting one per seg
+                        break
+
                     # extra precaution
                     if splits_remaining == 0:
                         break
@@ -487,7 +489,8 @@ if __name__ == "__main__":
     werl = WERL(pcoords)
     split, merge = werl.lcas()
     print(split, "\n", merge)
-    print(len(split), ", ", len(merge))
+    print("split sum: ", np.sum(split))
+    print("merge sum: ", np.sum([np.count_nonzero(i) for i in merge]))
     print("counts: ", werl.counts)
 
     # REAP test
