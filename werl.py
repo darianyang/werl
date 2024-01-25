@@ -23,7 +23,7 @@ class WERL:
     Weighted Ensemble Reinforcement Learning (WERL).
     '''
 
-    def __init__(self, pcoords, n_clusters=None, b=0.07, gamma=0.5, d=2):
+    def __init__(self, pcoords, n_clusters=None, b=0.07, gamma=0.6, d=2):
         '''
         Parameters
         ----------
@@ -42,6 +42,8 @@ class WERL:
         d : float, default 2 
             Intrinsic dimensionality of slow manifold for the system. Used in n_clusters heuristic.
         '''
+        # TODO: make sure all of these ndims are compatible with methods
+        #       prob make all of them atleast3d?
         # need to reshape 1d arrays from (n) to (n, 1)+ for kmeans fitting
         # this is the case where you have 1 frame per walker and 1 pcoord dim
         if pcoords.ndim == 1:
@@ -53,7 +55,9 @@ class WERL:
         # need to condense to 2D for km clustering
         elif pcoords.ndim == 3:
             # keep the columns as each pcoord dim but string all frames in rows
-            self.pcoords = pcoords.reshape(-1, pcoords.shape[2])
+            #self.pcoords = pcoords.reshape(-1, pcoords.shape[2])
+            # do nothing since the reshape is currently handled in clustering
+            self.pcoords = pcoords
         else:
             raise ValueError(f"pcoord input array has {pcoords.ndim} dimensions, must be 1-3.")
 
@@ -61,8 +65,9 @@ class WERL:
         #       then look at the label uniques to find the self.n_segments
         #       or I could just look before reshaping and reshape upon clustering
         #       I need to be able to get the original segment id / index using the label array
-        # number of segments/walkers during the iteration
+        # number of segments/walkers and frames during the iteration
         self.n_segments = self.pcoords.shape[0]
+        self.n_frames = self.pcoords.shape[1]
 
         if n_clusters is None:
             # calculate optimal amount of n_clusters
@@ -71,6 +76,8 @@ class WERL:
         else:
             # otherwise use input n_cluster number
             self.n_clusters = n_clusters
+
+        print("n_clusters: ", self.n_clusters)
 
         # list of walker positions to split, begin as all zeros (no splitting)
         self.to_split = [0] * self.n_segments
@@ -91,19 +98,33 @@ class WERL:
         self.counts : list of tuples
             Count of each cluster label amount.
         '''
+        print("PCOORD SHAPE CLUSTER: ", self.pcoords.shape)
+        # TODO: universal reshape step here needed before clustering and for REAP?
+        #       could also move to init
+        # keep the columns as each pcoord dim but string all frames in rows
+        self.pcoords = self.pcoords.reshape(-1, pcoords.shape[2])
+
         # kmeans clustering
         km = KMeans(n_clusters=self.n_clusters, random_state=1).fit(self.pcoords)
         self.centers = km.cluster_centers_
-        self.labels = km.labels_
+        #print(km.labels_)
+        self.labels = km.labels_.reshape(self.n_segments, self.n_frames)
+        #print(self.labels)
 
-        # count each label amount
+        # count each label amount (using km.labels_ since not reshaped)
         # example output: Counter({0: 21, 1: 20, 2: 4, 3: 3, 4: 2})
         # then with most_common: [(0, 21), (1, 20), (2, 4), (3, 3), (4, 2)]
-        self.counts = Counter(self.labels).most_common()
+        self.counts = Counter(km.labels_).most_common()
+        print(self.counts)
         
     def lcas(self, n_split=None):
         '''
-        (TODO: Note LCAS not compatible with full pcoord array yet, just final frames)
+        ************************************************************************************
+        *** TODO: Note LCAS not compatible with full pcoord array yet, just final frames ***
+        ************************************************************************************ 
+        TODO: Perhaps it would be easiest to include the individual rewards and sort each 
+              cluster in LCAS by the reward before splitting / merging
+
         Least Counts Adaptive Sampling. In LCAS, from segment data of the previous iteration, 
         cluster the trajectory endpoint pcoord (aux? TODO) data, then select the next starting 
         states from the smallest, or least count, clusters. The idea being that clusters with 
@@ -126,6 +147,7 @@ class WERL:
         '''        
         # do clustering
         self._clustering()
+        print("shape labels: ", self.labels.shape)
 
         # if less than the requested amount of clusters was generated
         # then go with zero array return, currently useful for w_init
@@ -150,18 +172,26 @@ class WERL:
         while splits_remaining > 0:
            
             # go through each segment index label and tag to split
-            for i, seg_label in enumerate(self.labels):
+            # i here is going to be the walker/segment index
+            for i, seg_labels in enumerate(self.labels):
                 
-                # if the segment is in the least count cluster
-                if seg_label == self.counts[-lc_cluster_counter][0]:
-                    # increase split counter on this segment by 1
-                    self.to_split[i] += 1
-                    # note that one of the requested splits is done
-                    splits_remaining -= 1
-                
-                # extra precaution
-                if splits_remaining == 0:
-                     break
+                # since labels can be 2D: (n_segments, n_frames)
+                # loop, but only the unique elements, so no need to split >1 time
+                # if there are multiple LC labels in n_frames of a segment
+                # TODO: think about if it would be useful to have multiple splits
+                #       for now I think minimal splitting is better
+                for frame_label in np.unique(seg_labels):
+                    
+                    # if the segment frame is in the least count cluster
+                    if frame_label == self.counts[-lc_cluster_counter][0]:
+                        # increase split counter on this segment by 1
+                        self.to_split[i] += 1
+                        # note that one of the requested splits is done
+                        splits_remaining -= 1
+                    
+                    # extra precaution
+                    if splits_remaining == 0:
+                        break
             
             # once done looping through all cluster labels, if there are still more
             # to split, then do it again using the next lowest populated cluster label count
@@ -187,7 +217,7 @@ class WERL:
         while merges_remaining > 0:
             
             # go through each segment index label and tag to merge
-            for i, segi_label in enumerate(self.labels):
+            for i, segi_labels in enumerate(self.labels):
                 
                 # TODO: might be slow but for now: using this to check to make sure that when
                 #       moving from one seg to another for making merge pairs, ensures that
@@ -202,30 +232,38 @@ class WERL:
                 if skip_i_seg:
                     continue
                 
-                # if the segment is in the least count cluster
-                if segi_label == self.counts[lc_cluster_counter][0]:
+                # since labels can be 2D: (n_segments, n_frames)
+                # loop, but only the unique elements
+                for framei_label in np.unique(segi_labels):
+
+                    # if the segment is in the currently considered least count cluster
+                    if framei_label == self.counts[lc_cluster_counter][0]:
+                        
+                        # now find a merge pair/partner (only merge within same cluster)
+                        for j, segj_labels in enumerate(self.labels):
+                            
+                            # since labels can be 2D: (n_segments, n_frames)
+                            # loop, but only the unique elements
+                            for framej_label in np.unique(segj_labels):
+
+                                # if the segment is in the same least count cluster but not same seg index as i
+                                if framej_label == self.counts[lc_cluster_counter][0] and i != j:
+                                    
+                                    # make sure the current merge pair hasn't already happened
+                                    frozen_pair = frozenset((i, j))
+                                    
+                                    # if the merge pair is new, add to set so it can't happen again
+                                    if frozen_pair not in pairs_merged:
+                                        pairs_merged.add(frozen_pair)
+                                        # mark these as a merge pair
+                                        self.to_merge[i].append(j)
+                                        merges_remaining -= 1
+                                        #print(f"merged {i} and {j}")
+                                
+                            # extra precaution
+                            if merges_remaining == 0:
+                                break
                     
-                    # now find a merge pair/partner (only merge within same cluster)
-                    for j, segj_label in enumerate(self.labels):
-                        
-                        # if the segment is in the same least count cluster but not same seg index as i
-                        if segj_label == self.counts[lc_cluster_counter][0] and i != j:
-                            
-                            # make sure the current merge pair hasn't already happened
-                            frozen_pair = frozenset((i, j))
-                            
-                            # if the merge pair is new, add to set so it can't happen again
-                            if frozen_pair not in pairs_merged:
-                                pairs_merged.add(frozen_pair)
-                                # mark these as a merge pair
-                                self.to_merge[i].append(j)
-                                merges_remaining -= 1
-                                #print(f"merged {i} and {j}")
-                        
-                        # extra precaution
-                        if merges_remaining == 0:
-                            break
-                
                 # extra precaution
                 if merges_remaining == 0:
                     break
@@ -439,24 +477,24 @@ if __name__ == "__main__":
     # this is the full pcoord array, in this case (80, 5, 2)
     # for 80 walkers, 5 frames of simulation each, and 2 pcoords (X and Y)
     pcoords = np.load('pcoords_full.npy')
-    #print(f"pcoord full shape: {pcoords.shape}")
+    print(f"pcoord full shape: {pcoords.shape}")
 
     # test init data
     # pcoords = np.array([9.5] * 50).reshape(-1,1)
     # weights = np.array([0.02] * 50)
 
     # LCAS test
-    # werl = WERL(pcoords)
-    # werl._clustering()
-    # split, merge = werl.lcas(15)
-    # print(split, "\n", merge)
-    # print(werl.counts)
+    werl = WERL(pcoords)
+    split, merge = werl.lcas()
+    print(split, "\n", merge)
+    print(len(split), ", ", len(merge))
+    print("counts: ", werl.counts)
 
     # REAP test
-    werl = WERL(pcoords)
-    print("N_CLUSTERS: ", werl.n_clusters)
-    werl.reap()
-    print("CLUSTER COUNTS: ", werl.counts)
+    # werl = WERL(pcoords)
+    # print("N_CLUSTERS: ", werl.n_clusters)
+    # werl.reap()
+    # print("CLUSTER COUNTS: ", werl.counts)
 
     # # test output
     # split = np.loadtxt('split.txt')
