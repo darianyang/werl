@@ -124,6 +124,12 @@ class WERL:
         ************************************************************************************ 
         TODO: Perhaps it would be easiest to include the individual rewards and sort each 
               cluster in LCAS by the reward before splitting / merging
+              
+              After reading more of the REAP methods, I can prob look at the n clusters being
+              considered in terms of the n_split, then from those sort all the structures by reward
+              and then do splitting. Then for merging look at the lowest reward in top cluster(s).
+              For regular LCAS, have then not sorted by reward, just by least cluster count.
+              TODO: should also try it without LCAS, maybe just reward sorting and n_split/n_merge.
 
         Least Counts Adaptive Sampling. In LCAS, from segment data of the previous iteration, 
         cluster the trajectory endpoint pcoord (aux? TODO) data, then select the next starting 
@@ -188,8 +194,8 @@ class WERL:
                         self.to_split[i] += 1
                         # note that one of the requested splits is done
                         splits_remaining -= 1
-                        # TODO: test, only splitting one per seg
-                        break
+                        # # TODO: test, only splitting one per seg
+                        # break
 
                     # extra precaution
                     if splits_remaining == 0:
@@ -486,18 +492,18 @@ if __name__ == "__main__":
     # weights = np.array([0.02] * 50)
 
     # LCAS test
-    werl = WERL(pcoords)
-    split, merge = werl.lcas()
-    print(split, "\n", merge)
-    print("split sum: ", np.sum(split))
-    print("merge sum: ", np.sum([np.count_nonzero(i) for i in merge]))
-    print("counts: ", werl.counts)
+    # werl = WERL(pcoords)
+    # split, merge = werl.lcas()
+    # print(split, "\n", merge)
+    # print("split sum: ", np.sum(split))
+    # print("merge sum: ", np.sum([np.count_nonzero(i) for i in merge]))
+    # print("counts: ", werl.counts)
 
     # REAP test
-    # werl = WERL(pcoords)
-    # print("N_CLUSTERS: ", werl.n_clusters)
-    # werl.reap()
-    # print("CLUSTER COUNTS: ", werl.counts)
+    werl = WERL(pcoords)
+    print("N_CLUSTERS: ", werl.n_clusters)
+    werl.reap()
+    print("CLUSTER COUNTS: ", werl.counts)
 
     # # test output
     # split = np.loadtxt('split.txt')
