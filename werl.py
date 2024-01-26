@@ -116,7 +116,10 @@ class WERL:
         # then with most_common: [(0, 21), (1, 20), (2, 4), (3, 3), (4, 2)]
         self.counts = Counter(km.labels_).most_common()
         print(self.counts)
-        
+
+    def tlsc(self):
+        pass 
+   
     def lcas(self, n_split=None):
         '''
         ************************************************************************************
