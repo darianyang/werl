@@ -23,8 +23,13 @@ class QLearningAgent:
 
     def discretize_state(self, state):
         if isinstance(self.env.observation_space, gym.spaces.Box):
-            state_discrete = (state - self.env.observation_space.low) * np.array([10, 100])
-            return tuple(state_discrete.astype(int))
+            # state_discrete = (state - self.env.observation_space.low) * np.array([10, 100])
+            # return tuple(state_discrete.astype(int))
+            state_discrete = tuple(((self.env.observation_space.low) * np.array([10, 100])).astype(int))
+            return state_discrete
+            # state_discrete = (state - self.env.observation_space.low) * np.array([10, 100])
+            # return tuple(state_discrete.astype(int))
+
         elif isinstance(self.env.observation_space, gym.spaces.Dict):
             # Assuming the relevant values are stored under keys 'position' and 'velocity'
             state_discrete = (state['position'] - self.env.observation_space.spaces['position'].low) * np.array([10, 100])
@@ -46,7 +51,6 @@ class QLearningAgent:
         max_future_q = np.max(self.q_table[discrete_next_state])
         new_q = (1 - self.learning_rate) * current_q + self.learning_rate * (reward + self.discount_factor * max_future_q)
         self.q_table[discrete_state][action] = new_q
-
 
 
 # Training function for Q-learning agent in MountainCar environment
@@ -77,7 +81,7 @@ def train_q_learning_agent(env, agent, num_episodes=1000):
 # Main function
 if __name__ == "__main__":
     # Create MountainCar environment
-    env = gym.make('MountainCar-v0')
+    env = gym.make('MountainCar-v0', render_mode="human")
 
     # Initialize Q-learning agent
     q_learning_agent = QLearningAgent(env)
