@@ -1,5 +1,6 @@
 import numpy as np
 import gymnasium as gym
+import pickle
 
 # Q-learning agent for MountainCar environment
 class QLearningAgent:
@@ -23,12 +24,8 @@ class QLearningAgent:
 
     def discretize_state(self, state):
         if isinstance(self.env.observation_space, gym.spaces.Box):
-            # state_discrete = (state - self.env.observation_space.low) * np.array([10, 100])
-            # return tuple(state_discrete.astype(int))
-            state_discrete = tuple(((self.env.observation_space.low) * np.array([10, 100])).astype(int))
-            return state_discrete
-            # state_discrete = (state - self.env.observation_space.low) * np.array([10, 100])
-            # return tuple(state_discrete.astype(int))
+            state_discrete = (state - self.env.observation_space.low) * np.array([10, 100])
+            return tuple(state_discrete.astype(int))
 
         elif isinstance(self.env.observation_space, gym.spaces.Dict):
             # Assuming the relevant values are stored under keys 'position' and 'velocity'
@@ -54,9 +51,9 @@ class QLearningAgent:
 
 
 # Training function for Q-learning agent in MountainCar environment
-def train_q_learning_agent(env, agent, num_episodes=1000):
+def train_q_learning_agent(env, agent, num_episodes=1000, save_path="qmcar_agent.pkl"):
     for episode in range(num_episodes):
-        state = env.reset()
+        state, info = env.reset()
         total_reward = 0
 
         while True:
@@ -67,7 +64,7 @@ def train_q_learning_agent(env, agent, num_episodes=1000):
             if len(step_result) < 4:
                 raise ValueError("Invalid step result from environment")
 
-            next_state, reward, done, _ = step_result[:4]
+            next_state, reward, done, truncated, info = step_result
             agent.update_q_table(state, action, reward, next_state)
             total_reward += reward
             state = next_state
@@ -77,11 +74,13 @@ def train_q_learning_agent(env, agent, num_episodes=1000):
 
         print(f"Episode {episode + 1}, Total Reward: {total_reward}")
 
+    # Save the trained Q-learning agent using pickle
+    with open(f"{num_episodes}_{save_path}", 'wb') as file:
+        pickle.dump(agent, file)
 
-# Main function
-if __name__ == "__main__":
+def run_training():
     # Create MountainCar environment
-    env = gym.make('MountainCar-v0', render_mode="human")
+    env = gym.make('MountainCar-v0')#, render_mode="human")
 
     # Initialize Q-learning agent
     q_learning_agent = QLearningAgent(env)
@@ -90,13 +89,13 @@ if __name__ == "__main__":
     train_q_learning_agent(env, q_learning_agent)
 
     # Test the trained agent
-    state = env.reset()
+    state, info = env.reset()
     total_reward = 0
 
     while True:
         env.render()
         action = q_learning_agent.select_action(state)
-        next_state, reward, done, _ = env.step(action)
+        next_state, reward, done, truncated, info = env.step(action)
         total_reward += reward
         state = next_state
 
@@ -106,3 +105,44 @@ if __name__ == "__main__":
     print(f"Test Total Reward: {total_reward}")
 
     env.close()
+
+def load_q_learning_agent(file_path="qmcar_agent.pkl"):
+    # Load the Q-learning agent from the saved file
+    with open(file_path, 'rb') as file:
+        loaded_agent = pickle.load(file)
+    
+    return loaded_agent
+
+def run_trained_agent(file_path="qmcar_agent.pkl"):
+    # load trained agent and test
+    # Create MountainCar environment
+    env = gym.make('MountainCar-v0', render_mode="human")
+
+    # Initialize Q-learning agent
+    q_learning_agent = load_q_learning_agent(file_path)
+
+    # Train the Q-learning agent
+    #train_q_learning_agent(env, q_learning_agent)
+
+    # Test the trained agent
+    state, info = env.reset()
+    total_reward = 0
+
+    while True:
+        env.render()
+        action = q_learning_agent.select_action(state)
+        next_state, reward, done, truncated, info = env.step(action)
+        total_reward += reward
+        state = next_state
+
+        if done:
+            break
+
+    print(f"Test Total Reward: {total_reward}")
+
+    env.close()
+
+# Main function
+if __name__ == "__main__":
+    #run_training()
+    run_trained_agent("1000_qmcar_agent.pkl")
