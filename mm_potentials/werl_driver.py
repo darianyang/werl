@@ -149,9 +149,12 @@ class WERLDriver(WEDriver):
                 #resample = WERL(pcoords, n_clusters=5)
                 resample = WERL(curr_pcoords, n_clusters=None)
                 split, merge = resample.lcas()
-                #split, merge = LCAS_split(pcoords, weights)
+
+                # TODO: testing filters
+                #split = [1 if i > 1 else i for i in split]
 
                 print(f"LCAS split: {split}\nLCAS merge: {merge}")
+                print("Split indices: ", [i for i, e in enumerate(split) if e != 0])
                 print("split sum: ", np.sum(split))
                 print("merge sum: ", np.sum([np.count_nonzero(i) for i in merge]))
                 #print(f"Final variation value after {resample.count} wevo cycles: ", variation)
@@ -161,17 +164,18 @@ class WERLDriver(WEDriver):
                 splitting = 0
                 merging = 0
 
+                print("segments:", len(segments))
+
                 # go through each seg and split merge
                 for i, seg in enumerate(segments):
                     
                     # split or merge on a segment-by-segment basis
                     if split[i] != 0:
-                        #self._split_by_wevo(bin, seg, split[i])
                         # need an extra walker since split operation reduces total walkers by 1
                         # I think revo doesn't count the current seg
                         self._split_decision(bin, seg, split[i] + 1)
-                        splitting += split[i] + 1
-                        #splitting += split[i]
+                        #splitting += split[i] + 1
+                        splitting += split[i]
                     if len(merge[i]) != 0:
                         # list of all segs objects in the current merge list element
                         to_merge = [segment for num, segment in enumerate(segments) if num in merge[i]]
@@ -191,15 +195,16 @@ class WERLDriver(WEDriver):
                 # make bin target count consistent via splitting high weight and merging low weight
                 # TODO: maybe do this with variance sorting instead of weight sorting?
                 # this shouldn't be required now that wevo is consistent in total walkers
-                if self.do_adjust_counts:
-                    self._adjust_count(ibin)
+                # if self.do_adjust_counts:
+                #     self._adjust_count(ibin)
+                # TODO: temp turned off adjust count for debugging
 
                 print(f"Total = {segs}, splitting = {splitting}, merging = {merging}")
 
                 # TODO: print to check that min and max prob are being controlled by wevo
                 # west.log has this but I should have another check printed
 
-                # TODO: temp fix for no initial splitting needed for wevo to start working
+                # TODO: temp fix for no initial splitting (needed for wevo to start working)
                 # i.e. no wevo cycles were able to run
                 # if resample.count == 1:
                 #     # running H&K resampling

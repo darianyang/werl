@@ -214,6 +214,10 @@ class WERL:
         # TODO: there is issues with merging where after the main high cluster labels
         #       there is overlap in merging, e.g. [[], [2, 10, 11, 26, 28, 33, 36, 37], [1, 10], ...]
         #       here, 2 gets merged to 1 and then 1 to 2.
+        #       I think this is fixed with frozen set checks
+        #       Other issue now, need to prevent/check for merging what is already split
+        #       I think this is fixed now as well with the disjoint
+        #       But still having KeyError issues with removing certain segs
         # merge n_split times the highest count cluster(s)
         merges_remaining = n_split
         
@@ -248,7 +252,7 @@ class WERL:
                 # loop, but only the unique elements
                 for framei_label in np.unique(segi_labels):
 
-                    # if the segment is in the currently considered least count cluster
+                    # if the segment is in the currently considered highest count cluster
                     if framei_label == self.counts[lc_cluster_counter][0]:
                         
                         # now find a merge pair/partner (only merge within same cluster)
@@ -258,14 +262,18 @@ class WERL:
                             # loop, but only the unique elements
                             for framej_label in np.unique(segj_labels):
 
-                                # if the segment is in the same least count cluster but not same seg index as i
+                                # if the segment is in the same high count cluster but not same seg index as i
                                 if framej_label == self.counts[lc_cluster_counter][0] and i != j:
                                     
                                     # make sure the current merge pair hasn't already happened
                                     frozen_pair = frozenset((i, j))
                                     
                                     # if the merge pair is new, add to set so it can't happen again
-                                    if frozen_pair not in pairs_merged:
+                                    # also need to prevent/check for merging what is already split
+                                    # second statement is asking, do they not share any items? T/F
+                                    # TODO: is this needed? If going from largest cluster for merging
+                                    #       then it should avoid the small clusters members by default
+                                    if frozen_pair not in pairs_merged and frozen_pair.isdisjoint(self.to_split):
                                         pairs_merged.add(frozen_pair)
                                         # mark these as a merge pair
                                         self.to_merge[i].append(j)
@@ -509,6 +517,7 @@ if __name__ == "__main__":
     werl = WERL(pcoords)
     split, merge = werl.lcas()
     print(split, "\n", merge)
+    print([i for i, e in enumerate(split) if e != 0])
     print("split sum: ", np.sum(split))
     print("merge sum: ", np.sum([np.count_nonzero(i) for i in merge]))
     print("counts: ", werl.counts)
