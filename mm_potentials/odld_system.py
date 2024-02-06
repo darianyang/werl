@@ -128,10 +128,10 @@ class ODLDPropagator(WESTPropagator):
             #print(xi, yi)
 
             all_displacements[:, istep, 0] = x_displacements = random_normal(
-                scale=self.sigma, size=(n_segs,)
+                loc=0, scale=self.sigma, size=(n_segs,)
             )
             all_displacements[:, istep, 1] = y_displacements = random_normal(
-                scale=self.sigma, size=(n_segs,)
+                loc=0, scale=self.sigma, size=(n_segs,)
             )
 
             ### ADJUST GRAD ###
