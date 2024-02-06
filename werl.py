@@ -171,12 +171,12 @@ class WERL:
 
         # split n_split times the lowest count cluster(s)
         splits_remaining = n_split
-        
+
+
         # may need to go through multiple cluster labels if count is small
         lc_cluster_counter = 1
         
         while splits_remaining > 0:
-           
             # go through each segment index label and tag to split
             # i here is going to be the walker/segment index
             for i, seg_labels in enumerate(self.labels):
@@ -200,7 +200,11 @@ class WERL:
                     # extra precaution
                     if splits_remaining == 0:
                         break
-            
+
+                # extra precaution
+                if splits_remaining == 0:
+                    break
+        
             # once done looping through all cluster labels, if there are still more
             # to split, then do it again using the next lowest populated cluster label count
             # to only split the lowest cluster, don't use the counter
@@ -268,13 +272,23 @@ class WERL:
                                         merges_remaining -= 1
                                         #print(f"merged {i} and {j}")
                                 
+                            # TODO: is there a better way to have this n_remaining check
+                            #       which must happen at every potential split/merge event?
                             # extra precaution
                             if merges_remaining == 0:
                                 break
+
+                        # extra precaution
+                        if merges_remaining == 0:
+                            break                            
                     
                 # extra precaution
                 if merges_remaining == 0:
                     break
+
+            # extra precaution
+            if merges_remaining == 0:
+                break
             
             # once done looping through all cluster labels, if there are still more
             # to merge, then do it again using the next lowest populated cluster label count
@@ -492,18 +506,18 @@ if __name__ == "__main__":
     # weights = np.array([0.02] * 50)
 
     # LCAS test
-    # werl = WERL(pcoords)
-    # split, merge = werl.lcas()
-    # print(split, "\n", merge)
-    # print("split sum: ", np.sum(split))
-    # print("merge sum: ", np.sum([np.count_nonzero(i) for i in merge]))
-    # print("counts: ", werl.counts)
-
-    # REAP test
     werl = WERL(pcoords)
-    print("N_CLUSTERS: ", werl.n_clusters)
-    werl.reap()
-    print("CLUSTER COUNTS: ", werl.counts)
+    split, merge = werl.lcas()
+    print(split, "\n", merge)
+    print("split sum: ", np.sum(split))
+    print("merge sum: ", np.sum([np.count_nonzero(i) for i in merge]))
+    print("counts: ", werl.counts)
+
+    # # REAP test
+    # werl = WERL(pcoords)
+    # print("N_CLUSTERS: ", werl.n_clusters)
+    # werl.reap()
+    # print("CLUSTER COUNTS: ", werl.counts)
 
     # # test output
     # split = np.loadtxt('split.txt')
