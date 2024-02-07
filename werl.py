@@ -17,6 +17,7 @@ from collections import Counter
 #from itertools import combinations
 from scipy.optimize import minimize
 from sklearn.metrics import pairwise_distances_argmin_min
+from scipy.spatial.distance import pdist, squareform
 
 class WERL:
     '''
@@ -117,7 +118,126 @@ class WERL:
         self.counts = Counter(km.labels_).most_common()
         print(self.counts)
 
-    def tlsc(self):
+    def FFT(self, n_clusters, l=2):
+        '''
+        Fastest First Traversal algorithm for pruning cluster centers
+        From the implementation of TLSC by Kleiman and Shukla adapted from Buenfil et al.
+        '''
+
+        n_clusters_prime = int(n_clusters * np.log(n_clusters) + l)
+        rng = np.random.default_rng()
+        rand_indices = rng.choice(len(self.pcoords), n_clusters_prime, replace=False)
+        init_points = self.pcoords[rand_indices]
+
+        # Pick mu1 (init center) at random from pcoords
+        mu1 = 0 
+        mus = [mu1]
+        available_mus = [i for i in range(1, n_clusters_prime)] # All other mus are considered for next center 
+
+        # Pick next center as point with greatest distance from previous point
+        # Continue until we prune centers from n_cluster_prime to n_cluster
+        D = squareform(pdist(init_points))
+        np.fill_diagonal(D, np.inf)
+
+        #### Vectorize highest minimum search ####
+        for _ in range(1, n_clusters):
+            # an index corresponding to max min distance point so far
+            max_sofar = available_mus[0] # init index for max distance cluster center
+            min_dist = np.amin(D[max_sofar, np.asarray(mus)]) 
+
+            for i in available_mus[1:]:
+                if np.amin(D[i, np.array(mus)]) > min_dist:
+                    max_sofar = i
+                    min_dist = np.amin(D[max_sofar, np.array(mus)])
+            available_mus.remove(max_sofar)
+            mus.append(max_sofar)
+        mus = np.asarray(mus)
+
+        return self.pcoords[rand_indices[mus]] # Centroids optimally spread
+    
+    def tlsc_clustering(self, lc=3):
+        '''
+        Clustering method adapted from the TSLC CLUST method using Fastest First Traversal.
+
+        Args
+        -------
+        pcoords, pcoord array
+        n_clusters, number of clusters - if None, then use the cluster number determined by Buenfil et al. approach
+        b, coefficient for n_clusters determination
+        gamma, exponents for n_clusters determination
+        d, intrinsic dimensionality of slow manifold used for n_clusters determination
+        l, constant for n_clusters determination
+
+        Updates
+        -------
+        self.labels : array
+            Cluster labels for each data point.
+        self.counts : list of tuples
+            Count of each cluster label amount.
+        '''
+
+        # First clustering attempt using FFT
+        centroids = self.FFT(self.n_clusters)
+        kmeans = KMeans(n_clusters=self.n_clusters, n_init=1, max_iter=1, init=centroids).fit(self.pcoords) # Perform one round of kmeans
+        
+        while len(np.unique(kmeans.labels_)) != self.n_clusters:
+            centroids = self.FFT(self.pcoords, self.n_clusters)
+            kmeans = KMeans(n_clusters=self.n_clusters, n_init=1, max_iter=1, init=centroids).fit(self.pcoords)
+
+        return kmeans
+
+    def tlsc_weighting(self, kmeans):
+        '''
+        Weighting method adapted from TLSC weighting algorithm.
+
+        Updates
+        -------
+        self.labels : array
+            Cluster labels for each data point.
+        self.counts : list of tuples
+            Count of each cluster label amount.
+        '''
+
+        pass
+
+    def tlsc(self, N=3):
+        '''
+        WE version of the Tangent Space Least Adaptive Clustering (TLSC) algorithm.
+        
+        Input: Differentiable energy E, collective variables theta1 ... thetaK , number of least count clusters to sample from
+        N, number of parallel runs M, number of iterations I,timesteps per iteration s, intrinsic dimension d
+
+        Args
+        -------------
+        **kwargs: used to specify model hyperparameters. Must include following keys:
+            n_agents (int): number of agents. --> In this implementation this is forced to be 1
+            traj_len (int): length of each trajectory ran.
+            delta (float): upper boundary for learning step.
+            n_features (int): number of collective variables. (Currently ignored because only two-dimensional systems are used.)
+            d (int): dimensionality of the slow manifold (used to compute number of clusters to use). (Should be two for these trials.)
+            gamma (float): parameter to determine number of clusters (theoretically in [0.5, 1]).
+            b (float): parameter to determine number of clusters.
+        Returns
+        -------
+        '''
+
+        kmeans = self.tlsc_clustering()
+        # Get N lc clusters from the cluster id and its associated trajs 
+        clusterid_counts = sorted([(i, np.unique(kmeans.labels_, return_counts=True)[1][i]) for i in range(len(kmeans.cluster_centers_))], key=lambda x: x[1])
+        lc_clusters = clusterid_counts[:N]
+
+        # Get centers for the N lc_clusters
+        lc_centers = [kmeans.cluster_centers_[lc_clusters[i][0]] for i in range(len(lc_clusters))]
+
+        # Find representatives of the clusters closest to their respective cluster center
+        rep_frames = []
+        closest_frames, dist = pairwise_distances_argmin_min(lc_centers, self.pcoords)
+
+        # Test that the distances, etc are correctly calculated
+        print(lc_centers)
+        print(closest_frames, dist)
+        print([self.pcoords[closest_frames[i]] for i in range(len(closest_frames))])
+
         pass 
    
     def lcas(self, n_split=None):
@@ -487,12 +607,14 @@ if __name__ == "__main__":
     #weights = np.loadtxt('weights.txt')
     # this is the full pcoord array, in this case (80, 5, 2)
     # for 80 walkers, 5 frames of simulation each, and 2 pcoords (X and Y)
-    pcoords = np.load('pcoords_full.npy')
-    print(f"pcoord full shape: {pcoords.shape}")
+    # pcoords = np.load('pcoords_full.npy')
+    # print(f"pcoord full shape: {pcoords.shape}")
 
     # test init data
-    # pcoords = np.array([9.5] * 50).reshape(-1,1)
-    # weights = np.array([0.02] * 50)
+    #pcoords = np.array([9.5] * 50).reshape(-1,1)
+    pcoords = np.array([np.random.uniform(5, 10, 50)]).reshape(-1,1)
+    weights = np.array([0.02] * 50)
+    print(f"pcoord full shape: {pcoords.shape}")
 
     # LCAS test
     # werl = WERL(pcoords)
@@ -503,12 +625,23 @@ if __name__ == "__main__":
     # print("counts: ", werl.counts)
 
     # REAP test
-    werl = WERL(pcoords)
-    print("N_CLUSTERS: ", werl.n_clusters)
-    werl.reap()
-    print("CLUSTER COUNTS: ", werl.counts)
-
+    #werl = WERL(pcoords)
+    #print("N_CLUSTERS: ", werl.n_clusters)
+    #werl.reap()
+    #print("CLUSTER COUNTS: ", werl.counts)
     # # test output
     # split = np.loadtxt('split.txt')
     # merge = np.load('merge.npy', allow_pickle=True)
     # print(split, merge)
+
+    # TLSC test
+    werl = WERL(pcoords)
+    #print(pcoords)
+    #print(weights)
+    werl.tlsc()
+
+    # colors = ['r','b','g','k','purple', 'orange','gray']
+    # for i in range(len(pcoords)):
+    #     plt.scatter([0], pcoords[i], marker='.', c=colors[kmeans.labels_[i]])
+    # plt.scatter([0 for i in range(len(kmeans.cluster_centers_))], kmeans.cluster_centers_, c=colors)
+    # plt.show()
