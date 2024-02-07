@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 class MultiArmBandit:
+    # TODO: epsilon?
     def __init__(self, num_arms, true_means, alpha):
         self.num_arms = num_arms
         self.true_means = true_means
