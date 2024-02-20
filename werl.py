@@ -12,6 +12,7 @@ To merge: 50 total: 11 being merged
 
 import numpy as np
 from sklearn.cluster import KMeans
+from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
 from collections import Counter
 #from itertools import combinations
@@ -122,8 +123,10 @@ class WERL:
         '''
         Fastest First Traversal algorithm for pruning cluster centers
         From the implementation of TLSC by Kleiman and Shukla adapted from Buenfil et al.
-        '''
 
+        Updates: n_clusters, pcoords (shape)
+        '''
+        self.pcoords = self.pcoords.reshape(-1, self.pcoords.shape[2])
         n_clusters_prime = int(n_clusters * np.log(n_clusters) + l)
         rng = np.random.default_rng()
         rand_indices = rng.choice(len(self.pcoords), n_clusters_prime, replace=False)
@@ -141,7 +144,6 @@ class WERL:
 
         #### Vectorize highest minimum search ####
         for _ in range(1, n_clusters):
-            # an index corresponding to max min distance point so far
             max_sofar = available_mus[0] # init index for max distance cluster center
             min_dist = np.amin(D[max_sofar, np.asarray(mus)]) 
 
@@ -155,7 +157,7 @@ class WERL:
 
         return self.pcoords[rand_indices[mus]] # Centroids optimally spread
     
-    def tlsc_clustering(self, lc=3):
+    def tslc_clustering(self, lc=3):
         '''
         Clustering method adapted from the TSLC CLUST method using Fastest First Traversal.
 
@@ -186,7 +188,7 @@ class WERL:
 
         return kmeans
 
-    def tlsc_weighting(self, kmeans):
+    def tslc_weighting(self, kmeans, N=3, d=2):
         '''
         Weighting method adapted from TLSC weighting algorithm.
 
@@ -197,10 +199,70 @@ class WERL:
         self.counts : list of tuples
             Count of each cluster label amount.
         '''
+        clusterid_counts = sorted([(i, np.unique(kmeans.labels_, return_counts=True)[1][i]) for i in range(len(kmeans.cluster_centers_))], key=lambda x: x[1])
+        lc_clusters = clusterid_counts[:N]
+        Vis = []
 
-        pass
+        # 4) PCA for points in each lc cluster -> d space
+        lc_data_dict = {c[0]:[] for c in lc_clusters}
+        for i in range(len(kmeans.labels_)):
+            if kmeans.labels_[i] in [c[0] for c in lc_clusters]:
+                lc_data_dict[kmeans.labels_[i]].append(list(self.pcoords[i]))
 
-    def tlsc(self, N=3):
+        for key in lc_data_dict.keys():
+            points = np.array(lc_data_dict[key])
+            print(key, points)
+            print()
+            pca = PCA(n_components=d)
+            pca_trans = pca.fit(points)  # Projection onto d space
+            Vi = pca_trans.components_.T  # Must transpose to get desired shape
+            Vis.append(Vi)
+
+
+        # 5) Get Gi matrices of shape (D, K) that contain the gradient of 
+        # each CV w.r.t. to the cartesian coordinate of the point
+        # Use a representative frame from the N least count clusters
+        # The gradient will depend on the system used - i.e. some user defined function is necessary
+        # This may be required in the constructor, but I am not sure how this could be passed
+        # Currently, I have it implemented as is done in the MA REAP paper (arctan(y/x))
+        
+        Gis = []
+        closest_frames, _ = pairwise_distances_argmin_min(lc_centers, self.pcoords) 
+        norm = 0
+        for point in closest_frames:
+            x, y = self.pcoords[point]
+            dx = np.asarray([1, 0, -y / (x ** 2 + y ** 2)])
+            dy = np.asarray([0, 1, x / (x ** 2 + y ** 2)])
+            Gi = np.vstack([dx, dy])
+            norm += np.linalg.norm(Gi, axis=0)
+            Gis.append(Gi)
+
+        # 6) Normalize grads
+        normed_Gis = []
+        for Gi in Gis:
+            normed_Gis.append(Gi * len(closest_frames) / norm)
+
+
+        # 7) Get A - sum of elementwise multiplication (Gi.T * Vi) * (Vi.T * Gi) for each CV (i)
+        K = Gis[0].shape[1]  # This is simply the number of CVs
+        A = np.zeros((K, K)) # init matrix A (see step 7 of TSLC of algorithm)
+        for i in range(len(Gis)):
+            Gi, Vi = Gis[i], Vis[i]
+            A += (Gi.T @ Vi) @ (Vi.T @ Gi)
+
+        # 8) Compute largest eigenvector of A, w~
+        eig_vals, eig_vecs = np.linalg.eig(A)
+        largest_eigval = np.argmax(eig_vals)
+        largest_eigvec = eig_vecs[largest_eigval]
+
+        # 9) Compute w_k = w~_k ** 2 for k = [1, ..., K] in w~
+        # MA-REAP code uses eig_vecs[:, largest_eigval], but I think that may be incorrect
+        # since that will use the largest eigenvalue's index of each eigenvector.
+        weights = eig_vecs[largest_eigval, :] ** 2 
+
+        return weights
+
+    def tslc(self, N=3):
         '''
         WE version of the Tangent Space Least Adaptive Clustering (TLSC) algorithm.
         
@@ -221,7 +283,7 @@ class WERL:
         -------
         '''
 
-        kmeans = self.tlsc_clustering()
+        kmeans = self.tslc_clustering()
         # Get N lc clusters from the cluster id and its associated trajs 
         clusterid_counts = sorted([(i, np.unique(kmeans.labels_, return_counts=True)[1][i]) for i in range(len(kmeans.cluster_centers_))], key=lambda x: x[1])
         lc_clusters = clusterid_counts[:N]
@@ -234,11 +296,12 @@ class WERL:
         closest_frames, dist = pairwise_distances_argmin_min(lc_centers, self.pcoords)
 
         # Test that the distances, etc are correctly calculated
-        print(lc_centers)
-        print(closest_frames, dist)
-        print([self.pcoords[closest_frames[i]] for i in range(len(closest_frames))])
+        # print(clusterid_counts)
+        # print(lc_centers)
+        # print(closest_frames, dist)
+        # print([self.pcoords[closest_frames[i]] for i in range(len(closest_frames))])
 
-        pass 
+        return kmeans, lc_centers, closest_frames 
    
     def lcas(self, n_split=None):
         '''
@@ -625,27 +688,27 @@ class WERL:
 
 if __name__ == "__main__":
     # test data (1D array of 1D ODLD endpoints)
-    #pcoords = np.loadtxt('pcoords.txt')
-    #weights = np.loadtxt('weights.txt')
+    # pcoords = np.loadtxt('mm_potentials/pcoords.txt')
+    # weights = np.loadtxt('mm_potentials/weights.txt')
+
     # this is the full pcoord array, in this case (80, 5, 2)
     # for 80 walkers, 5 frames of simulation each, and 2 pcoords (X and Y)
-    # pcoords = np.load('pcoords_full.npy')
-    # print(f"pcoord full shape: {pcoords.shape}")
+    pcoords = np.load('mm_potentials/pcoords_full.npy')
+    print(f"pcoord full shape: {pcoords.shape}")
 
     # test init data
     #pcoords = np.array([9.5] * 50).reshape(-1,1)
-    pcoords = np.array([np.random.uniform(5, 10, 50)]).reshape(-1,1)
-    weights = np.array([0.02] * 50)
-    print(f"pcoord full shape: {pcoords.shape}")
+    #pcoords = np.array([np.random.uniform(5, 10, 50)]).reshape(-1,1)
+    #weights = np.array([0.02] * 50)
 
     # LCAS test
-    werl = WERL(pcoords)
-    split, merge = werl.lcas()
-    print(split, "\n", merge)
-    print([i for i, e in enumerate(split) if e != 0])
-    print("split sum: ", np.sum(split))
-    print("merge sum: ", np.sum([np.count_nonzero(i) for i in merge]))
-    print("counts: ", werl.counts)
+    # werl = WERL(pcoords)
+    # split, merge = werl.lcas()
+    # print(split, "\n", merge)
+    # print([i for i, e in enumerate(split) if e != 0])
+    # print("split sum: ", np.sum(split))
+    # print("merge sum: ", np.sum([np.count_nonzero(i) for i in merge]))
+    # print("counts: ", werl.counts)
 
     # # REAP test
     # werl = WERL(pcoords)
@@ -662,10 +725,17 @@ if __name__ == "__main__":
     werl = WERL(pcoords)
     #print(pcoords)
     #print(weights)
-    werl.tlsc()
 
-    # colors = ['r','b','g','k','purple', 'orange','gray']
-    # for i in range(len(pcoords)):
-    #     plt.scatter([0], pcoords[i], marker='.', c=colors[kmeans.labels_[i]])
-    # plt.scatter([0 for i in range(len(kmeans.cluster_centers_))], kmeans.cluster_centers_, c=colors)
+    kmeans, lc_centers, closest_frames = werl.tslc()
+    test_Vis = werl.tslc_weighting(kmeans)
+    # Visualize pcoord in CV space
+    #plt.scatter([np.transpose(frame)[0] for frame in pcoords], [np.transpose(frame)[1] for frame in pcoords], s=40, alpha=0.3)
+    #plt.show()
+
+    # Assess distribution of cluster centers
+    # plt.scatter(werl.pcoords[:,0], werl.pcoords[:,1], marker='.')
+    # plt.scatter(kmeans.cluster_centers_[:,0], kmeans.cluster_centers_[:,1], alpha=0.4, s=200)
+    # plt.scatter([l[0] for l in lc_centers], [l[1] for l in lc_centers], alpha=0.4, s=50, c='purple')
+    # #plt.savefig('2D_TSLC')
     # plt.show()
+    
