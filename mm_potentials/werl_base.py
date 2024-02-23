@@ -1,0 +1,122 @@
+'''
+WERL class containing methods to implement various adaptive sampling
+methods within the context of WE.
+
+Example Return
+--------------
+To split: 50 total: 11 being split 
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 3, 0, 0, 3, 2, 0, 0, 0, 0, 0, 0]
+To merge: 50 total: 11 being merged 
+[[], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [40], [], [], [36, 21, 23, 26, 24, 22, 29, 25], [], [], [20], [], [19], [], [], []]
+
+TODO:
+    - probably will need a pcoord/input data standardization step
+    - implement weight thresholds
+    - think about how to target the middle clusters more
+'''
+
+import numpy as np
+from sklearn.cluster import KMeans
+from collections import Counter
+
+class WERL:
+    '''
+    Weighted Ensemble Reinforcement Learning (WERL).
+    '''
+
+    def __init__(self, pcoords, n_clusters=None, b=0.07, gamma=0.6, d=2):
+        '''
+        Parameters
+        ----------
+        segments : westpa segments object (TODO)
+            Each segment also has a weight attribute.
+        pcoords : ndarray
+            Last pcoord value of each segment for the current iteration.
+        n_clusters : int
+            Number of clusters for k-means.
+            If self.n_clusters is None, calculating optimal n_clusters using a
+            heuristic approximation from Buenfil, Koelle, Meila, ICML (2021).
+        b : float, default 1e-4 (REAP) or 0.07 (TSLC)
+            Coefficient for n_clusters heuristic.
+        gamma : float, default 0.7
+            Exponent for n_clusters heuristic (should theoretically be in (0.5, 1)).
+        d : float, default 2 
+            Intrinsic dimensionality of slow manifold for the system. Used in n_clusters heuristic.
+        '''
+        # TODO: make sure all of these ndims are compatible with methods (TESTS using fake data)
+        # need to reshape 1d arrays from (n) to (n, 1+) for kmeans fitting
+        # this is the case where you have 1 frame per walker and 1 pcoord dim
+        if pcoords.ndim == 1:
+            self.pcoords = pcoords.reshape(-1, 1)
+        # case where you just have 1 frame per walker and 2 pcoord dims
+        elif pcoords.ndim == 2:
+            self.pcoords = pcoords
+        # when using the full 3D pcoord array (walkers, frames, pcoords)
+        elif pcoords.ndim == 3:
+            # all walkers as rows but only use last frame, keep the columns as each pcoord dim
+            # also need to condense to 2D for km clustering anyway so it works out
+            self.pcoords = pcoords[:,-1,:].reshape(-1, pcoords.shape[2])
+        else:
+            raise ValueError(f"pcoord input array has {pcoords.ndim} dimensions, must be 1-3.")
+
+        # number of segments/walkers and pcoords during the iteration
+        self.n_segments = self.pcoords.shape[0]
+        self.n_pcoords = self.pcoords.shape[1]
+
+        if n_clusters is None:
+            # calculate optimal amount of n_clusters
+            #self.n_clusters = np.floor(b * self.n_segments ** (gamma * d)).astype(int)
+            self.n_clusters = int(b * (self.n_segments ** (gamma * d)))
+        else:
+            # otherwise use input n_cluster number
+            self.n_clusters = n_clusters
+
+        print("n_clusters: ", self.n_clusters)
+
+        # list of walker positions to split, begin as all zeros (no splitting)
+        self.to_split = [0] * self.n_segments
+        # list of lists for walker positions to merge, begin as all empty
+        self.to_merge = [[] for _ in range(self.n_segments)]
+
+    def _clustering(self):
+        '''
+        Shared clustering method with k-means using self.n_clusters.
+
+        Updates
+        -------
+        self.labels : array
+            Cluster labels for each data point.
+        self.counts : list of tuples
+            Count of each cluster label amount.
+        '''
+        # kmeans clustering
+        km = KMeans(n_clusters=self.n_clusters, random_state=1).fit(self.pcoords)
+        self.centers = km.cluster_centers_
+        #print(km.labels_)
+        self.labels = km.labels_
+        #print(self.labels)
+
+        # count each label amount (using km.labels_ since not reshaped)
+        # example output: Counter({0: 21, 1: 20, 2: 4, 3: 3, 4: 2})
+        # then with most_common: [(0, 21), (1, 20), (2, 4), (3, 3), (4, 2)]
+        self.counts = Counter(km.labels_).most_common()
+        #print(self.counts)
+
+if __name__ == "__main__":
+    # test data (1D array of 1D ODLD endpoints)
+    # pcoords = np.loadtxt('mm_potentials/pcoords.txt')
+    # weights = np.loadtxt('mm_potentials/weights.txt')
+
+    # this is the full pcoord array, in this case (80, 5, 2)
+    # for 80 walkers, 5 frames of simulation each, and 2 pcoords (X and Y)
+    pcoords = np.load('mm_potentials/pcoords_full.npy')
+    print(f"pcoord full shape: {pcoords.shape}")
+
+    # test init data
+    #pcoords = np.array([9.5] * 50).reshape(-1,1)
+    #pcoords = np.array([np.random.uniform(5, 10, 50)]).reshape(-1,1)
+    #weights = np.array([0.02] * 50)
+
+    werl = WERL(pcoords)
+    print(werl.pcoords)
+    werl._clustering()

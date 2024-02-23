@@ -72,7 +72,6 @@ class LCAS(WERL):
         # split n_split times the lowest count cluster(s)
         splits_remaining = n_split
 
-
         # may need to go through multiple cluster labels if count is small
         lc_cluster_counter = 1
 
