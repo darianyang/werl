@@ -43,8 +43,8 @@ class WERL:
         d : float, default 2 
             Intrinsic dimensionality of slow manifold for the system. Used in n_clusters heuristic.
         '''
-        # TODO: make sure all of these ndims are compatible with methods
-        # need to reshape 1d arrays from (n) to (n, 1)+ for kmeans fitting
+        # TODO: make sure all of these ndims are compatible with methods (TESTS using fake data)
+        # need to reshape 1d arrays from (n) to (n, 1+) for kmeans fitting
         # this is the case where you have 1 frame per walker and 1 pcoord dim
         if pcoords.ndim == 1:
             self.pcoords = pcoords.reshape(-1, 1)
@@ -52,25 +52,16 @@ class WERL:
         elif pcoords.ndim == 2:
             self.pcoords = pcoords
         # when using the full 3D pcoord array (walkers, frames, pcoords)
-        # need to condense to 2D for km clustering
         elif pcoords.ndim == 3:
             # all walkers as rows but only use last frame, keep the columns as each pcoord dim
+            # also need to condense to 2D for km clustering anyway so it works out
             self.pcoords = pcoords[:,-1,:].reshape(-1, pcoords.shape[2])
-
-            # do nothing since the reshape is currently handled in clustering
-            # not anymore
-            #self.pcoords = pcoords
-
         else:
             raise ValueError(f"pcoord input array has {pcoords.ndim} dimensions, must be 1-3.")
 
-        # TODO: need to fix this, so maybe I can first make a label array of the 3d pcoords
-        #       then look at the label uniques to find the self.n_segments
-        #       or I could just look before reshaping and reshape upon clustering
-        #       I need to be able to get the original segment id / index using the label array
-        # number of segments/walkers and frames during the iteration
+        # number of segments/walkers and pcoords during the iteration
         self.n_segments = self.pcoords.shape[0]
-        self.n_frames = self.pcoords.shape[1]
+        self.n_pcoords = self.pcoords.shape[1]
 
         if n_clusters is None:
             # calculate optimal amount of n_clusters
@@ -87,9 +78,6 @@ class WERL:
         # list of lists for walker positions to merge, begin as all empty
         self.to_merge = [[] for _ in range(self.n_segments)]
 
-        # list of all possible merge pairs
-        #self.merge_pairs = list(combinations([i for i in range(self.n_segments)], 2))
-
     def _clustering(self):
         '''
         Shared clustering method with k-means using self.n_clusters.
@@ -101,17 +89,10 @@ class WERL:
         self.counts : list of tuples
             Count of each cluster label amount.
         '''
-        #print("PCOORD SHAPE CLUSTER: ", self.pcoords.shape)
-        # TODO: universal reshape step here needed before clustering and for REAP?
-        #       could also move to init
-        # keep the columns as each pcoord dim but string all frames in rows
-        #self.pcoords = self.pcoords.reshape(-1, self.pcoords.shape[2])
-
         # kmeans clustering
         km = KMeans(n_clusters=self.n_clusters, random_state=1).fit(self.pcoords)
         self.centers = km.cluster_centers_
         #print(km.labels_)
-        #self.labels = km.labels_.reshape(self.n_segments, self.n_frames)
         self.labels = km.labels_
         #print(self.labels)
 
