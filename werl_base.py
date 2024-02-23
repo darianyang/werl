@@ -8,6 +8,11 @@ To split: 50 total: 11 being split
 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 3, 0, 0, 3, 2, 0, 0, 0, 0, 0, 0]
 To merge: 50 total: 11 being merged 
 [[], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [40], [], [], [36, 21, 23, 26, 24, 22, 29, 25], [], [], [20], [], [19], [], [], []]
+
+TODO:
+    - probably will need a pcoord/input data standardization step
+    - implement weight thresholds
+    - think about how to target the middle clusters more
 '''
 
 import numpy as np
@@ -39,7 +44,6 @@ class WERL:
             Intrinsic dimensionality of slow manifold for the system. Used in n_clusters heuristic.
         '''
         # TODO: make sure all of these ndims are compatible with methods
-        #       prob make all of them atleast3d?
         # need to reshape 1d arrays from (n) to (n, 1)+ for kmeans fitting
         # this is the case where you have 1 frame per walker and 1 pcoord dim
         if pcoords.ndim == 1:
@@ -50,10 +54,13 @@ class WERL:
         # when using the full 3D pcoord array (walkers, frames, pcoords)
         # need to condense to 2D for km clustering
         elif pcoords.ndim == 3:
-            # keep the columns as each pcoord dim but string all frames in rows
-            #self.pcoords = pcoords.reshape(-1, pcoords.shape[2])
+            # all walkers as rows but only use last frame, keep the columns as each pcoord dim
+            self.pcoords = pcoords[:,-1,:].reshape(-1, pcoords.shape[2])
+
             # do nothing since the reshape is currently handled in clustering
-            self.pcoords = pcoords
+            # not anymore
+            #self.pcoords = pcoords
+
         else:
             raise ValueError(f"pcoord input array has {pcoords.ndim} dimensions, must be 1-3.")
 
@@ -94,24 +101,25 @@ class WERL:
         self.counts : list of tuples
             Count of each cluster label amount.
         '''
-        print("PCOORD SHAPE CLUSTER: ", self.pcoords.shape)
+        #print("PCOORD SHAPE CLUSTER: ", self.pcoords.shape)
         # TODO: universal reshape step here needed before clustering and for REAP?
         #       could also move to init
         # keep the columns as each pcoord dim but string all frames in rows
-        self.pcoords = self.pcoords.reshape(-1, self.pcoords.shape[2])
+        #self.pcoords = self.pcoords.reshape(-1, self.pcoords.shape[2])
 
         # kmeans clustering
         km = KMeans(n_clusters=self.n_clusters, random_state=1).fit(self.pcoords)
         self.centers = km.cluster_centers_
         #print(km.labels_)
-        self.labels = km.labels_.reshape(self.n_segments, self.n_frames)
+        #self.labels = km.labels_.reshape(self.n_segments, self.n_frames)
+        self.labels = km.labels_
         #print(self.labels)
 
         # count each label amount (using km.labels_ since not reshaped)
         # example output: Counter({0: 21, 1: 20, 2: 4, 3: 3, 4: 2})
         # then with most_common: [(0, 21), (1, 20), (2, 4), (3, 3), (4, 2)]
         self.counts = Counter(km.labels_).most_common()
-        print(self.counts)
+        #print(self.counts)
 
 if __name__ == "__main__":
     # test data (1D array of 1D ODLD endpoints)
@@ -127,3 +135,7 @@ if __name__ == "__main__":
     #pcoords = np.array([9.5] * 50).reshape(-1,1)
     #pcoords = np.array([np.random.uniform(5, 10, 50)]).reshape(-1,1)
     #weights = np.array([0.02] * 50)
+
+    werl = WERL(pcoords)
+    print(werl.pcoords)
+    werl._clustering()
