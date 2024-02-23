@@ -119,15 +119,18 @@ class WERL:
         self.counts = Counter(km.labels_).most_common()
         print(self.counts)
 
-    def FFT(self, n_clusters, l=2):
+    def FFT(self, l=2):
         '''
         Fastest First Traversal algorithm for pruning cluster centers
         From the implementation of TLSC by Kleiman and Shukla adapted from Buenfil et al.
 
         Updates: n_clusters, pcoords (shape)
         '''
+
+        # Calculate n_clusters_prime 
         self.pcoords = self.pcoords.reshape(-1, self.pcoords.shape[2])
-        n_clusters_prime = int(n_clusters * np.log(n_clusters) + l)
+        n_clusters_prime = int(self.n_clusters * np.log(self.n_clusters) + l)
+
         rng = np.random.default_rng()
         rand_indices = rng.choice(len(self.pcoords), n_clusters_prime, replace=False)
         init_points = self.pcoords[rand_indices]
@@ -143,7 +146,7 @@ class WERL:
         np.fill_diagonal(D, np.inf)
 
         #### Vectorize highest minimum search ####
-        for _ in range(1, n_clusters):
+        for _ in range(1, self.n_clusters):
             max_sofar = available_mus[0] # init index for max distance cluster center
             min_dist = np.amin(D[max_sofar, np.asarray(mus)]) 
 
@@ -198,10 +201,16 @@ class WERL:
             Cluster labels for each data point.
         self.counts : list of tuples
             Count of each cluster label amount.
+
+        Returns: weights - size (1, num CVs)
         '''
+        
+        # Get N lc clusters from the cluster id and its associated trajs 
         clusterid_counts = sorted([(i, np.unique(kmeans.labels_, return_counts=True)[1][i]) for i in range(len(kmeans.cluster_centers_))], key=lambda x: x[1])
         lc_clusters = clusterid_counts[:N]
-        Vis = []
+
+        # Get centers for the N lc_clusters
+        lc_centers = [kmeans.cluster_centers_[lc_clusters[i][0]] for i in range(len(lc_clusters))]
 
         # 4) PCA for points in each lc cluster -> d space
         lc_data_dict = {c[0]:[] for c in lc_clusters}
@@ -209,10 +218,9 @@ class WERL:
             if kmeans.labels_[i] in [c[0] for c in lc_clusters]:
                 lc_data_dict[kmeans.labels_[i]].append(list(self.pcoords[i]))
 
+        Vis = []
         for key in lc_data_dict.keys():
             points = np.array(lc_data_dict[key])
-            print(key, points)
-            print()
             pca = PCA(n_components=d)
             pca_trans = pca.fit(points)  # Projection onto d space
             Vi = pca_trans.components_.T  # Must transpose to get desired shape
@@ -227,12 +235,12 @@ class WERL:
         # Currently, I have it implemented as is done in the MA REAP paper (arctan(y/x))
         
         Gis = []
-        closest_frames, _ = pairwise_distances_argmin_min(lc_centers, self.pcoords) 
+        closest_frames, _ = pairwise_distances_argmin_min(lc_centers, self.pcoords)  # Find reps of the clusters closest to cluster center
         norm = 0
         for point in closest_frames:
             x, y = self.pcoords[point]
-            dx = np.asarray([1, 0, -y / (x ** 2 + y ** 2)])
-            dy = np.asarray([0, 1, x / (x ** 2 + y ** 2)])
+            dx = np.asarray([1, 0, -y / (x ** 2 + y ** 2)])  # arctan used as placeholder fxn since we have 2D currently
+            dy = np.asarray([0, 1, x / (x ** 2 + y ** 2)])   # results in len(arr) weights
             Gi = np.vstack([dx, dy])
             norm += np.linalg.norm(Gi, axis=0)
             Gis.append(Gi)
@@ -245,7 +253,7 @@ class WERL:
 
         # 7) Get A - sum of elementwise multiplication (Gi.T * Vi) * (Vi.T * Gi) for each CV (i)
         K = Gis[0].shape[1]  # This is simply the number of CVs
-        A = np.zeros((K, K)) # init matrix A (see step 7 of TSLC of algorithm)
+        A = np.zeros((K, K)) # init matrix A
         for i in range(len(Gis)):
             Gi, Vi = Gis[i], Vis[i]
             A += (Gi.T @ Vi) @ (Vi.T @ Gi)
@@ -253,12 +261,13 @@ class WERL:
         # 8) Compute largest eigenvector of A, w~
         eig_vals, eig_vecs = np.linalg.eig(A)
         largest_eigval = np.argmax(eig_vals)
-        largest_eigvec = eig_vecs[largest_eigval]
+        # largest_eigvec = eig_vecs[largest_eigval]
 
         # 9) Compute w_k = w~_k ** 2 for k = [1, ..., K] in w~
         # MA-REAP code uses eig_vecs[:, largest_eigval], but I think that may be incorrect
         # since that will use the largest eigenvalue's index of each eigenvector.
-        weights = eig_vecs[largest_eigval, :] ** 2 
+
+        weights = eig_vecs[largest_eigval, :] ** 2  # Use the elements of the largest eigenvector for the weights
 
         return weights
 
@@ -283,26 +292,19 @@ class WERL:
         -------
         '''
 
+        # Step 1: define some hyperparameters and initialize arrays --> To be provided via init_variables
+        n_agents = 1  # Forced
+        delta = 0.02  # Upper boundary for learning step
+        n_features = 2  # Number of variables in OP space (2d pcoord for now)
+
+        # Step 2: set initial OP weights (not WE traj weights)
+        weights = [np.ones((n_features)) / n_features for _ in range(n_agents)]
+
         kmeans = self.tslc_clustering()
-        # Get N lc clusters from the cluster id and its associated trajs 
-        clusterid_counts = sorted([(i, np.unique(kmeans.labels_, return_counts=True)[1][i]) for i in range(len(kmeans.cluster_centers_))], key=lambda x: x[1])
-        lc_clusters = clusterid_counts[:N]
+        weights = self.tslc_weighting(kmeans)
 
-        # Get centers for the N lc_clusters
-        lc_centers = [kmeans.cluster_centers_[lc_clusters[i][0]] for i in range(len(lc_clusters))]
-
-        # Find representatives of the clusters closest to their respective cluster center
-        rep_frames = []
-        closest_frames, dist = pairwise_distances_argmin_min(lc_centers, self.pcoords)
-
-        # Test that the distances, etc are correctly calculated
-        # print(clusterid_counts)
-        # print(lc_centers)
-        # print(closest_frames, dist)
-        # print([self.pcoords[closest_frames[i]] for i in range(len(closest_frames))])
-
-        return kmeans, lc_centers, closest_frames 
-   
+        return weights, kmeans
+    
     def lcas(self, n_split=None):
         '''
         ************************************************************************************
@@ -726,13 +728,22 @@ if __name__ == "__main__":
     #print(pcoords)
     #print(weights)
 
-    kmeans, lc_centers, closest_frames = werl.tslc()
-    test_Vis = werl.tslc_weighting(kmeans)
+    weights, kmeans = werl.tslc()
+    print(weights)
+    #test_Vis = werl.tslc_weighting(kmeans)
     # Visualize pcoord in CV space
     #plt.scatter([np.transpose(frame)[0] for frame in pcoords], [np.transpose(frame)[1] for frame in pcoords], s=40, alpha=0.3)
     #plt.show()
 
-    # Assess distribution of cluster centers
+    #Assess distribution of cluster centers
+    # N = 5 # Set number of LC clusters
+    # clusterid_counts = sorted([(i, np.unique(kmeans.labels_, return_counts=True)[1][i]) for i in range(len(kmeans.cluster_centers_))], key=lambda x: x[1])
+    # lc_clusters = clusterid_counts[:N]
+
+    # # Get centers for the N lc_clusters
+    # lc_centers = [kmeans.cluster_centers_[lc_clusters[i][0]] for i in range(len(lc_clusters))]
+
+    # # Plot to see clustering
     # plt.scatter(werl.pcoords[:,0], werl.pcoords[:,1], marker='.')
     # plt.scatter(kmeans.cluster_centers_[:,0], kmeans.cluster_centers_[:,1], alpha=0.4, s=200)
     # plt.scatter([l[0] for l in lc_centers], [l[1] for l in lc_centers], alpha=0.4, s=50, c='purple')
