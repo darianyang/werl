@@ -1,13 +1,16 @@
 import numpy as np
 import h5py
+import sys
 
 # ps
-tau=5
+tau=20
 
 #f = h5py.File('west_egg_stdMD.h5', 'r')
-f = h5py.File('west_egg_stdHK.h5', 'r')
+#f = h5py.File('west_egg_stdHK.h5', 'r')
 #f = h5py.File('west_egg_mab.h5', 'r')
 #f = h5py.File('west_egg_lc.h5', 'r')
+#f = h5py.File('west_stdHK.h5', 'r')
+f = h5py.File(sys.argv[1], 'r')
 
 #walltime = f['summary']['walltime'][:500].sum()
 #aggtime = f['summary']['n_particles'][:500].sum()
@@ -40,4 +43,4 @@ print("walltime: ", walltime/60/60, "hours")
 print("walltime: ", walltime/60/60/24, "days")
 print("aggtime: ", aggtime, "units")
 print("aggtime: ", (aggtime * tau)/1000, "ns")
-print("events:", count_events(f))
+#print("events:", count_events(f))
