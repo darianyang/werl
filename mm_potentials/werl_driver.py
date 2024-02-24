@@ -149,7 +149,7 @@ class WERLDriver(WEDriver):
                 #resample = WERL(pcoords, n_clusters=5)
                 #resample = LCAS(curr_pcoords, n_clusters=None)
                 #split, merge = resample.lcas()
-                resample = REAP(curr_pcoords, n_clusters=None)
+                resample = REAP(pcoords, weights, n_clusters=None)
                 split, merge = resample.reap()
 
                 # TODO: testing filters
@@ -198,8 +198,8 @@ class WERLDriver(WEDriver):
                 # make bin target count consistent via splitting high weight and merging low weight
                 # TODO: maybe do this with variance sorting instead of weight sorting?
                 # this shouldn't be required now that wevo is consistent in total walkers
-                # if self.do_adjust_counts:
-                #     self._adjust_count(ibin)
+                if self.do_adjust_counts:
+                    self._adjust_count(ibin)
                 # TODO: temp turned off adjust count for debugging
 
                 print(f"Total = {segs}, splitting = {splitting}, merging = {merging}")

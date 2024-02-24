@@ -24,7 +24,9 @@ class WERL:
     Weighted Ensemble Reinforcement Learning (WERL).
     '''
 
-    def __init__(self, pcoords, n_clusters=None, n_split=None, b=0.07, gamma=0.6, d=2):
+    def __init__(self, pcoords, weights, pmin=1e-12, pmax=0.1,#pmin=1e-12, pmax=0.1,
+                 n_clusters=None, n_split=None, 
+                 b=0.07, gamma=0.6, d=2):
         '''
         Parameters
         ----------
@@ -32,6 +34,13 @@ class WERL:
             Each segment also has a weight attribute.
         pcoords : ndarray
             Last pcoord value of each segment for the current iteration.
+        weights : array
+            Weight of each segment for the iteration. 
+            The sum of all weights should be 1.0.
+        pmin : float
+            Minimum weight threshold.
+        pmax : float
+            Maximum weight threshold.
         n_clusters : int
             Number of clusters for k-means.
             If self.n_clusters is None, calculating optimal n_clusters using a
@@ -64,6 +73,11 @@ class WERL:
             self.pcoords = pcoords[:,-1,:].reshape(-1, pcoords.shape[2])
         else:
             raise ValueError(f"pcoord input array has {pcoords.ndim} dimensions, must be 1-3.")
+
+        # for weight thresholds
+        self.weights = weights
+        self.pmin = pmin
+        self.pmax = pmax
 
         # number of segments/walkers and pcoords during the iteration
         self.n_segments = self.pcoords.shape[0]
@@ -101,9 +115,9 @@ class WERL:
         self.counts : list of tuples
             Count of each cluster label amount.
         '''
-        # kmeans clustering (TODO: remove set random state)
-        km = KMeans(n_clusters=self.n_clusters, random_state=1).fit(self.pcoords)
-        #km = KMeans(n_clusters=self.n_clusters).fit(self.pcoords)
+        # kmeans clustering
+        #km = KMeans(n_clusters=self.n_clusters, random_state=1).fit(self.pcoords)
+        km = KMeans(n_clusters=self.n_clusters).fit(self.pcoords)
         self.centers = km.cluster_centers_
         #print(km.labels_)
         self.labels = km.labels_
@@ -137,10 +151,12 @@ class WERL:
                 
                 # if the segment is in the least count cluster
                 if seg_label == self.counts[-lc_cluster_counter][0]:
-                    # increase split counter on this segment by 1
-                    self.to_split[i] += 1
-                    # note that one of the requested splits is done
-                    splits_remaining -= 1
+                    # check if weight is above min threshold
+                    if self.weights[i] > self.pmin:
+                        # increase split counter on this segment by 1
+                        self.to_split[i] += 1
+                        # note that one of the requested splits is done
+                        splits_remaining -= 1
                 
                 # extra precaution
                 if splits_remaining == 0:
@@ -201,12 +217,16 @@ class WERL:
                             frozen_pair = frozenset((i, j))
                             
                             # if the merge pair is new, add to set so it can't happen again
-                            if frozen_pair not in pairs_merged:
-                                pairs_merged.add(frozen_pair)
-                                # mark these as a merge pair
-                                self.to_merge[i].append(j)
-                                merges_remaining -= 1
-                                #print(f"merged {i} and {j}")
+                            # also make sure not being split already
+                            if frozen_pair not in pairs_merged \
+                            and self.to_split[i] == 0 and self.to_split[j] == 0:
+                                # check to ensure merged weight is below max threshold
+                                if self.weights[i] + self.weights[j] < self.pmax:
+                                    pairs_merged.add(frozen_pair)
+                                    # mark these as a merge pair
+                                    self.to_merge[i].append(j)
+                                    merges_remaining -= 1
+                                    #print(f"merged {i} and {j}")
                         
                         # extra precaution
                         if merges_remaining == 0:
