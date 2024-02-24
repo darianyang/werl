@@ -160,6 +160,12 @@ class REAP(WERL):
             #clusters = clustering(self.pcoords, self.n_clusters, max_frames=max_frames, b=b, gamma=gamma, d=d)
             self._clustering()
 
+            # if less than the requested amount of clusters was generated
+            # then go with zero array return, currently useful for w_init
+            # basically, if the clustering fails, do no split/merge operations
+            if len(self.counts) < self.n_clusters:
+                return self.to_split, self.to_merge
+
             # TODO: REAP will only select and continue from the least count cluster.
             #       for WERL, I have a few options:
             #           * I can just split the least count cluster only
@@ -199,9 +205,9 @@ class REAP(WERL):
             individual_rewards_log[i].append(rewards)
 
         ### print results ###
-        #print("pcoords:", pcoords)
+        #print("pcoords:", self.pcoords)
         print("LC_CLUSTERS: ", least_counts_clusters)
-        print(f"pcoord shape: {pcoords.shape}")
+        print(f"pcoord shape: {self.pcoords.shape}")
         print("OP weight log:", weights_log)
         print("LC point log:", least_counts_points_log)
         print("LC point log shape:", np.array(least_counts_points_log).shape)

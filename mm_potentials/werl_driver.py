@@ -132,8 +132,8 @@ class WERLDriver(WEDriver):
                 #print("after pcoords", pcoords)
                 
                 # print for sanity check
-                print("pcoords", pcoords)
-                print("weights", weights)
+                #print("pcoords", pcoords)
+                #print("weights", weights)
                 print("Initial weight sum: ", np.sum(weights))
 
                 # run wevo and do split merge based on wevo decisions
@@ -147,9 +147,10 @@ class WERLDriver(WEDriver):
                 #                 merge_alg=merge_alg, pmin=pmin, pmax=pmax, dist_exponent=dist_exponent)
                 # split, merge, variation, walker_variations = resample.resample()
                 #resample = WERL(pcoords, n_clusters=5)
-                resample = LCAS(curr_pcoords, n_clusters=None)
-                #resample = REAP(curr_pcoords, n_clusters=None)
-                split, merge = resample.lcas()
+                #resample = LCAS(curr_pcoords, n_clusters=None)
+                #split, merge = resample.lcas()
+                resample = REAP(curr_pcoords, n_clusters=None)
+                split, merge = resample.reap()
 
                 # TODO: testing filters
                 #split = [1 if i > 1 else i for i in split]
@@ -158,6 +159,7 @@ class WERLDriver(WEDriver):
                 print("Split indices: ", [i for i, e in enumerate(split) if e != 0])
                 print("split sum: ", np.sum(split))
                 print("merge sum: ", np.sum([np.count_nonzero(i) for i in merge]))
+                print("counts: ", resample.counts)
                 #print(f"Final variation value after {resample.count} wevo cycles: ", variation)
 
                 # count each operation and segment as a check
