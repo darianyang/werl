@@ -24,7 +24,7 @@ class WERL:
     Weighted Ensemble Reinforcement Learning (WERL).
     '''
 
-    def __init__(self, pcoords, n_clusters=None, b=0.07, gamma=0.6, d=2):
+    def __init__(self, pcoords, n_clusters=None, n_split=None, b=0.07, gamma=0.6, d=2):
         '''
         Parameters
         ----------
@@ -36,6 +36,12 @@ class WERL:
             Number of clusters for k-means.
             If self.n_clusters is None, calculating optimal n_clusters using a
             heuristic approximation from Buenfil, Koelle, Meila, ICML (2021).
+        n_split : int
+            How many segs to split, later determined from reward funct opt ? (TODO).
+            n_merge will be based on the same value.
+            Currently going to use the same value as n_clusters if None.
+            TODO: I wonder if it would be useful to be able to split the same walker multiple
+                  times, right now limited to once, but the driver code is written so it can be multiple.
         b : float, default 1e-4 (REAP) or 0.07 (TSLC)
             Coefficient for n_clusters heuristic.
         gamma : float, default 0.7
@@ -72,6 +78,12 @@ class WERL:
             self.n_clusters = n_clusters
 
         print("n_clusters: ", self.n_clusters)
+
+        # use n_clusters for n walkers to split if not given
+        if n_split is None:
+            self.n_split = self.n_clusters
+        else:
+            self.n_split = n_split
 
         # list of walker positions to split, begin as all zeros (no splitting)
         self.to_split = [0] * self.n_segments

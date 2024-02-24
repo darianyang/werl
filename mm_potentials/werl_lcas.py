@@ -17,62 +17,20 @@ class LCAS(WERL):
     '''
     Weighted Ensemble Reinforcement Learning (WERL).
     '''
-    def lcas(self, n_split=None):
+
+    # TODO: move these methods to base init?
+    def do_splitting(self):
         '''
-        ************************************************************************************
-        *** TODO: Note LCAS not compatible with full pcoord array yet, just final frames ***
-        ************************************************************************************ 
-        TODO: Perhaps it would be easiest to include the individual rewards and sort each 
-              cluster in LCAS by the reward before splitting / merging
-              
-              After reading more of the REAP methods, I can prob look at the n clusters being
-              considered in terms of the n_split, then from those sort all the structures by reward
-              and then do splitting. Then for merging look at the lowest reward in top cluster(s).
-              For regular LCAS, have then not sorted by reward, just by least cluster count.
-              TODO: should also try it without LCAS, maybe just reward sorting and n_split/n_merge.
-
-        Least Counts Adaptive Sampling. In LCAS, from segment data of the previous iteration, 
-        cluster the trajectory endpoint pcoord (aux? TODO) data, then select the next starting 
-        states from the smallest, or least count, clusters. The idea being that clusters with 
-        fewer members correspond to more sparsely sampled regions of the configuration space, 
-        and will tend to be towards the boundaries of the explored region.
-
-        Parameters
-        ----------
-        n_split : int
-            TEMP arg for how many segs to split, later determined from reward funct opt (TODO).
-            n_merge will be based on the same value.
-            Currently going to use the same value as n_clusters if None.
-            TODO: I wonder if it would be useful to be able to split the same walker multiple
-                  times, right now limited to once, but the driver code is written so it can be multiple.
-        
-        Returns
+        Updates
         -------
         self.to_split : list
-        self.to_merge : list
-        '''        
-        # do clustering
-        self._clustering()
-        #print("shape labels: ", self.labels.shape)
-
-        # if less than the requested amount of clusters was generated
-        # then go with zero array return, currently useful for w_init
-        # basically, if the clustering fails, do no split/merge operations
-        if len(self.counts) < self.n_clusters:
-            return self.to_split, self.to_merge
-        
-        # use n_clusters for n walkers to split if not given
-        # TODO: or could just only split LC cluster when n_split is None
-        #       this is how the code originally worked from Alex, when I
-        #       tested it against splitting up to n_clusters though it 
-        #       performed a bit better with more diverse splitting.
-        if n_split is None:
-            n_split = self.n_clusters
-
+        '''
         # split n_split times the lowest count cluster(s)
-        splits_remaining = n_split
+        splits_remaining = self.n_split
 
         # may need to go through multiple cluster labels if count is small
+        # this will be a negative index, so start with smallest cluster (-1)
+        # and decrease by 1 if needed
         lc_cluster_counter = 1
 
         while splits_remaining > 0:
@@ -96,18 +54,17 @@ class LCAS(WERL):
             # to only split the lowest cluster, don't use the counter
             lc_cluster_counter += 1
 
-        # TODO: can this be consolidated with splitting code?
-        # TODO: there is issues with merging where after the main high cluster labels
-        #       there is overlap in merging, e.g. [[], [2, 10, 11, 26, 28, 33, 36, 37], [1, 10], ...]
-        #       here, 2 gets merged to 1 and then 1 to 2.
-        #       I think this is fixed with frozen set checks
-        #       Other issue now, need to prevent/check for merging what is already split
-        #       I think this is fixed now as well with the disjoint
-        #       But still having KeyError issues with removing certain segs
+    def do_merging(self):
+        '''
+        Updates
+        -------
+        self.to_merge : list
+        '''
         # merge n_split times the highest count cluster(s)
-        merges_remaining = n_split
+        merges_remaining = self.n_split
         
         # may need to go through multiple cluster labels
+        # starting with biggest cluster and +1 from there
         lc_cluster_counter = 0
         
         # make sure there isn't redundant merge pairs
@@ -166,8 +123,45 @@ class LCAS(WERL):
             # to merge, then do it again using the next lowest populated cluster label count
             lc_cluster_counter += 1
 
+    def lcas(self):
+        '''
+        TODO: Perhaps it would be easiest to include the individual rewards and sort each 
+              cluster in LCAS by the reward before splitting / merging
+              
+              After reading more of the REAP methods, I can prob look at the n clusters being
+              considered in terms of the n_split, then from those sort all the structures by reward
+              and then do splitting. Then for merging look at the lowest reward in top cluster(s).
+              For regular LCAS, have then not sorted by reward, just by least cluster count.
+              TODO: should also try it without LCAS, maybe just reward sorting and n_split/n_merge.
+
+        Least Counts Adaptive Sampling. In LCAS, from segment data of the previous iteration, 
+        cluster the trajectory endpoint pcoord (aux? TODO) data, then select the next starting 
+        states from the smallest, or least count, clusters. The idea being that clusters with 
+        fewer members correspond to more sparsely sampled regions of the configuration space, 
+        and will tend to be towards the boundaries of the explored region.
+
+        Returns
+        -------
+        self.to_split : list
+        self.to_merge : list
+        '''        
+        # do clustering
+        self._clustering()
+        #print("shape labels: ", self.labels.shape)
+
+        # if less than the requested amount of clusters was generated
+        # then go with zero array return, currently useful for w_init
+        # basically, if the clustering fails, do no split/merge operations
+        if len(self.counts) < self.n_clusters:
+            return self.to_split, self.to_merge
+
+        # run split merge methods, updating split/merge lists
+        self.do_splitting()
+        self.do_merging()
+
         # return finalized split and merge lists
         return self.to_split, self.to_merge
+
 
 if __name__ == "__main__":
     # test data (1D array of 1D ODLD endpoints)
@@ -176,7 +170,7 @@ if __name__ == "__main__":
 
     # this is the full pcoord array, in this case (80, 5, 2)
     # for 80 walkers, 5 frames of simulation each, and 2 pcoords (X and Y)
-    pcoords = np.load('mm_potentials/pcoords_full.npy')
+    pcoords = np.load('pcoords_full.npy')
     print(f"pcoord full shape: {pcoords.shape}")
 
     # test init data
@@ -187,8 +181,8 @@ if __name__ == "__main__":
     # LCAS test
     werl = LCAS(pcoords)
     split, merge = werl.lcas()
-    print(split, "\n", merge)
-    print([i for i, e in enumerate(split) if e != 0])
+    print("SPLIT: ", split, "\nMERGE: ", merge)
+    print("SPLIT INDICES: ", [i for i, e in enumerate(split) if e != 0])
     print("split sum: ", np.sum(split))
     print("merge sum: ", np.sum([np.count_nonzero(i) for i in merge]))
     print("counts: ", werl.counts)
