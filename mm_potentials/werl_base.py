@@ -101,7 +101,7 @@ class WERL:
         self.counts : list of tuples
             Count of each cluster label amount.
         '''
-        # kmeans clustering
+        # kmeans clustering (TODO: remove set random state)
         km = KMeans(n_clusters=self.n_clusters, random_state=1).fit(self.pcoords)
         self.centers = km.cluster_centers_
         #print(km.labels_)

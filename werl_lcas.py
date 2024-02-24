@@ -173,6 +173,9 @@ if __name__ == "__main__":
     pcoords = np.load('pcoords_full.npy')
     print(f"pcoord full shape: {pcoords.shape}")
 
+    # cut to 10 walkers for testing
+    #pcoords = pcoords[:10,:,:]
+
     # test init data
     #pcoords = np.array([9.5] * 50).reshape(-1,1)
     #pcoords = np.array([np.random.uniform(5, 10, 50)]).reshape(-1,1)

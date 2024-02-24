@@ -35,6 +35,7 @@ class REAP(WERL):
         '''
         Computes the reward for each structure and returns it as an array.
         '''
+        #print("Selected Points: ", selected_points)
         mu = self.pcoords.mean(axis=0)
         sigma = self.pcoords.std(axis=0)
         #selected_points = selected_points[:, :2]  # Drop third dimension
@@ -45,11 +46,14 @@ class REAP(WERL):
         # print((weights * np.abs(selected_points - mu) / sigma).sum(axis=1))
         reward = (weights * np.abs(selected_points - mu) / sigma)
         # make sure 2d array sum axis indexable
-        reward = np.atleast_2d(reward)
+        #reward = np.atleast_2d(reward)
+
         print("Reward shape: ", reward.shape)
+        print("Reward: ", reward)
+        print("Reward SUM: ", reward.sum(axis=1))
         return reward.sum(axis=1)
 
-    def compute_cumulative_reward(self, weights, selected_points):
+    def compute_cumulative_reward(self, selected_points, weights):
         '''
         Returns the cumulative reward for current weights and a callable to the 
         cumulative reward function (necessary to finetune weights).
@@ -167,7 +171,8 @@ class REAP(WERL):
             #           * I can also skip the LC clusters and just split/merge based on reward,
             #             similar to how REVO does it based on variation
             least_counts_clusters, least_counts_points = self.select_least_counts()
-            print("LC CLUSTERS: ", least_counts_clusters)
+            #print("LC_CLUSTERS: ", least_counts_clusters)
+            #print("LC_CLUSTERS_POINTS: ", least_counts_points)
 
             least_counts_points_log[i].append(least_counts_points)
 
@@ -195,6 +200,7 @@ class REAP(WERL):
 
         ### print results ###
         #print("pcoords:", pcoords)
+        print("LC_CLUSTERS: ", least_counts_clusters)
         print(f"pcoord shape: {pcoords.shape}")
         print("OP weight log:", weights_log)
         print("LC point log:", least_counts_points_log)
@@ -202,19 +208,12 @@ class REAP(WERL):
         print("Cumulative reward log:", cumulative_reward_log)
         print("Individual reward log:", individual_rewards_log)
 
-        # TODO: New method for the next steps to be modular with TSLC?
-        #       Could also take and use logic from LCAS method
         # TODO: I have the individual rewards for each walker
         #       I can now split the highest reward contributers
         #       also using the LC clusters?
         #       How to determine the ideal split / merge amount?
         #       maybe based on number of walkers, % of them? 20% or 30%?
         #       REAP just uses a user-parameter, e.g. 50
-        # TODO: adapting to use the full pcoord array dataset - NEXT:
-		#       Need to make a label array and then use this to find 
-        #       the identity of the least count walkers after selection
-        #       Maybe then use the same split merge logic as LCAS but 
-        #       just adjust the selection/indexing to find right seg_id
 
 if __name__ == "__main__":
     # test data (1D array of 1D ODLD endpoints)
@@ -223,8 +222,11 @@ if __name__ == "__main__":
 
     # this is the full pcoord array, in this case (80, 5, 2)
     # for 80 walkers, 5 frames of simulation each, and 2 pcoords (X and Y)
-    pcoords = np.load('mm_potentials/pcoords_full.npy')
+    pcoords = np.load('pcoords_full.npy')
     print(f"pcoord full shape: {pcoords.shape}")
+
+    # cut to n walkers for testing
+    pcoords = pcoords[:40,:,:]
 
     # test init data
     #pcoords = np.array([9.5] * 50).reshape(-1,1)
@@ -236,10 +238,5 @@ if __name__ == "__main__":
     print("N_CLUSTERS: ", werl.n_clusters)
     werl.reap()
     print("CLUSTER COUNTS: ", werl.counts)
-
-    # # test output
-    # split = np.loadtxt('split.txt')
-    # merge = np.load('merge.npy', allow_pickle=True)
-    # print(split, merge)
 
  
