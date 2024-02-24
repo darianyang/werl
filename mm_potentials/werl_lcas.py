@@ -18,111 +18,6 @@ class LCAS(WERL):
     Weighted Ensemble Reinforcement Learning (WERL).
     '''
 
-    # TODO: move these methods to base init?
-    def do_splitting(self):
-        '''
-        Updates
-        -------
-        self.to_split : list
-        '''
-        # split n_split times the lowest count cluster(s)
-        splits_remaining = self.n_split
-
-        # may need to go through multiple cluster labels if count is small
-        # this will be a negative index, so start with smallest cluster (-1)
-        # and decrease by 1 if needed
-        lc_cluster_counter = 1
-
-        while splits_remaining > 0:
-           
-            # go through each segment index label and tag to split
-            for i, seg_label in enumerate(self.labels):
-                
-                # if the segment is in the least count cluster
-                if seg_label == self.counts[-lc_cluster_counter][0]:
-                    # increase split counter on this segment by 1
-                    self.to_split[i] += 1
-                    # note that one of the requested splits is done
-                    splits_remaining -= 1
-                
-                # extra precaution
-                if splits_remaining == 0:
-                     break
-            
-            # once done looping through all cluster labels, if there are still more
-            # to split, then do it again using the next lowest populated cluster label count
-            # to only split the lowest cluster, don't use the counter
-            lc_cluster_counter += 1
-
-    def do_merging(self):
-        '''
-        Updates
-        -------
-        self.to_merge : list
-        '''
-        # merge n_split times the highest count cluster(s)
-        merges_remaining = self.n_split
-        
-        # may need to go through multiple cluster labels
-        # starting with biggest cluster and +1 from there
-        lc_cluster_counter = 0
-        
-        # make sure there isn't redundant merge pairs
-        # using set since sets are unordered, unchangable, with no duplicates
-        pairs_merged = set()
-
-        # keep going until no more merges needed or until no more cluster labels avail
-        #while merges_remaining > 0 and lc_cluster_counter < self.n_clusters:
-        while merges_remaining > 0:
-            
-            # go through each segment index label and tag to merge
-            for i, segi_label in enumerate(self.labels):
-                
-                # TODO: might be slow but for now: using this to check to make sure that when
-                #       moving from one seg to another for making merge pairs, ensures that
-                #       the first selected of the pair isn't already set to be merged,
-                #       keeps all merge operations unique and compatible with WERL driver
-                # skip_i_seg needed to move past repeat i values (already in a merge pair)
-                skip_i_seg = False
-                for pair in pairs_merged:
-                    if i in pair:
-                        skip_i_seg = True
-                        break
-                if skip_i_seg:
-                    continue
-                
-                # if the segment is in the least count cluster
-                if segi_label == self.counts[lc_cluster_counter][0]:
-                    
-                    # now find a merge pair/partner (only merge within same cluster)
-                    for j, segj_label in enumerate(self.labels):
-                        
-                        # if the segment is in the same least count cluster but not same seg index as i
-                        if segj_label == self.counts[lc_cluster_counter][0] and i != j:
-                            
-                            # make sure the current merge pair hasn't already happened
-                            frozen_pair = frozenset((i, j))
-                            
-                            # if the merge pair is new, add to set so it can't happen again
-                            if frozen_pair not in pairs_merged:
-                                pairs_merged.add(frozen_pair)
-                                # mark these as a merge pair
-                                self.to_merge[i].append(j)
-                                merges_remaining -= 1
-                                #print(f"merged {i} and {j}")
-                        
-                        # extra precaution
-                        if merges_remaining == 0:
-                            break
-                
-                # extra precaution
-                if merges_remaining == 0:
-                    break
-            
-            # once done looping through all cluster labels, if there are still more
-            # to merge, then do it again using the next lowest populated cluster label count
-            lc_cluster_counter += 1
-
     def lcas(self):
         '''
         TODO: Perhaps it would be easiest to include the individual rewards and sort each 
@@ -173,8 +68,8 @@ if __name__ == "__main__":
     pcoords = np.load('pcoords_full.npy')
     print(f"pcoord full shape: {pcoords.shape}")
 
-    # cut to 10 walkers for testing
-    #pcoords = pcoords[:10,:,:]
+    # cut to n walkers for testing
+    pcoords = pcoords[:40,:,:]
 
     # test init data
     #pcoords = np.array([9.5] * 50).reshape(-1,1)

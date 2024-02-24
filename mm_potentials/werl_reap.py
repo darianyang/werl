@@ -48,9 +48,9 @@ class REAP(WERL):
         # make sure 2d array sum axis indexable
         #reward = np.atleast_2d(reward)
 
-        print("Reward shape: ", reward.shape)
-        print("Reward: ", reward)
-        print("Reward SUM: ", reward.sum(axis=1))
+        # print("Reward shape: ", reward.shape)
+        # print("Reward: ", reward)
+        # print("Reward SUM: ", reward.sum(axis=1))
         return reward.sum(axis=1)
 
     def compute_cumulative_reward(self, selected_points, weights):
@@ -215,6 +215,25 @@ class REAP(WERL):
         #       maybe based on number of walkers, % of them? 20% or 30%?
         #       REAP just uses a user-parameter, e.g. 50
 
+        # update self.counts array from least count cluster labels to highest reward labels
+        # Sort least_count_clusters and rewards in descending order based on the values in rewards
+        sorted_indices = np.argsort(rewards)
+        least_counts_clusters = least_counts_clusters[sorted_indices]
+        print("SORTED LCC: ", least_counts_clusters)
+        rewards = rewards[sorted_indices]
+        print("SORTED REWARDS", rewards)
+
+        # Insert least_count_clusters as a new column before the first column of cluster_counts
+        self.counts = np.insert(self.counts, 0, least_counts_clusters, axis=1)
+        #print("SORTED COUNTS:", self.counts)
+
+        # run split merge methods, updating split/merge lists
+        self.do_splitting()
+        self.do_merging()
+
+        # return finalized split and merge lists
+        return self.to_split, self.to_merge
+
 if __name__ == "__main__":
     # test data (1D array of 1D ODLD endpoints)
     # pcoords = np.loadtxt('mm_potentials/pcoords.txt')
@@ -226,7 +245,7 @@ if __name__ == "__main__":
     print(f"pcoord full shape: {pcoords.shape}")
 
     # cut to n walkers for testing
-    pcoords = pcoords[:40,:,:]
+    pcoords = pcoords[40:,:,:]
 
     # test init data
     #pcoords = np.array([9.5] * 50).reshape(-1,1)
@@ -236,7 +255,15 @@ if __name__ == "__main__":
     # REAP test
     werl = REAP(pcoords)
     print("N_CLUSTERS: ", werl.n_clusters)
-    werl.reap()
+    split, merge = werl.reap()
     print("CLUSTER COUNTS: ", werl.counts)
+    print("CLUSTER COUNTS: ", werl.counts.shape)
+    print("LABELS", werl.labels)
+    
+    print("SPLIT: ", split, "\nMERGE: ", merge)
+    print("SPLIT INDICES: ", [i for i, e in enumerate(split) if e != 0])
+    print("split sum: ", np.sum(split))
+    print("merge sum: ", np.sum([np.count_nonzero(i) for i in merge]))
+    print("counts: ", werl.counts)
 
  
