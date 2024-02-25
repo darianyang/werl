@@ -222,6 +222,7 @@ class REAP(WERL):
         #       maybe based on number of walkers, % of them? 20% or 30%?
         #       REAP just uses a user-parameter, e.g. 50
 
+        # TODO: put this into base class as a sorting method
         # update self.counts array from least count cluster labels to highest reward labels
         # Sort least_count_clusters and rewards in descending order based on the values in rewards
         sorted_indices = np.argsort(rewards)

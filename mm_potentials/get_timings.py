@@ -2,20 +2,18 @@ import numpy as np
 import h5py
 import sys
 
+
 # ps
 tau=20
+h5 = sys.argv[1]
+last_iter = int(sys.argv[2])
 
-#f = h5py.File('west_egg_stdMD.h5', 'r')
-#f = h5py.File('west_egg_stdHK.h5', 'r')
-#f = h5py.File('west_egg_mab.h5', 'r')
-#f = h5py.File('west_egg_lc.h5', 'r')
-#f = h5py.File('west_stdHK.h5', 'r')
-f = h5py.File(sys.argv[1], 'r')
+f = h5py.File(h5, 'r')
 
 #walltime = f['summary']['walltime'][:500].sum()
 #aggtime = f['summary']['n_particles'][:500].sum()
-walltime = f['summary']['walltime'][:].sum()
-aggtime = f['summary']['n_particles'][:].sum()
+walltime = f['summary']['walltime'][:last_iter].sum()
+aggtime = f['summary']['n_particles'][:last_iter].sum()
 
 def count_events(h5):
     """

@@ -70,6 +70,7 @@ if __name__ == "__main__":
 
     # cut to n walkers for testing
     pcoords = pcoords[:40,:,:]
+    weights = np.ones(40) / 40
 
     # test init data
     #pcoords = np.array([9.5] * 50).reshape(-1,1)
@@ -77,7 +78,7 @@ if __name__ == "__main__":
     #weights = np.array([0.02] * 50)
 
     # LCAS test
-    werl = LCAS(pcoords)
+    werl = LCAS(pcoords, weights)
     split, merge = werl.lcas()
     print("SPLIT: ", split, "\nMERGE: ", merge)
     print("SPLIT INDICES: ", [i for i, e in enumerate(split) if e != 0])

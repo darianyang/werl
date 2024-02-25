@@ -309,7 +309,8 @@ def ring_potential(x, y):
 
 def we_odld_2d_energy(x, y):
     A = 2
-    B = 10
+    B = 2
+    #B = 10
     C = 0.5
     x0 = 0
     y0 = 0
@@ -335,7 +336,8 @@ def we_odld_2d_energy(x, y):
 
 def we_odld_2d_grad(x, y):
     A = 2
-    B = 10
+    B = 2
+    #B = 10
     C = 0.5
     x0 = 0
     y0 = 0
@@ -365,7 +367,8 @@ def we_odld_2d_grad(x, y):
     )
 
     #return -(gradx + grady)
-    return gradx + grady
+    return gradx, grady
+    #return gradx + grady
 
 def we_odld_2d_new_energy(x, y):
     """

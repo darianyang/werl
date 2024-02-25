@@ -16,6 +16,7 @@ log = logging.getLogger(__name__)
 ### SET POTENTIAL HERE ###
 ##########################
 potential = we_odld_2d_grad
+#potential = we_odld_2d_energy
 #potential = L_potential
 ##########################
 ##########################
@@ -77,6 +78,32 @@ class ODLDPropagator(WESTPropagator):
         # TODO: calc derivative of the potential to return the gradient
         return grad
 
+    @staticmethod
+    def calculate_gradient(func, x, y, epsilon=1e-6):
+        '''
+        Use finite differencing to approx the gradient of each energy potential.
+
+        Finite differencing is a numerical technique used to approximate the derivative
+        of a function at a particular point. The basic idea is to estimate the rate of 
+        change of a function by considering small changes in its input. 
+
+        Parameters
+        ----------
+        func : Python function
+            Potential energy function.
+        x : array
+            X position(s) of the particle.
+        y : array
+            Y position(s) of the particle.
+        epsilon : float
+            The step size, used to perturb the input values (x, y) in both positive 
+            and negative directions to approximate the partial derivatives with 
+            respect to x and y. Default 1e-6.
+        '''
+        grad_x = (func(x + epsilon, y) - func(x - epsilon, y)) / (2 * epsilon)
+        grad_y = (func(x, y + epsilon) - func(x, y - epsilon)) / (2 * epsilon)
+        return grad_x, grad_y
+
     def get_pcoord(self, state):
         """Get the progress coordinate of the given basis or initial state."""
         state.pcoord = self.initial_pcoord.copy()
@@ -136,10 +163,12 @@ class ODLDPropagator(WESTPropagator):
 
             ### ADJUST GRAD ###
             #log.info(f'XY vars: {xi}, {yi}')
-            grad = self._calc_gradient(xi, yi)
-            # gradfactor = sigma**2 / 2 = 0.00005
-            newx = xi - (gradfactor * grad) + x_displacements
-            newy = yi - (gradfactor * grad) + y_displacements
+            #gradx = grady = self._calc_gradient(xi, yi)
+            gradx, grady = self._calc_gradient(xi, yi)
+            #gradx, grady = self.calculate_gradient(potential, xi, yi)
+            # gradfactor is sigma**2 / 2 = 0.00005
+            newx = xi - (gradfactor * gradx) + x_displacements
+            newy = yi - (gradfactor * grady) + y_displacements
    
             # Update coords, return reflected coords
             coords[:, istep, 0] = self._reflect(newx, self.reflect_at_x0, self.reflect_at_x)
