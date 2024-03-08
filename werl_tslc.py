@@ -11,6 +11,7 @@ To merge: 50 total: 11 being merged
 '''
 
 import numpy as np
+import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
 
@@ -18,11 +19,65 @@ from sklearn.metrics import pairwise_distances_argmin_min
 from scipy.spatial.distance import pdist, squareform
 
 from werl_base import WERL
+from collections import Counter
 
 class TSLC(WERL):
     '''
     Weighted Ensemble Reinforcement Learning (WERL).
     '''
+
+    def select_least_counts(self):
+        '''
+        Select new starting clusters.
+        Returns indices of n_select clusters with least counts and closest points to said clusters.
+
+        N: number of least count clusters to keep from the original self.n_clusters
+        ## TODO maybe simply update self.n_clusters in the clustering method
+        '''
+        # Which clusters contain lowest populations
+        print(self.counts)
+        least_counts = np.asarray(self.counts[::-1][:self.n_clusters])[:, 0]
+        closest, _ = pairwise_distances_argmin_min(self.centers, self.pcoords)
+        return least_counts, self.pcoords[closest[least_counts]]
+
+    def compute_structure_reward(self, selected_points, weights):
+        '''
+        Computes the reward for each structure and returns it as an array.
+        This is the exact function DTY defined in werl_reap.py
+        '''
+        #print("Selected Points: ", selected_points)
+        mu = self.pcoords.mean(axis=0)
+        sigma = self.pcoords.std(axis=0)
+        #selected_points = selected_points[:, :2]  # Drop third dimension
+
+        # Shape is (selected_points.shape[0],)
+        # print(weights * np.abs(selected_points - mu) / sigma)
+        # print((weights * np.abs(selected_points - mu) / sigma).shape)
+        # print((weights * np.abs(selected_points - mu) / sigma).sum(axis=1))
+        reward = (weights * np.abs(selected_points - mu) / sigma)
+        # make sure 2d array sum axis indexable
+        #reward = np.atleast_2d(reward)
+
+        # print("Reward shape: ", reward.shape)
+        # print("Reward: ", reward)
+        # print("Reward SUM: ", reward.sum(axis=1))
+        return reward.sum(axis=1)
+
+    def compute_cumulative_reward(self, selected_points, weights):
+            '''
+            Returns the cumulative reward for current weights and a callable to the 
+            cumulative reward function (necessary to finetune weights).
+            This is the exact function DTY defined in werl_reap.py
+            '''
+
+            def rewards_function(w):
+                r = self.compute_structure_reward(selected_points, w)
+                R = r.sum()
+                return R
+
+            R = rewards_function(weights)
+
+            return R, rewards_function
 
     def FFT(self, l=2):
         '''
@@ -33,7 +88,7 @@ class TSLC(WERL):
         '''
 
         # Calculate n_clusters_prime 
-        self.pcoords = self.pcoords.reshape(-1, self.pcoords.shape[2])
+        #self.pcoords = self.pcoords.reshape(-1, self.pcoords.shape[2])
         n_clusters_prime = int(self.n_clusters * np.log(self.n_clusters) + l)
 
         rng = np.random.default_rng()
@@ -65,7 +120,7 @@ class TSLC(WERL):
 
         return self.pcoords[rand_indices[mus]] # Centroids optimally spread
     
-    def tslc_clustering(self, lc=3):
+    def tslc_clustering(self):
         '''
         Clustering method adapted from the TSLC CLUST method using Fastest First Traversal.
 
@@ -94,9 +149,14 @@ class TSLC(WERL):
             centroids = self.FFT(self.pcoords, self.n_clusters)
             kmeans = KMeans(n_clusters=self.n_clusters, n_init=1, max_iter=1, init=centroids).fit(self.pcoords)
 
+        # Update centers, labels, and counts
+        self.centers = kmeans.cluster_centers_
+        self.labels = kmeans.labels_
+        self.counts = np.array(Counter(kmeans.labels_).most_common())
+
         return kmeans
 
-    def tslc_weighting(self, kmeans, N=3, d=2):
+    def tslc_weighting(self, kmeans, N=5, d=1):
         '''
         Weighting method adapted from TLSC weighting algorithm.
 
@@ -118,6 +178,7 @@ class TSLC(WERL):
         lc_centers = [kmeans.cluster_centers_[lc_clusters[i][0]] for i in range(len(lc_clusters))]
 
         # 4) PCA for points in each lc cluster -> d space
+        # The keys of this dictionary are the lc cluster IDs
         lc_data_dict = {c[0]:[] for c in lc_clusters}
         for i in range(len(kmeans.labels_)):
             if kmeans.labels_[i] in [c[0] for c in lc_clusters]:
@@ -125,19 +186,20 @@ class TSLC(WERL):
 
         Vis = []
         for key in lc_data_dict.keys():
-            points = np.array(lc_data_dict[key])
+            points = np.array(lc_data_dict[key])  # Here, all points (x, y) in the N lc clusters
             pca = PCA(n_components=d)
             pca_trans = pca.fit(points)  # Projection onto d space
             Vi = pca_trans.components_.T  # Must transpose to get desired shape
             Vis.append(Vi)
 
-
         # 5) Get Gi matrices of shape (D, K) that contain the gradient of 
-        # each CV w.r.t. to the cartesian coordinate of the point
+        # each CV w.r.t. to the cartesian coordinate of the point.
         # Use a representative frame from the N least count clusters
         # The gradient will depend on the system used - i.e. some user defined function is necessary
         # This may be required in the constructor, but I am not sure how this could be passed
         # Currently, I have it implemented as is done in the MA REAP paper (arctan(y/x))
+        # There is probably a way to auto differentiate based on an input function
+        # But here the derivatives are hard coded in.
         
         Gis = []
         closest_frames, _ = pairwise_distances_argmin_min(lc_centers, self.pcoords)  # Find reps of the clusters closest to cluster center
@@ -154,7 +216,6 @@ class TSLC(WERL):
         normed_Gis = []
         for Gi in Gis:
             normed_Gis.append(Gi * len(closest_frames) / norm)
-
 
         # 7) Get A - sum of elementwise multiplication (Gi.T * Vi) * (Vi.T * Gi) for each CV (i)
         K = Gis[0].shape[1]  # This is simply the number of CVs
@@ -176,7 +237,7 @@ class TSLC(WERL):
 
         return weights
 
-    def tslc(self, N=3):
+    def tslc(self, N=5):
         '''
         WE version of the Tangent Space Least Adaptive Clustering (TLSC) algorithm.
         
@@ -202,42 +263,117 @@ class TSLC(WERL):
         delta = 0.02  # Upper boundary for learning step
         n_features = 2  # Number of variables in OP space (2d pcoord for now)
 
-        # Step 2: set initial OP weights (not WE traj weights)
+
         weights = [np.ones((n_features)) / n_features for _ in range(n_agents)]
+        # Init logs
+        least_counts_points_log = [[] for _ in range(n_agents)]
+        cumulative_reward_log = [[] for _ in range(n_agents)]
+        weights_log = [[] for _ in range(n_agents)]
+        individual_rewards_log = [[] for _ in range(n_agents)]
 
-        kmeans = self.tslc_clustering()
-        weights = self.tslc_weighting(kmeans)
+        # Step 2: set initial OP weights (not WE traj weights)
+        for i in range(n_agents):
 
-        return weights, kmeans
+            kmeans = self.tslc_clustering()
+
+            # If clustering fails, do no split/merge operations
+            if len(self.counts) < self.n_clusters:
+               return self.to_split, self.to_merge
+
+            # Get the closest (representative) points for each of the LC clusters
+            least_counts_clusters, least_counts_points = self.select_least_counts()
+            least_counts_points_log[i].append(least_counts_points)
+
+            R, reward_fun = self.compute_cumulative_reward(least_counts_points, weights[i]) # reward_fxn used in weight opt
+            cumulative_reward_log[i].append(-R)
+
+            weights[i] = self.tslc_weighting(kmeans)
+            weights_log[i].append(weights[i])
+
+            # print(weights[i])
+            # print(least_counts_points)
+
+            ## This is sketchy - basically there are 3 weights (x, y, arctan)
+            ## But we only have x,y pcoords, so I throw that arctan away - bad!
+            ## Do I need to update the pcoords with whatever fxn is selected? 
+            ## i.e. calculate arctan and store as a 3rd dimension? 
+
+            rewards = self.compute_structure_reward(least_counts_points, weights[i][:len(least_counts_points[0])])
+
+            individual_rewards_log[i].append(rewards)
+
+        print("LC_CLUSTERS: ", least_counts_clusters)
+        print(f"pcoord shape: {self.pcoords.shape}")
+        print("OP weight log:", weights_log)
+        print("LC point log:", least_counts_points_log)
+        print("LC point log shape:", np.array(least_counts_points_log).shape)
+        print("Cumulative reward log:", cumulative_reward_log)
+        print("Individual reward log:", individual_rewards_log)
+
+        
+        sorted_indices = np.argsort(rewards)
+        least_counts_clusters = least_counts_clusters[sorted_indices]
+        print("SORTED LCC: ", least_counts_clusters)
+        rewards = rewards[sorted_indices]
+        print("SORTED REWARDS", rewards)
+
+
+        ## TODO: Fix line below. It is trickier because there are essentially 
+        ## 2 'n_clusters' variables that need to be tracked
+        ## self.n_clusters in REAP refers to the number of kept LC clusters
+        ## However, here, I am using it to get the number of original clusters first.
+
+        # Insert least_count_clusters as a new column before the first column of cluster_counts
+        # self.counts = np.insert(self.counts, 0, least_counts_clusters, axis=1)
+
+        self.do_splitting()
+        self.do_merging()
+
+        return self.to_split, self.to_merge
 
 if __name__ == "__main__":
-    # test data (1D array of 1D ODLD endpoints)
-    # pcoords = np.loadtxt('mm_potentials/pcoords.txt')
-    # weights = np.loadtxt('mm_potentials/weights.txt')
-
+    
     # this is the full pcoord array, in this case (80, 5, 2)
     # for 80 walkers, 5 frames of simulation each, and 2 pcoords (X and Y)
     pcoords = np.load('mm_potentials/pcoords_full.npy')
+
+    pcoords = pcoords[40:,:,:]
+    weights = np.ones(40) / 40
     print(f"pcoord full shape: {pcoords.shape}")
 
-    # test init data
-    #pcoords = np.array([9.5] * 50).reshape(-1,1)
-    #pcoords = np.array([np.random.uniform(5, 10, 50)]).reshape(-1,1)
-    #weights = np.array([0.02] * 50)
-
     # TSLC test
-    werl = TSLC(pcoords)
-    #print(pcoords)
-    #print(weights)
+    werl = TSLC(pcoords, weights)
+    print("N_CLUSTERS: ", werl.n_clusters)
+    split, merge = werl.tslc()
+    print("CLUSTER COUNTS: ", werl.counts)
+    print("CLUSTER COUNTS: ", werl.counts.shape)
+    print("LABELS", werl.labels)
+    
+    print("SPLIT: ", split, "\nMERGE: ", merge)
+    print("SPLIT INDICES: ", [i for i, e in enumerate(split) if e != 0])
+    print("split sum: ", np.sum(split))
+    print("merge sum: ", np.sum([np.count_nonzero(i) for i in merge]))
+    print("counts: ", werl.counts)
 
-    weights, kmeans = werl.tslc()
-    print(weights)
-    #test_Vis = werl.tslc_weighting(kmeans)
+    # f = open('TSLC.out','w')
+    # f.write("N_CLUSTERS: " + str(werl.n_clusters)+'\n')
+    # f.write("CLUSTER COUNTS: " + str(werl.counts)+'\n')
+    # f.write("CLUSTER COUNTS: " + str(werl.counts.shape)+'\n')
+    # f.write("LABELS" + str(werl.labels)+'\n')
+    
+    # f.write("SPLIT: " + str(split)+ "\nMERGE: "+ str(merge)+'\n')
+    # f.write("SPLIT INDICES: "+ str([i for i, e in enumerate(split) if e != 0])+'\n')
+    # f.write("split sum: "+ str(np.sum(split))+'\n')
+    # f.write("merge sum: "+ str(np.sum([np.count_nonzero(i) for i in merge]))+'\n')
+    # f.write("counts: "+ str(werl.counts)+'\n')
+    # f.close()
+
     # Visualize pcoord in CV space
-    #plt.scatter([np.transpose(frame)[0] for frame in pcoords], [np.transpose(frame)[1] for frame in pcoords], s=40, alpha=0.3)
-    #plt.show()
+    # plt.scatter([np.transpose(frame)[0] for frame in pcoords], [np.transpose(frame)[1] for frame in pcoords], s=40, alpha=0.3)
+    # plt.title('pcoords')
+    # plt.show()
 
-    #Assess distribution of cluster centers
+    # Assess distribution of cluster centers
     # N = 5 # Set number of LC clusters
     # clusterid_counts = sorted([(i, np.unique(kmeans.labels_, return_counts=True)[1][i]) for i in range(len(kmeans.cluster_centers_))], key=lambda x: x[1])
     # lc_clusters = clusterid_counts[:N]
@@ -249,6 +385,7 @@ if __name__ == "__main__":
     # plt.scatter(werl.pcoords[:,0], werl.pcoords[:,1], marker='.')
     # plt.scatter(kmeans.cluster_centers_[:,0], kmeans.cluster_centers_[:,1], alpha=0.4, s=200)
     # plt.scatter([l[0] for l in lc_centers], [l[1] for l in lc_centers], alpha=0.4, s=50, c='purple')
+    # plt.title('clustering')
     # #plt.savefig('2D_TSLC')
     # plt.show()
     
