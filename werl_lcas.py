@@ -16,6 +16,7 @@ from werl_base import WERL
 class LCAS(WERL):
     '''
     Weighted Ensemble Reinforcement Learning (WERL).
+    Using Least Counts Adaptive Sampling (LCAS).
     '''
 
     def lcas(self):

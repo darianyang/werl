@@ -23,8 +23,9 @@ class WERL:
     '''
     Weighted Ensemble Reinforcement Learning (WERL).
     '''
-
-    def __init__(self, pcoords, weights, pmin=1e-12, pmax=0.1,
+    
+    # pmin=1e-12, pmax=0.1,
+    def __init__(self, pcoords, weights, pmin=1e-50, pmax=0.1,
                  n_clusters=None, n_split=None, 
                  b=0.07, gamma=0.6, d=2):
         '''
@@ -143,6 +144,9 @@ class WERL:
         # this will be a negative index, so start with smallest cluster (-1)
         # and decrease by 1 if needed
         lc_cluster_counter = 1
+
+        # TODO: debugging an indexing error in line 156 (-14 index from size 13 array)
+        print("COUNTS: ", self.counts)
 
         while splits_remaining > 0:
            

@@ -169,7 +169,7 @@ class ODLDPropagator(WESTPropagator):
             # gradfactor is sigma**2 / 2 = 0.00005
             newx = xi - (gradfactor * gradx) + x_displacements
             newy = yi - (gradfactor * grady) + y_displacements
-   
+
             # Update coords, return reflected coords
             coords[:, istep, 0] = self._reflect(newx, self.reflect_at_x0, self.reflect_at_x)
             coords[:, istep, 1] = self._reflect(newy, self.reflect_at_y0, self.reflect_at_y)

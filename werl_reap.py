@@ -19,6 +19,7 @@ from werl_base import WERL
 class REAP(WERL):
     '''
     Weighted Ensemble Reinforcement Learning (WERL).
+    Using the REAP algorithm from the Shukla group.
     '''
     
     def select_least_counts(self):
@@ -72,6 +73,11 @@ class REAP(WERL):
         '''
         Defines constraints for optimization and maximizes rewards function. 
         Returns OptimizeResult object.
+
+        Parameters
+        ----------
+        delta : float, default 0.02
+            Upper boundary for learning step.
         '''
         weights_prev = weights
 
@@ -125,8 +131,8 @@ class REAP(WERL):
         '''
         # Step 1: define some hyperparameters and initialize arrays --> To be provided via init_variables
         n_agents = 1  # Forced
-        delta = 0.02  # Upper boundary for learning step
-        #delta = 0.5  # Upper boundary for learning step
+        #delta = 0.02  # Upper boundary for learning step (defauly 0.02)
+        delta = 0.5  # Upper boundary for learning step
         n_features = 2  # Number of variables in OP space (2d pcoord for now)
 
         # Step 2: set initial OP weights (not WE traj weights)
