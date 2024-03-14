@@ -25,7 +25,7 @@ class WERL:
     '''
     
     # pmin=1e-12, pmax=0.1,
-    def __init__(self, pcoords, weights, pmin=1e-50, pmax=0.1,
+    def __init__(self, pcoords, weights, pmin=1e-12, pmax=0.1,
                  n_clusters=None, n_split=None, 
                  b=0.07, gamma=0.6, d=2):
         '''
