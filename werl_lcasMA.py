@@ -12,6 +12,8 @@ To merge: 50 total: 11 being merged
 
 import numpy as np
 from sklearn.cluster import KMeans
+from scipy.spatial.distance import cdist
+from scipy.optimize import linear_sum_assignment
 from werl_base import WERL
 
 class LCAS_MA(WERL):
@@ -77,12 +79,18 @@ class LCAS_MA(WERL):
 
     def equal_size_clustering(self):
         '''
-        Returns self.n_clusters amount of clusters of equal size.
+        Returns self.n_agents amount of clusters of equal size.
+        Also returns updated representative cluster centroids.
         '''
         # calc size of each cluster
         cluster_size = self.pcoords.shape[0] // self.n_agents
         # run kmeans
         km = KMeans(self.n_agents).fit(self.pcoords)
+
+        # # TODO: can detect failed clustering with duplicate initial points here
+        # if len(np.unique(km.cluster_centers_)) == 1:
+        #     return
+        
         # get cluster centers
         centers = km.cluster_centers_
         # centers gets repeated such that each center appears cluster_size times
@@ -125,14 +133,20 @@ class LCAS_MA(WERL):
         self.to_merge : list
         '''        
         # do equal member clustering
-        self.equal_size_clustering()
+        try:
+            eq_labels, eq_centers = self.equal_size_clustering()
+        # index error with initial points from w_init failed clustering
+        except IndexError as e:
+            #print(e)
+            # return empty split merge lists
+            return self.to_split, self.to_merge
 
+        # now loop through each equal member cluster and run LCAS
 
-        # # if less than the requested amount of clusters was generated
-        # # then go with zero array return, currently useful for w_init
-        # # basically, if the clustering fails, do no split/merge operations
-        # if len(self.counts) < self.n_clusters:
-        #     return self.to_split, self.to_merge
+        # maybe can loop each eq cluster, get separate to_split and to_merge lists,
+        # then go through and update the master split and merge lists based on the eq cluster labels
+
+        # start with just the first cluster and see how that goes
 
         # # do clustering to look for LC clusters
         # # self._clustering()
@@ -142,14 +156,12 @@ class LCAS_MA(WERL):
         # self.do_splitting()
         # self.do_merging()
 
-        # # return finalized split and merge lists
-        # return self.to_split, self.to_merge
+        # return finalized split and merge lists
+        return self.to_split, self.to_merge
 
 
 if __name__ == "__main__":
-    import matplotlib.pyplot as plt
-    from scipy.spatial.distance import cdist
-    from scipy.optimize import linear_sum_assignment
+    #import matplotlib.pyplot as plt
     # test data (1D array of 1D ODLD endpoints)
     # pcoords = np.loadtxt('mm_potentials/pcoords.txt')
     # weights = np.loadtxt('mm_potentials/weights.txt')
@@ -160,7 +172,7 @@ if __name__ == "__main__":
     print(f"pcoord full shape: {pcoords.shape}")
 
     # cut to n walkers for testing
-    n = 80
+    n = 40
     pcoords = pcoords[:n,:,:]
     weights = np.ones(n) / n
 
@@ -171,7 +183,7 @@ if __name__ == "__main__":
 
     # LCAS test
     werl = LCAS_MA(pcoords, weights, n_agents=4)
-    #werl.lcas_ma()
+    werl.lcas_ma()
 
     # even_clusts, updated_centers = werl.equal_size_clustering()
     # print(even_clusts)
