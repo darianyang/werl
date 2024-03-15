@@ -24,7 +24,6 @@ class WERL:
     Weighted Ensemble Reinforcement Learning (WERL).
     '''
     
-    # pmin=1e-12, pmax=0.1,
     def __init__(self, pcoords, weights, pmin=1e-12, pmax=0.1,
                  n_clusters=None, n_split=None, 
                  b=0.07, gamma=0.6, d=2):
@@ -35,6 +34,7 @@ class WERL:
             Each segment also has a weight attribute.
         pcoords : ndarray
             Last pcoord value of each segment for the current iteration.
+        TODO: option for automatic pcoord input data standard scaling.
         weights : array
             Weight of each segment for the iteration. 
             The sum of all weights should be 1.0.
