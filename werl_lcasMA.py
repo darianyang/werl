@@ -79,86 +79,17 @@ class LCAS_MA(WERL):
         '''
         Returns self.n_clusters amount of clusters of equal size.
         '''
-        # # Perform K-means clustering
-        # km = KMeans(n_clusters=self.n_agents, random_state=1).fit(self.pcoords)
-        # cluster_labels = km.labels_
-        # self.original_labels = cluster_labels
-        # #print(f"{cluster_labels=}")
-        # print(f"{self.n_agents=}")
-
-        # # Calculate the size of each cluster
-        # cluster_sizes = np.bincount(cluster_labels)
-        # #print(f"{cluster_sizes=}")
-
-        # # Find the target size for each cluster (equal distribution)
-        # # rows of pcoords / n_agents
-        # target_size = self.pcoords.shape[0] // self.n_agents
-
-        # #print(f"{self.pcoords.shape=}")
-
-        # # Sort centroids by cluster size in descending order
-        # centroids = km.cluster_centers_
-        # sorted_centroids_indices = np.argsort(cluster_sizes)[::-1]
-        # sorted_centroids = centroids[sorted_centroids_indices]
-        # print(f"{sorted_centroids=}")
-
-        # print("\nBegin reassignment: ")
-        # # Iterate through clusters and balance sizes
-        # for i in range(self.n_agents):
-        #     print(f"Cluster {i}")
-        #     # Cluster index
-        #     idx = sorted_centroids_indices[i]
-            
-        #     # Calculate distances to other centroids
-        #     distances_to_other_centroids = np.linalg.norm(
-        #         centroids - centroids[idx], axis=1)
-            
-        #     # Indices of other centroids (i < j <= k)
-        #     other_centroids_indices = sorted_centroids_indices[i+1:]
-            
-        #     # Iterate through other centroids
-        #     for j in other_centroids_indices:
-        #         # Find data points in cluster i closest to centroid j
-        #         cluster_i_points = self.pcoords[cluster_labels == idx]
-        #         distances_to_j = np.linalg.norm(
-        #             cluster_i_points - centroids[j], axis=1)
-                
-        #         #closest_point_idx = np.argmin(distances_to_j)
-        #         #closest_point_idx = np.argmin(distances_to_j[cluster_labels == idx])
-        #         closest_point_idx = np.argmin(distances_to_j)
-        #         #closest_point_idx = np.where(cluster_labels == idx)[0][closest_point_idx]
-
-        #         closest_point = cluster_i_points[closest_point_idx]
-                
-        #         # Move closest point to cluster j
-        #         cluster_labels[np.where((self.pcoords == closest_point).all(axis=1))] = j
-                
-        #         # Recompute centroid i (don't recompute the cluster)
-        #         centroids[idx] = np.mean(self.pcoords[cluster_labels == idx], axis=0)
-                
-        #         # Update cluster sizes
-        #         cluster_sizes[idx] -= 1
-        #         cluster_sizes[j] += 1
-                
-        #         # Check if cluster i reaches target size
-        #         if cluster_sizes[idx] <= target_size:
-        #             print(f"Break at: {i=}{j=}{cluster_sizes=}")
-        #             break
-            
-        # print(f"{cluster_labels=}")
-        # print(f"{np.bincount(cluster_labels)=}")
-        # self.final_labels = cluster_labels
-
-
+        # calc size of each cluster
         cluster_size = self.pcoords.shape[0] // self.n_agents
-        km = KMeans(self.n_agents)
-        km.fit(self.pcoords)
+        # run kmeans
+        km = KMeans(self.n_agents).fit(self.pcoords)
+        # get cluster centers
         centers = km.cluster_centers_
-        # Centers gets repeated such that each center appears cluster_size times
+        # centers gets repeated such that each center appears cluster_size times
         centers = centers.reshape(-1, 1, self.pcoords.shape[-1]).repeat(cluster_size, 1).reshape(-1, self.pcoords.shape[-1])
-        # The distance_matrix has the distance of each point to each center repeated cluster_size times
+        # the distance_matrix has the distance of each point to each center repeated cluster_size times
         distance_matrix = cdist(self.pcoords, centers)
-        # The linear_sum_assignment matches each point to the closest available center 
+        # the linear_sum_assignment matches each point to the closest available center 
         # (remember the centers are repeated) in a 1-1 mapping. [1] of the output says 
         # which repeated center matches to [0] of the input ([0] is sorted so its just arange). 
         # Therefore, the // drops the repetition giving the correct cluster for each input. 
@@ -233,36 +164,6 @@ if __name__ == "__main__":
     pcoords = pcoords[:n,:,:]
     weights = np.ones(n) / n
 
-    # def get_even_clusters(X, n_clusters):
-    #     cluster_size = X.shape[0] // n_clusters
-    #     kmeans = KMeans(n_clusters)
-    #     kmeans.fit(X)
-    #     centers = kmeans.cluster_centers_
-    #     print(f"{centers}")
-    #     centers = centers.reshape(-1, 1, X.shape[-1]).repeat(cluster_size, 1).reshape(-1, X.shape[-1])
-    #     distance_matrix = cdist(X, centers)
-    #     clusters = linear_sum_assignment(distance_matrix)[1]//cluster_size
-
-    #     # Find the closest point to the mean within each cluster
-    #     updated_centers = np.zeros_like(kmeans.cluster_centers_)
-    #     for i in range(n_clusters):
-    #         cluster_points = X[clusters == i]
-    #         cluster_mean = cluster_points.mean(axis=0)
-    #         closest_point_idx = np.argmin(np.linalg.norm(cluster_points - cluster_mean, axis=1))
-    #         updated_centers[i] = cluster_points[closest_point_idx]
-
-    #     return clusters, updated_centers, centers
-    # pcoords = pcoords[:,-1,:].reshape(-1, pcoords.shape[2])
-    # even_clusts, updated_centers, old_centers = get_even_clusters(pcoords, 4)
-    # print(even_clusts)
-    # print(updated_centers)
-    # print(np.bincount(even_clusts))
-    # fig, ax = plt.subplots()
-    # ax.scatter(pcoords[:,0], pcoords[:,1], c=even_clusts, s=10)
-    # ax.scatter(updated_centers[:,0], updated_centers[:,1], color='k', alpha=0.1)
-    # ax.scatter(old_centers[:,0], old_centers[:,1], color='red', alpha=0.01)
-    # plt.show()
-
     # test init data
     #pcoords = np.array([9.5] * 50).reshape(-1,1)
     #pcoords = np.array([np.random.uniform(5, 10, 50)]).reshape(-1,1)
@@ -271,18 +172,15 @@ if __name__ == "__main__":
     # LCAS test
     werl = LCAS_MA(pcoords, weights, n_agents=4)
     #werl.lcas_ma()
-    even_clusts, updated_centers = werl.equal_size_clustering()
-    print(even_clusts)
-    print(updated_centers)
-    print(np.bincount(even_clusts))
-    fig, ax = plt.subplots()
-    ax.scatter(werl.pcoords[:,0], werl.pcoords[:,1], c=even_clusts, s=10)
-    ax.scatter(updated_centers[:,0], updated_centers[:,1], color='k', alpha=0.1)
-    plt.show()
 
-    #plt.scatter(werl.pcoords[:,0], werl.pcoords[:,1], c=werl.original_labels, s=10)
-    #plt.scatter(werl.pcoords[:,0], werl.pcoords[:,1], c=werl.final_labels, s=10)
-    #plt.show()
+    # even_clusts, updated_centers = werl.equal_size_clustering()
+    # print(even_clusts)
+    # print(updated_centers)
+    # print(np.bincount(even_clusts))
+    # fig, ax = plt.subplots()
+    # ax.scatter(werl.pcoords[:,0], werl.pcoords[:,1], c=even_clusts, s=10)
+    # ax.scatter(updated_centers[:,0], updated_centers[:,1], color='k', alpha=0.1)
+    # plt.show()
 
     #split, merge = werl.lcas_ma()
     # print("SPLIT: ", split, "\nMERGE: ", merge)
