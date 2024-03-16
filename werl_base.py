@@ -87,7 +87,8 @@ class WERL:
         if n_clusters is None:
             # calculate optimal amount of n_clusters
             #self.n_clusters = np.floor(b * self.n_segments ** (gamma * d)).astype(int)
-            self.n_clusters = int(b * (self.n_segments ** (gamma * d)))
+            #self.n_clusters = int(b * (self.n_segments ** (gamma * d)))
+            self.n_clusters = self.calc_n_clusters(self.n_segments, b, gamma, d)
         else:
             # otherwise use input n_cluster number
             self.n_clusters = n_clusters
@@ -105,6 +106,21 @@ class WERL:
         # list of lists for walker positions to merge, begin as all empty
         self.to_merge = [[] for _ in range(self.n_segments)]
 
+    @staticmethod
+    def calc_n_clusters(n_datapoints, b=0.07, gamma=0.6, d=2):
+        '''
+        Parameters
+        ----------
+        b : float, default 1e-4 (REAP) or 0.07 (TSLC)
+            Coefficient for n_clusters heuristic.
+        gamma : float, default 0.7
+            Exponent for n_clusters heuristic (should theoretically be in (0.5, 1)).
+        d : float, default 2 
+            Intrinsic dimensionality of slow manifold for the system. Used in n_clusters heuristic.
+        '''
+        n_clusters = int(b * (n_datapoints ** (gamma * d)))
+        return n_clusters
+
     def _clustering(self):
         '''
         Shared clustering method with k-means using self.n_clusters.
@@ -117,8 +133,8 @@ class WERL:
             Count of each cluster label amount.
         '''
         # kmeans clustering
-        #km = KMeans(n_clusters=self.n_clusters, random_state=1).fit(self.pcoords)
-        km = KMeans(n_clusters=self.n_clusters).fit(self.pcoords)
+        km = KMeans(n_clusters=self.n_clusters, random_state=1).fit(self.pcoords)
+        #km = KMeans(n_clusters=self.n_clusters).fit(self.pcoords)
         self.centers = km.cluster_centers_
         #print(km.labels_)
         self.labels = km.labels_
@@ -146,7 +162,7 @@ class WERL:
         lc_cluster_counter = 1
 
         # TODO: debugging an indexing error in line 156 (-14 index from size 13 array)
-        print("COUNTS: ", self.counts)
+        print("COUNTS: \n", self.counts)
 
         while splits_remaining > 0:
            

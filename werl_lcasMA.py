@@ -75,33 +75,58 @@ class LCAS_MA(WERL):
             Intrinsic dimensionality of slow manifold for the system. Used in n_clusters heuristic.
         '''
         super().__init__(pcoords, weights, pmin, pmax, n_clusters, n_split, b, gamma, d)
+
         self.n_agents = n_agents
+        # list of walker positions to split, begin as all zeros (no splitting)
+        self.multi_to_split = [0] * self.n_segments
+        # list of lists for walker positions to merge, begin as all empty
+        self.multi_to_merge = [[] for _ in range(self.n_segments)]
+
+        # store entire pcoord array separately (TODO: actually, is this needed? prob not but may be cleaner)
+        self.pcoords_full = self.pcoords
+
+        # calc size of each eq cluster
+        self.eq_cluster_size = self.n_segments // self.n_agents
+
+        # for each eq member cluster: set amount to cluster and split with the reduced dataset
+        if n_clusters is None:
+            # calculate optimal amount of n_clusters for each eq cluster
+            self.n_clusters = self.calc_n_clusters(self.eq_cluster_size, b, gamma, d)
+            print("EQ Cluster Size: ", self.n_clusters)
+        else:
+            # otherwise use input n_cluster number
+            self.n_clusters = n_clusters
+
+        # use n_clusters for n walkers to split/merge if not given
+        if n_split is None:
+            self.n_split = self.n_clusters
+        else:
+            self.n_split = n_split
 
     def equal_size_clustering(self):
         '''
         Returns self.n_agents amount of clusters of equal size.
         Also returns updated representative cluster centroids.
         '''
-        # calc size of each cluster
-        cluster_size = self.pcoords.shape[0] // self.n_agents
         # run kmeans
-        km = KMeans(self.n_agents).fit(self.pcoords)
+        #km = KMeans(self.n_agents).fit(self.pcoords_full)
+        km = KMeans(self.n_agents, random_state=1).fit(self.pcoords_full)
 
-        # # TODO: can detect failed clustering with duplicate initial points here
+        # # TODO: could detect failed clustering with duplicate initial points here
         # if len(np.unique(km.cluster_centers_)) == 1:
         #     return
         
         # get cluster centers
         centers = km.cluster_centers_
         # centers gets repeated such that each center appears cluster_size times
-        centers = centers.reshape(-1, 1, self.pcoords.shape[-1]).repeat(cluster_size, 1).reshape(-1, self.pcoords.shape[-1])
+        centers = centers.reshape(-1, 1, self.n_pcoords).repeat(self.eq_cluster_size, 1).reshape(-1, self.n_pcoords)
         # the distance_matrix has the distance of each point to each center repeated cluster_size times
-        distance_matrix = cdist(self.pcoords, centers)
+        distance_matrix = cdist(self.pcoords_full, centers)
         # the linear_sum_assignment matches each point to the closest available center 
         # (remember the centers are repeated) in a 1-1 mapping. [1] of the output says 
         # which repeated center matches to [0] of the input ([0] is sorted so its just arange). 
         # Therefore, the // drops the repetition giving the correct cluster for each input. 
-        cluster_labels = linear_sum_assignment(distance_matrix)[1]//cluster_size
+        cluster_labels = linear_sum_assignment(distance_matrix)[1]//self.eq_cluster_size
 
         # Find the closest point to the mean within each cluster
         updated_centers = np.zeros_like(km.cluster_centers_)
@@ -109,11 +134,12 @@ class LCAS_MA(WERL):
             # if you want the average centroids
             #updated_centers[i] = X[clusters == i].mean(axis=0)
             # but we want representative centroids
-            cluster_points = self.pcoords[cluster_labels == i]
+            cluster_points = self.pcoords_full[cluster_labels == i]
             cluster_mean = cluster_points.mean(axis=0)
             closest_point_idx = np.argmin(np.linalg.norm(cluster_points - cluster_mean, axis=1))
             updated_centers[i] = cluster_points[closest_point_idx]
         
+        #print(f"{np.bincount(cluster_labels)=}")
         return cluster_labels, updated_centers
 
     def lcas_ma(self):
@@ -141,23 +167,43 @@ class LCAS_MA(WERL):
             # return empty split merge lists
             return self.to_split, self.to_merge
 
-        # now loop through each equal member cluster and run LCAS
+        #print(f"{self.pcoords_full}")
+        #print(f"{eq_labels=}")
 
-        # maybe can loop each eq cluster, get separate to_split and to_merge lists,
-        # then go through and update the master split and merge lists based on the eq cluster labels
+        # loop each eq cluster / agent, run LCAS for each eq cluster set
+        # return split / merge decisions and fill out multi_to_split/merge lists
+        for eq_cluster_i in range(self.n_agents):
+            # extract data points belonging to the current equal member cluster
+            cluster_points = self.pcoords_full[eq_labels == eq_cluster_i]
+            # extract data indices belonging to the current equal member cluster
+            cluster_indices = np.where(eq_labels == eq_cluster_i)[0]
+            #print(f"{cluster_indices=}")
+            #print(cluster_points)
 
-        # start with just the first cluster and see how that goes
+            # replace pcoords instance attr with current eq cluster data points
+            self.pcoords = cluster_points
+            # run clustering on pcoord subset from eq cluster i
+            self._clustering()
+            #print(self.counts)
 
-        # # do clustering to look for LC clusters
-        # # self._clustering()
-        # #print("shape labels: ", self.labels.shape)
+            # make temp eq cluster size split and merge lists
+            self.to_split = [0] * self.eq_cluster_size
+            self.to_merge = [[] for _ in range(self.eq_cluster_size)]
 
-        # # run split merge methods, updating split/merge lists
-        # self.do_splitting()
-        # self.do_merging()
+            # run split merge methods, updating current eq cluster sized temp split/merge lists
+            self.do_splitting()
+            self.do_merging()
+
+            #print(f"{self.to_split=}, \n{self.to_merge=}")
+
+            # now map these split and merge decisions back to the multi split/merge lists
+            for i, mapping_idx in enumerate(cluster_indices):
+                #print(i, mapping_idx)
+                self.multi_to_split[mapping_idx] = self.to_split[i]
+                self.multi_to_merge[mapping_idx] = self.to_merge[i]
 
         # return finalized split and merge lists
-        return self.to_split, self.to_merge
+        return self.multi_to_split, self.multi_to_merge
 
 
 if __name__ == "__main__":
@@ -169,10 +215,10 @@ if __name__ == "__main__":
     # this is the full pcoord array, in this case (80, 5, 2)
     # for 80 walkers, 5 frames of simulation each, and 2 pcoords (X and Y)
     pcoords = np.load('pcoords_full.npy')
-    print(f"pcoord full shape: {pcoords.shape}")
+    #print(f"pcoord full shape: {pcoords.shape}")
 
     # cut to n walkers for testing
-    n = 40
+    n = 80
     pcoords = pcoords[:n,:,:]
     weights = np.ones(n) / n
 
@@ -182,9 +228,17 @@ if __name__ == "__main__":
     #weights = np.array([0.02] * 50)
 
     # LCAS test
+    # TODO: note in docs: recommend not to use less than 20 segs per agent 
     werl = LCAS_MA(pcoords, weights, n_agents=4)
-    werl.lcas_ma()
+    #print(werl.calc_n_clusters(17))
+    split, merge = werl.lcas_ma()
+    print("SPLIT: ", split, "\nMERGE: ", merge)
+    print("SPLIT INDICES: ", [i for i, e in enumerate(split) if e != 0])
+    print("split sum: ", np.sum(split))
+    print("merge sum: ", np.sum([np.count_nonzero(i) for i in merge]))
+    #print("counts: ", werl.counts)
 
+    # eq clustering test
     # even_clusts, updated_centers = werl.equal_size_clustering()
     # print(even_clusts)
     # print(updated_centers)
@@ -193,10 +247,3 @@ if __name__ == "__main__":
     # ax.scatter(werl.pcoords[:,0], werl.pcoords[:,1], c=even_clusts, s=10)
     # ax.scatter(updated_centers[:,0], updated_centers[:,1], color='k', alpha=0.1)
     # plt.show()
-
-    #split, merge = werl.lcas_ma()
-    # print("SPLIT: ", split, "\nMERGE: ", merge)
-    # print("SPLIT INDICES: ", [i for i, e in enumerate(split) if e != 0])
-    # print("split sum: ", np.sum(split))
-    # print("merge sum: ", np.sum([np.count_nonzero(i) for i in merge]))
-    # print("counts: ", werl.counts)
