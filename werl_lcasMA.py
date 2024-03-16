@@ -109,8 +109,8 @@ class LCAS_MA(WERL):
         Also returns updated representative cluster centroids.
         '''
         # run kmeans
-        km = KMeans(self.n_agents).fit(self.pcoords_full)
-        #km = KMeans(self.n_agents, random_state=1).fit(self.pcoords_full)
+        #km = KMeans(self.n_agents).fit(self.pcoords_full)
+        km = KMeans(self.n_agents, random_state=1).fit(self.pcoords_full)
 
         # # TODO: could detect failed clustering with duplicate initial points here
         # if len(np.unique(km.cluster_centers_)) == 1:
@@ -159,13 +159,13 @@ class LCAS_MA(WERL):
         self.to_merge : list
         '''        
         # do equal member clustering
-        try:
-            eq_labels, eq_centers = self.equal_size_clustering()
-        # index error with initial points from w_init failed clustering
-        except IndexError as e:
-            #print(e)
+        eq_labels, eq_centers = self.equal_size_clustering()
+
+        # to handle initial equal points from w_init with failed clustering convergence
+        # also consider when using 1 agent, which will also return 1 cluster
+        if self.n_agents > 1 and len(np.unique(eq_labels)) == 1:
             # return empty split merge lists
-            return self.to_split, self.to_merge
+            return self.multi_to_split, self.multi_to_merge
 
         #print(f"{self.pcoords_full}")
         #print(f"{eq_labels=}")
@@ -185,6 +185,12 @@ class LCAS_MA(WERL):
             # run clustering on pcoord subset from eq cluster i
             self._clustering()
             #print(self.counts)
+            # if less than the requested amount of clusters was generated
+            # then go with zero array return, currently useful for w_init
+            # basically, if the clustering fails, do no split/merge operations
+            # useful for using 1 agent during init
+            if len(self.counts) < self.n_clusters:
+                return self.to_split, self.to_merge
 
             # make temp eq cluster size split and merge lists
             self.to_split = [0] * self.eq_cluster_size
@@ -194,7 +200,7 @@ class LCAS_MA(WERL):
             self.do_splitting()
             self.do_merging()
 
-            #print(f"{self.to_split=}, \n{self.to_merge=}")
+            print(f"{self.to_split=}, \n{self.to_merge=}")
 
             # now map these split and merge decisions back to the multi split/merge lists
             for i, mapping_idx in enumerate(cluster_indices):
@@ -218,7 +224,7 @@ if __name__ == "__main__":
     #print(f"pcoord full shape: {pcoords.shape}")
 
     # cut to n walkers for testing
-    n = 80
+    n = 40
     pcoords = pcoords[:n,:,:]
     weights = np.ones(n) / n
 
@@ -231,7 +237,7 @@ if __name__ == "__main__":
     # TODO: note in docs: recommend not to use less than 20 segs per agent 
     # TODO: can probably replace the lcas resampler with this one since it defaults to 1 agent anyway
     #       which I tested with constant seed and it is the same result
-    werl = LCAS_MA(pcoords, weights, n_agents=1)
+    werl = LCAS_MA(pcoords, weights, n_agents=2)
     #print(werl.calc_n_clusters(17))
     split, merge = werl.lcas_ma()
     print("SPLIT: ", split, "\nMERGE: ", merge)

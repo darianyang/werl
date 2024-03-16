@@ -6,6 +6,7 @@ from westpa.core.we_driver import WEDriver
 
 from werl_lcas import LCAS
 from werl_reap import REAP
+from werl_lcasMA import LCAS_MA
 
 ############################# SET WERL PARAMETERS #############################
 
@@ -147,10 +148,12 @@ class WERLDriver(WEDriver):
                 #                 merge_alg=merge_alg, pmin=pmin, pmax=pmax, dist_exponent=dist_exponent)
                 # split, merge, variation, walker_variations = resample.resample()
                 #resample = WERL(pcoords, n_clusters=5)
-                resample = LCAS(pcoords, weights, n_clusters=None, pmax=1, pmin=1e-500)
-                split, merge = resample.lcas()
-                #resample = REAP(pcoords, weights, n_clusters=None)
-                #split, merge = resample.reap()
+                # resample = LCAS(pcoords, weights, n_clusters=None, pmax=1, pmin=1e-500)
+                # split, merge = resample.lcas()
+                resample = LCAS_MA(pcoords, weights, n_clusters=None, pmax=1, pmin=1e-500, n_agents=2)
+                split, merge = resample.lcas_ma()
+                # resample = REAP(pcoords, weights, n_clusters=None)
+                # split, merge = resample.reap()
 
                 # TODO: testing filters
                 #split = [1 if i > 1 else i for i in split]
