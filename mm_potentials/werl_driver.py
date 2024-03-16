@@ -150,7 +150,7 @@ class WERLDriver(WEDriver):
                 #resample = WERL(pcoords, n_clusters=5)
                 # resample = LCAS(pcoords, weights, n_clusters=None, pmax=1, pmin=1e-500)
                 # split, merge = resample.lcas()
-                resample = LCAS_MA(pcoords, weights, n_clusters=None, pmax=1, pmin=1e-500, n_agents=2)
+                resample = LCAS_MA(pcoords, weights, n_clusters=None, pmax=1, pmin=1e-500, n_agents=4)
                 split, merge = resample.lcas_ma()
                 # resample = REAP(pcoords, weights, n_clusters=None)
                 # split, merge = resample.reap()

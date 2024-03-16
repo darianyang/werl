@@ -109,8 +109,8 @@ class LCAS_MA(WERL):
         Also returns updated representative cluster centroids.
         '''
         # run kmeans
-        #km = KMeans(self.n_agents).fit(self.pcoords_full)
-        km = KMeans(self.n_agents, random_state=1).fit(self.pcoords_full)
+        km = KMeans(self.n_agents).fit(self.pcoords_full)
+        #km = KMeans(self.n_agents, random_state=1).fit(self.pcoords_full)
 
         # # TODO: could detect failed clustering with duplicate initial points here
         # if len(np.unique(km.cluster_centers_)) == 1:
@@ -178,7 +178,9 @@ class LCAS_MA(WERL):
             # extract data indices belonging to the current equal member cluster
             cluster_indices = np.where(eq_labels == eq_cluster_i)[0]
             #print(f"{cluster_indices=}")
-            #print(cluster_points)
+            # make mapping scheme out of cluster indices
+            cluster_indices_mapping = {i : cluster_index for i, cluster_index in enumerate(cluster_indices)}
+            #print(cluster_indices_mapping)
 
             # replace pcoords instance attr with current eq cluster data points
             self.pcoords = cluster_points
@@ -200,7 +202,14 @@ class LCAS_MA(WERL):
             self.do_splitting()
             self.do_merging()
 
-            print(f"{self.to_split=}, \n{self.to_merge=}")
+            #print(f"{self.to_split=}, \n{self.to_merge=}")
+
+            # go through self.to_merge list and map to correct cluster_indices
+            for merges in self.to_merge:
+                for i in range(len(merges)):
+                    merges[i] = cluster_indices_mapping.get(merges[i], merges[i])
+            #print(f"{self.to_merge=}")
+            #print(f"{self.to_split=}, \n{self.to_merge=}")
 
             # now map these split and merge decisions back to the multi split/merge lists
             for i, mapping_idx in enumerate(cluster_indices):
