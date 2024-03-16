@@ -109,8 +109,8 @@ class LCAS_MA(WERL):
         Also returns updated representative cluster centroids.
         '''
         # run kmeans
-        #km = KMeans(self.n_agents).fit(self.pcoords_full)
-        km = KMeans(self.n_agents, random_state=1).fit(self.pcoords_full)
+        km = KMeans(self.n_agents).fit(self.pcoords_full)
+        #km = KMeans(self.n_agents, random_state=1).fit(self.pcoords_full)
 
         # # TODO: could detect failed clustering with duplicate initial points here
         # if len(np.unique(km.cluster_centers_)) == 1:
@@ -229,7 +229,9 @@ if __name__ == "__main__":
 
     # LCAS test
     # TODO: note in docs: recommend not to use less than 20 segs per agent 
-    werl = LCAS_MA(pcoords, weights, n_agents=4)
+    # TODO: can probably replace the lcas resampler with this one since it defaults to 1 agent anyway
+    #       which I tested with constant seed and it is the same result
+    werl = LCAS_MA(pcoords, weights, n_agents=1)
     #print(werl.calc_n_clusters(17))
     split, merge = werl.lcas_ma()
     print("SPLIT: ", split, "\nMERGE: ", merge)

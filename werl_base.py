@@ -133,8 +133,8 @@ class WERL:
             Count of each cluster label amount.
         '''
         # kmeans clustering
-        km = KMeans(n_clusters=self.n_clusters, random_state=1).fit(self.pcoords)
-        #km = KMeans(n_clusters=self.n_clusters).fit(self.pcoords)
+        #km = KMeans(n_clusters=self.n_clusters, random_state=1).fit(self.pcoords)
+        km = KMeans(n_clusters=self.n_clusters).fit(self.pcoords)
         self.centers = km.cluster_centers_
         #print(km.labels_)
         self.labels = km.labels_
