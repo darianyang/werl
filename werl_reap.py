@@ -15,6 +15,7 @@ from scipy.optimize import minimize
 from sklearn.metrics import pairwise_distances_argmin_min
 
 from werl_base import WERL
+import os
 
 class REAP(WERL):
     '''
@@ -112,14 +113,24 @@ class REAP(WERL):
 
         return results
 
-    def reap(self):
+    def reap(self, op_weights_file='op_weights.npy'):
         '''
         WE version of the REinforcement learning based Adaptive SamPling (REAP) algorithm.
         
-        Args
-        -------------
+        Parameters
+        ----------
+        op_weights_file : str
+            Path to order parameter weights file.
+            Weights for each order parameter / pcoord dimension used.
+            By default will initialize a new file called 'op_weights.txt'.
+            New weights are saved to the end of this file per iteration.
+            The bottom of the file is appended with new optimized weights and 
+            these are used for the next iteration.
         **kwargs: used to specify model hyperparameters. Must include following keys:
             n_agents (int): number of agents. --> In this implementation this is forced to be 1
+                TODO: note that the 'multi agents' of MA-REAP is better since the initial states are more diverse,
+                      I don't think it'll be really worth it here since the op weights need to be tracked for each
+                      'agent', and the equal clusters won't give consistent clusters each time. 
             traj_len (int): length of each trajectory ran.
             delta (float): upper boundary for learning step.
             n_features (int): number of collective variables. (Currently ignored because only two-dimensional systems are used.)
@@ -131,15 +142,25 @@ class REAP(WERL):
         '''
         # Step 1: define some hyperparameters and initialize arrays --> To be provided via init_variables
         n_agents = 1  # Forced
-        delta = 0.02  # Upper boundary for learning step (defauly 0.02)
+        delta = 0.02  # Upper boundary for learning step (default 0.02)
         #delta = 0.5  # Upper boundary for learning step
+        # self.pcoords.shape[1] (n_pcoord_dims = n_columns of the pcoords array)
         n_features = 2  # Number of variables in OP space (2d pcoord for now)
 
         # Step 2: set initial OP weights (not WE traj weights)
-        weights = [np.ones((n_features)) / n_features for _ in range(n_agents)]
+        # only do this if input weights are None
+        #if weights is None:
+        
+        # if the file already exists, grab last row
+        if os.path.isfile(op_weights_file) is True:
+            all_iter_weights = np.load(op_weights_file)
+            weights = [all_iter_weights[-1,:]]
+        # otherwise set weights as equal and save new op_weight file
+        else:
+            all_iter_weights = weights = [np.ones((n_features)) / n_features for _ in range(n_agents)]
+            np.save(op_weights_file, weights)
 
         # WERL: data is already collected from WE iteration
-        # TODO: Could use the full trajectory data from WE instead of just the endpoints
         # Step 3: collect some initial data
         # trajectories = [[] for _ in range(n_agents)]
         # trajectories = collect_initial_data(num_spawn * 2, traj_len, potential, initial_positions,
@@ -203,9 +224,11 @@ class REAP(WERL):
                 print("ERROR: CHECK OPTIMIZATION RESULTS")
                 break
 
+            # get and save out new weights
             weights[i] = optimization_results.x
-
             weights_log[i].append(weights[i])
+            # vstack to put new weights on bottom
+            np.save(op_weights_file, np.vstack((all_iter_weights, weights[i])))
 
             rewards = self.compute_structure_reward(least_counts_points, weights[i])
 
