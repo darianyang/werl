@@ -16,7 +16,25 @@ from werl_base import WERL
 class QT(WERL):
     '''
     Weighted Ensemble Reinforcement Learning (WERL).
+
     TODO: Using Q tables.
+          - the observation space per iteration will be defined by the centroid of the LC cluster
+          - the actions will be which pcoord to choose
+          - the pcoord will initially be based on something similar to the rewards calc based on avg/std
+            - while keeping track of steps as -0.01 reward, and recycling as 1 reward
+            - then after 1st or n episode(s), switch to Q-tables based pcoord selection (have a balance between these)
+                - depending on where the LC centroid is in observation space, choose action (pcoord dim)
+                    
+    Werl:
+    To track history of each episode, look not at single centroids but at the least count centroid coordinates, can cluster this based on all pcoords, and maybe can initialize initial importance values based on reward, or calc reward for all pcoord dims and select the one that’s best. 
+    But I want to learn, so maybe just starting naive and picking based on norm dist from mean, ah yes so use the reward for an initial guess at which to pick, but have the exploration term to select others. 
+    Maybe could have both be influencing the choice, the reward of each pcoord choice and the recycling reward q-table. 
+    Putting more weight into the recycling reward with more events.  
+    Also think about doing like a training schedule with an initial easier recycling that moves, and think about adding noise or mcmc moves to selecting the walkers to split. 
+    Introduce some randomness to the splitting choices in terms of which lc cluster to use, this way it selects randomly from the bottom or something like that? 
+    One selling point might be that once trained, can get a whole congeneric series of ligands like what David LeBard is doing with the permeability. 
+    A big problem is, do I reset everything after each episode? Maybe during initial training?
+    Wait, I can use pcoord space coordinates across each iteration when recycling as an episode reward, tracking the pcoord choice at each iteration!
     '''
 
     def lcas(self):
