@@ -2,14 +2,12 @@ from __future__ import print_function, division
 import logging
 
 #from sympy import diff, exp, symbols, lambdify
-from potentials import *
+#from potentials import *
 
 import numpy as np
 from numpy.random import normal as random_normal
-
-from westpa.core.propagators import WESTPropagator
-
 import openmm as mm
+from westpa.core.propagators import WESTPropagator
 
 PI = np.pi
 log = logging.getLogger(__name__)
@@ -17,7 +15,8 @@ log = logging.getLogger(__name__)
 ##########################
 ### SET POTENTIAL HERE ###
 ##########################
-potential = we_odld_2d
+#potential = we_odld_2d_grad
+#potential = we_odld_2d_energy
 #potential = L_potential
 ##########################
 ##########################
@@ -29,47 +28,15 @@ class ODLDPropagator(WESTPropagator):
     ### SET PARAMETERS HERE ###
     ###########################
     # initial XY position
-    #xy_position = [0, 0]
-    #xy_position = [1, 1]
-    xy_position = [9.5, 9.5]
-    #xy_position = [1.8, 1.8]
+    initial_position = [0, 0, 0]
     # pcoord params
-    coord_len = 5
+    coord_len = 21
     coord_dtype = np.float32
-    coord_ndim = 2
-    # Implement a reflecting boundary at this xy value
-    # (or None, for no reflection)
-    # reflect_at_x0 = -0.5
-    # reflect_at_x = 2.5
-    # reflect_at_y0 = -0.5
-    # reflect_at_y = 2.5
-
-    reflect_at_x0 = 0
-    reflect_at_x = 10
-    reflect_at_y0 = 0
-    reflect_at_y = 10
-
-    # reflect_at_x0 = None
-    # reflect_at_x = None
-    # reflect_at_y0 = None
-    # reflect_at_y = None
-
-    # friction coefficient
-    sigma = 0.01 ** (0.5)  
-    ###########################
-    ###########################
-    ###########################
+    coord_ndim = 3
 
     def __init__(self, rc=None):
         super().__init__(rc)
-        self.initial_pcoord = np.array(self.xy_position, dtype=self.coord_dtype)
-
-    ##################################################################
-    ### adjust for different potential function unpacking settings ###
-    ##################################################################
-    def _calc_gradient(self, x, y):
-        grad = potential(x, y)
-        return grad
+        self.initial_pcoord = np.array(self.initial_position, dtype=self.coord_dtype)
 
     def get_pcoord(self, state):
         """Get the progress coordinate of the given basis or initial state."""
@@ -80,24 +47,75 @@ class ODLDPropagator(WESTPropagator):
         initial_state.istate_status = initial_state.ISTATE_STATUS_PREPARED
         return initial_state
 
-    def _reflect(self, coord_array, min_bound, max_bound):
-        # Variable wrangling...
-        if min_bound is None:
-            min_bound = -np.inf
-        if max_bound is None:
-            max_bound = np.inf
+    def particle_sim(self, n_steps=20, potential='4*(x-1)^2*(x+1)^2+y^2',
+                     initial_position=[0, 0, 0], T=300, gamma=1.0, step_size=0.02,
+                     save_steps=10, save_traj=None, random_seed=None):
+        '''
+        Parameters
+        ----------
+        n_steps : int
+            Number of steps for the trajectory. Default 5000.
+        potential : str
+            Input for OpenMM CustomExternalForce, the potential for particle
+            simulation. Default uses a 2D ODLD double well potential with a 
+            4 kT barrier height ('4*(x-1)^2*(x+1)^2+y^2').
+        initial_position : list of [x,y,z] floats
+            Initial particle positions.
+        T : double
+            Temperature of the ODLD system in Kelvin, default 500K.
+        gamma : double
+            Friction coefficient which couples the system to the heat bath (ps^-1).
+            Default 1.0 ps^-1, increase to increase viscosity / collision frequency.
+        step_size : double
+            The step size with which to integrate the system (in ps).
+            Default 0.02 ps.
+        save_steps : int
+            Integrator steps, default 1. Increase to save less frequently.
+        save_traj : str
+            Default None and no trajectory saving, otherwise input a path to the
+            save the trajectory array.
+        random_seed : int
+            Random seed for selecting velocities. Default None for auto seed.
 
-        # Loop through each coord and reflect the same amount at that direction.
-        for idx, coord in enumerate(coord_array):
-            if coord < min_bound:
-                coord_array[idx] += 2 * (min_bound - coord)
-            elif coord > max_bound:
-                coord_array[idx] += 2 * (max_bound - coord)
+        Returns
+        -------
+        x : 3d array
+            Where X and Y positions are the first 2 columns.
+            The third column is Z positions if the potential is 3D.
+        '''
+        # initialize system and add particle with a unit mass (1)
+        system = mm.System()
+        system.addParticle(1)
+        
+        # defines the potential
+        force = mm.CustomExternalForce(potential)
+        force.addParticle(0, [])
+        system.addForce(force)
+        
+        # Langevin integrator with custom temperature, friction, and step size
+        integrator = mm.LangevinIntegrator(T, gamma, step_size)
+        context = mm.Context(system, integrator)
+        
+        # initialize positions and velocities
+        context.setPositions([initial_position])
+        if random_seed:
+            context.setVelocitiesToTemperature(T, random_seed)
+        else:
+            context.setVelocitiesToTemperature(T)
 
-        return coord_array
+        # save coordinates
+        x = np.zeros((n_steps, 3))
+        for i in range(n_steps):
+            x[i] = context.getState(getPositions=True).getPositions(asNumpy=True)._value
+            integrator.step(save_steps)
+        
+        # optionally save trajectory as text file
+        if save_traj is not None:
+            np.savetxt(save_traj, x)
+        return x
 
     def propagate(self, segments):
-        # log.info(segments)
+        log.info(segments)
         # Create empty array for coords
         n_segs = len(segments)
         coords = np.empty(
@@ -108,40 +126,14 @@ class ODLDPropagator(WESTPropagator):
         for iseg, segment in enumerate(segments):
             coords[iseg, 0] = segment.pcoord[0]
 
-        gradfactor = self.sigma * self.sigma / 2
-        
-        all_displacements = np.zeros(
-            (n_segs, self.coord_len, self.coord_ndim), dtype=self.coord_dtype
-        )
+            # calc new coords for each segment with initial pcoord position start
+            x = self.particle_sim(initial_position=segment.pcoord[0])
+            # fill out the rest of the pcoord array
+            coords[iseg, 1:] = x
 
-        for istep in range(1, self.coord_len):
-            xi = coords[:, istep - 1, 0]
-            yi = coords[:, istep - 1, 1]
-            # log.info(f'{xi}, {yi}')
-
-            #print(xi, yi)
-
-            all_displacements[:, istep, 0] = x_displacements = random_normal(
-                scale=self.sigma, size=(n_segs,)
-            )
-            all_displacements[:, istep, 1] = y_displacements = random_normal(
-                scale=self.sigma, size=(n_segs,)
-            )
-
-            ### ADJUST GRAD ###
-            #log.info(f'XY vars: {xi}, {yi}')
-            grad = self._calc_gradient(xi, yi)
-            # gradfactor = sigma**2 / 2 = 0.00005
-            newx = xi - (gradfactor * grad) + x_displacements
-            newy = yi - (gradfactor * grad) + y_displacements
-   
-            # Update coords, return reflected coords
-            coords[:, istep, 0] = self._reflect(newx, self.reflect_at_x0, self.reflect_at_x)
-            coords[:, istep, 1] = self._reflect(newy, self.reflect_at_y0, self.reflect_at_y)
-
-        for iseg, segment in enumerate(segments):
+            # fill out new coords
             segment.pcoord[...] = coords[iseg, :]
-            segment.data["displacement"] = all_displacements[iseg]
+            #segment.data["displacement"] = all_displacements[iseg]
             segment.status = segment.SEG_STATUS_COMPLETE
 
         return segments
