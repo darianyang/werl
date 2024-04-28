@@ -14,7 +14,7 @@ import numpy as np
 from sklearn.cluster import KMeans
 from scipy.spatial.distance import cdist
 from scipy.optimize import linear_sum_assignment
-from werl_base import WERL
+from .werl_base import WERL
 
 class LCAS_MA(WERL):
     '''
