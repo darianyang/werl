@@ -16,8 +16,8 @@ traj = np.loadtxt("test_traj5000.txt")
 # an error if I use an array directly
 # mpdist = mdap.MD_Plot(data_type="pdist", Xname="test_traj5000.txt", Xindex=0, 
 #                       Yname="test_traj5000.txt", Yindex=1, xlim=(0,2), ylim=(0,2))
-mpdist = mdap.MD_Plot(data_type="pdist", Xname=traj, Xindex=0, 
-                      Yname=traj, Yindex=1, xlim=(0,2), ylim=(0,2))
+mpdist = mdap.MD_Plot(data_type="pdist", Xname=traj, Xindex=0, plot_mode="hexbin3d",
+                      Yname=traj, Zname=traj, Zindex=2, Yindex=1)#, xlim=(0,2), ylim=(0,2))
 mpdist.plot()
 plt.show()
 

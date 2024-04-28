@@ -2,69 +2,82 @@ import numpy as np
 import openmm as mm
 import argparse
 
-#import matplotlib.pyplot as plt
+# TODO: add option to select a potential by name and import other potentials
+class ParticleSimulator:
+    '''
+    ODLD simulations in OpenMM.
+    '''
+    def __init__(self, n_steps=5000, potential='4*(x-1)^2*(x+1)^2+y^2',
+                 initial_position=[0, 0, 0], T=500, gamma=1.0, stepsize=0.02,
+                 savetraj=None):
+        '''
+        Parameters
+        ----------
+        n_steps : int
+            Number of steps for the trajectory. Default 5000.
+        potential : str
+            Input for OpenMM CustomExternalForce, the potential for particle
+            simulation. Default uses a 2D ODLD double well potential with a 
+            4 kT barrier height ('4*(x-1)^2*(x+1)^2 + y^2').
+        initial_position : list of [x,y,z] floats
+            Initial particle positions.
+        T : double
+            Temperature of the ODLD system in Kelvin, default 500K.
+        gamma : double
+            Friction coefficient which couples the system to the heat bath (ps^-1).
+            Default 1.0 ps^-1, increase to increase viscosity / collision frequency.
+        stepsize : double
+            The step size with which to integrate the system (in ps).
+            Default 0.02 ps.
+        savetraj : str
+            Default None and no trajectory saving, otherwise input a path to the
+            save the trajectory array.
+        '''
+        self.n_steps = n_steps
+        self.potential = potential
+        self.initial_position = initial_position
+        self.T = T
+        self.gamma = gamma
+        self.stepsize = stepsize
+        self.savetraj = savetraj
 
-def run_simulation(n_steps=5000, potential='4*(x-1)^2*(x+1)^2 + y^2',
-                   initial_position=[0, 0, 0], T=500, gamma=1.0, stepsize=0.02,
-                   savetraj=None):
-    """
-    Simulate a single particle in OpenMM.
+    def run_simulation(self):
+        '''
+        Simulate a single particle in OpenMM.
 
-    Parameters
-    ----------
-    n_steps : int
-        Number of steps for the trajectory. Default 5000.
-    potential : str
-        Input for OpenMM CustomExternalForce, the potential for particle
-        simulation. Default uses a 2D ODLD double well potential with a 
-        4 kT barrier height ('4*(x-1)^2*(x+1)^2 + y^2').
-    initial_position : list of [x,y,z] floats
-        Initial particle positions.
-    T : double
-        Temperature of the ODLD system in Kelvin, default 500K.
-    gamma : double
-        Friction coefficient which couples the system to the heat bath (ps^-1).
-        Default 1.0 ps^-1, increase to increase viscosity / collision frequency.
-    stepsize : double
-        The step size with which to integrate the system (in ps).
-        Default 0.02 ps.
-    savetraj : str
-        Default None and no trajectory saving, otherwise input a path to the
-        save the trajectory array.
+        Returns
+        -------
+        x : 3d array
+            Where X and Y positions are the first 2 columns.
+            The third column is Z positions if the potential is 3D.
+        '''
+        # initialize system and add particle with a unit mass (1)
+        system = mm.System()
+        system.addParticle(1)
         
-    Returns
-    -------
-    x : 3d array
-        Where X and Y positions are the first 2 columns.
-        The third column is Z positions if the potential is 3D.
-    """
-    # initialize system and add particle with a unit mass (1)
-    system = mm.System()
-    system.addParticle(1)
-    
-    # defines the potential
-    force = mm.CustomExternalForce(potential)
-    force.addParticle(0, [])
-    system.addForce(force)
-    
-    # Langevin integrator with custom temperature, friction, and step size
-    integrator = mm.LangevinIntegrator(T, gamma, stepsize)
-    context = mm.Context(system, integrator)
-    
-    # initialize positions and velocities
-    context.setPositions([initial_position])
-    context.setVelocitiesToTemperature(T)
-    
-    # save coordinates
-    x = np.zeros((n_steps, 3))
-    for i in range(n_steps):
-        x[i] = context.getState(getPositions=True).getPositions(asNumpy=True)._value
-        integrator.step(1)
-    
-    # optionally save trajectory as text file
-    if savetraj is not None:
-        np.savetxt(savetraj, x)
-    return x
+        # defines the potential
+        force = mm.CustomExternalForce(self.potential)
+        force.addParticle(0, [])
+        system.addForce(force)
+        
+        # Langevin integrator with custom temperature, friction, and step size
+        integrator = mm.LangevinIntegrator(self.T, self.gamma, self.stepsize)
+        context = mm.Context(system, integrator)
+        
+        # initialize positions and velocities
+        context.setPositions([self.initial_position])
+        context.setVelocitiesToTemperature(self.T)
+        
+        # save coordinates
+        x = np.zeros((self.n_steps, 3))
+        for i in range(self.n_steps):
+            x[i] = context.getState(getPositions=True).getPositions(asNumpy=True)._value
+            integrator.step(1)
+        
+        # optionally save trajectory as text file
+        if self.savetraj is not None:
+            np.savetxt(self.savetraj, x)
+        return x
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description='Simulate a single particle in OpenMM.')
@@ -91,4 +104,4 @@ def parse_arguments():
 
 if __name__ == "__main__":
     args = parse_arguments()
-    run_simulation(**vars(args))
+    ParticleSimulator(**vars(args)).run_simulation()
