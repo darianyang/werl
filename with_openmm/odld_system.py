@@ -5,22 +5,15 @@ import logging
 #from potentials import *
 
 import numpy as np
-from numpy.random import normal as random_normal
+#from numpy.random import normal as random_normal
 import openmm as mm
 from westpa.core.propagators import WESTPropagator
 
+import potentials
+four_wells_symmetric = potentials.gaussian_bivariate_string().replace('-80', '-25', 1)
+
 PI = np.pi
 log = logging.getLogger(__name__)
-
-##########################
-### SET POTENTIAL HERE ###
-##########################
-#potential = we_odld_2d_grad
-#potential = we_odld_2d_energy
-#potential = L_potential
-##########################
-##########################
-##########################
 
 class ODLDPropagator(WESTPropagator):
 
@@ -28,11 +21,17 @@ class ODLDPropagator(WESTPropagator):
     ### SET PARAMETERS HERE ###
     ###########################
     # initial XY position
-    initial_position = [0, 0, 0]
+    #initial_position = [0, 0, 0]
+    initial_position = [0.25, 1, 0]
+    #initial_position = [0, 1, 0]
     # pcoord params
     coord_len = 21
     coord_dtype = np.float32
     coord_ndim = 3
+
+    # optionally set a potential, otherwise default 2 well XY
+    potential = four_wells_symmetric
+    #potential = L_potential_string
 
     def __init__(self, rc=None):
         super().__init__(rc)
@@ -48,8 +47,8 @@ class ODLDPropagator(WESTPropagator):
         return initial_state
 
     def particle_sim(self, n_steps=20, potential='4*(x-1)^2*(x+1)^2+y^2',
-                     initial_position=[0, 0, 0], T=300, gamma=1.0, step_size=0.02,
-                     save_steps=10, save_traj=None, random_seed=None):
+                     initial_position=[0, 0, 0], T=300, gamma=100, step_size=0.02,
+                     save_steps=1, save_traj=None, random_seed=None):
         '''
         Parameters
         ----------
@@ -88,7 +87,11 @@ class ODLDPropagator(WESTPropagator):
         system.addParticle(1)
         
         # defines the potential
-        force = mm.CustomExternalForce(potential)
+        if hasattr(self, "potential"):
+            force = mm.CustomExternalForce(self.potential)
+        else:
+            force = mm.CustomExternalForce(potential)
+
         force.addParticle(0, [])
         system.addForce(force)
         

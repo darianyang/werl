@@ -1,5 +1,6 @@
 import numpy as np
-
+from sympy import diff, exp, symbols, lambdify
+import math
 
 # Potential definitions
 
@@ -197,29 +198,29 @@ def four_wells_symmetric_func(x, y):
 four_wells_symmetric = gaussian_bivariate_string().replace('-80', '-25', 1)
 
 
-# Potential for TSLC
-def circular_potential_func(v, r=2, c=-250, a=-10):
-    '''
-    Computes circular potential value at point v = (x, y ,z).
-    It is assumed the circle is centered at the origin.
+# # Potential for TSLC
+# def circular_potential_func(v, r=2, c=-250, a=-10):
+#     '''
+#     Computes circular potential value at point v = (x, y ,z).
+#     It is assumed the circle is centered at the origin.
     
-    Args
-    -----------------
-    v (array-like): 3d coordinates of point in cartesian coordinates. 
-    r (float): circle radius.
-    c (float): energy minimum at the circle. Should be negative for the circle to be a stable equilibrium line.
-    a (float): exponential scaling factor (adjusts how quickly the energy increases far form the circle). Should be negative.
+#     Args
+#     -----------------
+#     v (array-like): 3d coordinates of point in cartesian coordinates. 
+#     r (float): circle radius.
+#     c (float): energy minimum at the circle. Should be negative for the circle to be a stable equilibrium line.
+#     a (float): exponential scaling factor (adjusts how quickly the energy increases far form the circle). Should be negative.
     
-    Returns
-    -----------------
-    potential (float): potential value at v.
-    '''
-    x, y, z = v
-    circle_radius = r
-    d_squared = z ** 2 + np.square(np.sqrt(x ** 2 + y ** 2) - circle_radius)
-    potential = c * np.exp(a * d_squared)
+#     Returns
+#     -----------------
+#     potential (float): potential value at v.
+#     '''
+#     x, y, z = v
+#     circle_radius = r
+#     d_squared = z ** 2 + np.square(np.sqrt(x ** 2 + y ** 2) - circle_radius)
+#     potential = c * np.exp(a * d_squared)
 
-    return potential
+#     return potential
 
 
 def circular_potential_string(r=2, c=-250, a=-10):
@@ -306,11 +307,37 @@ def ring_potential(x, y):
     
     return V
 
-def we_odld_2d(x, y):
-    sigma = 0.001 ** (0.5)  # friction coefficient
-
+def we_odld_2d_energy(x, y):
     A = 2
-    B = 10
+    B = 2
+    #B = 10
+    C = 0.5
+    x0 = 0
+    y0 = 0
+    # x0 = 1
+    # y0 = 1
+
+    twopi_by_A = 2 * np.pi / A
+    half_B = B / 2
+
+    xarg = twopi_by_A * (x - x0)
+    yarg = twopi_by_A * (y - y0)
+
+    eCx = np.exp(C * x)
+    eCx_less_one = eCx - 1.0
+    eCy = np.exp(C * y)
+    eCy_less_one = eCy - 1.0
+
+    potentialx = -half_B / eCx_less_one * np.cos(xarg)
+    potentialy = -half_B / eCy_less_one * np.cos(yarg)
+    potentialx -= np.min(potentialx)
+    potentialy -= np.min(potentialy)
+    return potentialx + potentialy
+
+def we_odld_2d_grad(x, y):
+    A = 2
+    B = 2
+    #B = 10
     C = 0.5
     x0 = 0
     y0 = 0
@@ -339,16 +366,38 @@ def we_odld_2d(x, y):
         * (twopi_by_A * eCy_less_one * np.sin(yarg) + C * eCy * np.cos(yarg))
     )
 
-    # return -(gradx + grady)
-    return gradx + grady
+    #return -(gradx + grady)
+    return gradx, grady
+    #return gradx + grady
 
-from sympy import diff, exp, symbols, lambdify
+def we_odld_2d_new_energy(x, y):
+    """
+    Just the energy.
+    """
+    A = 50.5
+    B = 49.5
+    #C = 10000
+    C = 10**5
+    D = 51
+    E = 49
 
-def we_odld_2d_new(x, y):
+    #x, y = symbols('x y')
+    
+    logU1 = -A * ((x-.25)**2) - A * ((y-.75)**2) - 2 * B * (x-.25) * (y-.75)
+    
+    logU2 = -C * (x**2) * ((1-x)**2) * (y**2) * ((1-y)**2)
+    
+    logU3 = -D * (x**2) - D * (y**2) + 2 * E * x * y
+
+    # use math instead of np to be compatible with sympy differentiation later
+    return np.exp(logU1) + np.exp(logU2) + (0.5 * np.exp(logU3))
+
+def we_odld_2d_new_grad(x, y):
     def calc_gradient():
         A = 50.5
         B = 49.5
-        C = 10000
+        #C = 10000
+        C = 10**5
         D = 51
         E = 49
 
