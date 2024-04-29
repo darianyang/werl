@@ -15,6 +15,13 @@ four_wells_symmetric = potentials.gaussian_bivariate_string().replace('-80', '-2
 PI = np.pi
 log = logging.getLogger(__name__)
 
+Z_potential_string = '''\
+(x^4 + y^4)/20480 - 3 * exp(-0.01 * (x+5)^2 - 0.2 * (y+5)^2) - \
+3 * exp(-0.01 * (x-5)^2 - 0.2 * (y-5)^2) + \
+5 * exp(-0.2 * (x+3*(y-3)^2))/(1+exp(-x-3)) + \
+5 * exp(-0.2 * (x+3*(y+3)^2))/(1+exp(x-3)) + \
+3 * exp(-0.01 *(x^2 + y^2))'''
+
 class ODLDPropagator(WESTPropagator):
 
     ###########################
@@ -22,16 +29,18 @@ class ODLDPropagator(WESTPropagator):
     ###########################
     # initial XY position
     #initial_position = [0, 0, 0]
-    initial_position = [0.25, 1, 0]
+    #initial_position = [0.25, 1, 0]
     #initial_position = [0, 1, 0]
+    initial_position = [0, -10, 0]
     # pcoord params
     coord_len = 21
     coord_dtype = np.float32
     coord_ndim = 3
 
     # optionally set a potential, otherwise default 2 well XY
-    potential = four_wells_symmetric
+    #potential = four_wells_symmetric
     #potential = L_potential_string
+    potential = Z_potential_string
 
     def __init__(self, rc=None):
         super().__init__(rc)
@@ -47,8 +56,8 @@ class ODLDPropagator(WESTPropagator):
         return initial_state
 
     def particle_sim(self, n_steps=20, potential='4*(x-1)^2*(x+1)^2+y^2',
-                     initial_position=[0, 0, 0], T=300, gamma=100, step_size=0.02,
-                     save_steps=1, save_traj=None, random_seed=None):
+                     initial_position=[0, 0, 0], T=300, gamma=1, step_size=0.02,
+                     save_steps=10, save_traj=None, random_seed=None):
         '''
         Parameters
         ----------

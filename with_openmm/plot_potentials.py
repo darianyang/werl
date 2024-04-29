@@ -104,7 +104,7 @@ def plot_potential(potential, xlim=None, ylim=None, granularity=1, vmax=None, vm
 # from REAP
 #plot_potential(I_potential, (-2, 2), (0, 4), granularity=0.01)
 #plot_potential(L_potential, (-1, 3), (-1, 3), granularity=0.01)
-plot_potential(L_potential, (-1, 3), (-1, 3), granularity=0.01)
+#plot_potential(L_potential, (-1, 3), (-1, 3), granularity=0.01)
 #plot_potential(O_potential, (-1.5, 1.5), (-1.5, 1.5), granularity=0.01)
 
 # from TSLC
@@ -129,5 +129,5 @@ plot_potential(L_potential, (-1, 3), (-1, 3), granularity=0.01)
 #plot_potential(SymmetricTwoChannel, (-3, 3), (-3, 3), granularity=0.01, single_param=True, vmax=4)
 #plot_potential(Muller, (-3, 3), (-3, 3), granularity=0.01, single_param=True, vmax=10)
 #plot_potential(Rosenbrock, (-2, 2), (-2, 2), granularity=0.01, single_param=True, vmax=100)
-#plot_potential(Zpotential, (-20, 20), (-20, 20), granularity=0.1, single_param=True, vmax=10)
+plot_potential(Zpotential, (-20, 20), (-20, 20), granularity=0.1, single_param=True, vmax=10)
 #plot_potential(EntropicBox, (-1, 1), (-1, 1), granularity=0.01, single_param=True)

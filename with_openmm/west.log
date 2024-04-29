@@ -1,7 +1,7 @@
 System building only off of the configuration file
 Maximum wallclock time: 1:00:00
 
-Sun Apr 28 20:12:28 2024
+Sun Apr 28 20:24:53 2024
 Iteration 1 (10 requested)
 Beginning iteration 1
 40 segments remain in iteration 1 (40 total)
@@ -15,10 +15,10 @@ per-segment probability dynamic range (kT): 0
 norm = 1, error in norm = 0 (0*epsilon)
 Waiting for segments to complete...
 Iteration completed successfully
-Iteration wallclock: 0:00:03.675436, cputime: 0:00:00
+Iteration wallclock: 0:00:02.529816, cputime: 0:00:00
 
 
-Sun Apr 28 20:12:32 2024
+Sun Apr 28 20:24:56 2024
 Iteration 2 (10 requested)
 Beginning iteration 2
 40 segments remain in iteration 2 (40 total)
@@ -32,10 +32,10 @@ per-segment probability dynamic range (kT): 0
 norm = 1, error in norm = 0 (0*epsilon)
 Waiting for segments to complete...
 Iteration completed successfully
-Iteration wallclock: 0:00:04.995370, cputime: 0:00:00
+Iteration wallclock: 0:00:02.740517, cputime: 0:00:00
 
 
-Sun Apr 28 20:12:37 2024
+Sun Apr 28 20:24:58 2024
 Iteration 3 (10 requested)
 Beginning iteration 3
 40 segments remain in iteration 3 (40 total)
@@ -49,10 +49,10 @@ per-segment probability dynamic range (kT): 0
 norm = 1, error in norm = 0 (0*epsilon)
 Waiting for segments to complete...
 Iteration completed successfully
-Iteration wallclock: 0:00:03.872405, cputime: 0:00:00
+Iteration wallclock: 0:00:03.565164, cputime: 0:00:00
 
 
-Sun Apr 28 20:12:40 2024
+Sun Apr 28 20:25:02 2024
 Iteration 4 (10 requested)
 Beginning iteration 4
 40 segments remain in iteration 4 (40 total)
@@ -66,10 +66,10 @@ per-segment probability dynamic range (kT): 0
 norm = 1, error in norm = 0 (0*epsilon)
 Waiting for segments to complete...
 Iteration completed successfully
-Iteration wallclock: 0:00:03.511328, cputime: 0:00:00
+Iteration wallclock: 0:00:03.086159, cputime: 0:00:00
 
 
-Sun Apr 28 20:12:44 2024
+Sun Apr 28 20:25:05 2024
 Iteration 5 (10 requested)
 Beginning iteration 5
 40 segments remain in iteration 5 (40 total)
@@ -83,10 +83,10 @@ per-segment probability dynamic range (kT): 0
 norm = 1, error in norm = 0 (0*epsilon)
 Waiting for segments to complete...
 Iteration completed successfully
-Iteration wallclock: 0:00:03.513313, cputime: 0:00:00
+Iteration wallclock: 0:00:03.071839, cputime: 0:00:00
 
 
-Sun Apr 28 20:12:47 2024
+Sun Apr 28 20:25:08 2024
 Iteration 6 (10 requested)
 Beginning iteration 6
 40 segments remain in iteration 6 (40 total)
@@ -100,10 +100,10 @@ per-segment probability dynamic range (kT): 0
 norm = 1, error in norm = 0 (0*epsilon)
 Waiting for segments to complete...
 Iteration completed successfully
-Iteration wallclock: 0:00:03.191390, cputime: 0:00:00
+Iteration wallclock: 0:00:03.212864, cputime: 0:00:00
 
 
-Sun Apr 28 20:12:51 2024
+Sun Apr 28 20:25:11 2024
 Iteration 7 (10 requested)
 Beginning iteration 7
 40 segments remain in iteration 7 (40 total)
@@ -117,10 +117,10 @@ per-segment probability dynamic range (kT): 0
 norm = 1, error in norm = 0 (0*epsilon)
 Waiting for segments to complete...
 Iteration completed successfully
-Iteration wallclock: 0:00:02.565533, cputime: 0:00:00
+Iteration wallclock: 0:00:03.107235, cputime: 0:00:00
 
 
-Sun Apr 28 20:12:53 2024
+Sun Apr 28 20:25:14 2024
 Iteration 8 (10 requested)
 Beginning iteration 8
 40 segments remain in iteration 8 (40 total)
@@ -134,10 +134,10 @@ per-segment probability dynamic range (kT): 0
 norm = 1, error in norm = 0 (0*epsilon)
 Waiting for segments to complete...
 Iteration completed successfully
-Iteration wallclock: 0:00:02.565144, cputime: 0:00:00
+Iteration wallclock: 0:00:02.394512, cputime: 0:00:00
 
 
-Sun Apr 28 20:12:56 2024
+Sun Apr 28 20:25:17 2024
 Iteration 9 (10 requested)
 Beginning iteration 9
 40 segments remain in iteration 9 (40 total)
@@ -151,10 +151,10 @@ per-segment probability dynamic range (kT): 0
 norm = 1, error in norm = 0 (0*epsilon)
 Waiting for segments to complete...
 Iteration completed successfully
-Iteration wallclock: 0:00:02.562442, cputime: 0:00:00
+Iteration wallclock: 0:00:02.399214, cputime: 0:00:00
 
 
-Sun Apr 28 20:12:58 2024
+Sun Apr 28 20:25:19 2024
 Iteration 10 (10 requested)
 Beginning iteration 10
 40 segments remain in iteration 10 (40 total)
@@ -168,8 +168,8 @@ per-segment probability dynamic range (kT): 0
 norm = 1, error in norm = 0 (0*epsilon)
 Waiting for segments to complete...
 Iteration completed successfully
-Iteration wallclock: 0:00:02.558597, cputime: 0:00:00
+Iteration wallclock: 0:00:02.425273, cputime: 0:00:00
 
 
-Sun Apr 28 20:13:01 2024
+Sun Apr 28 20:25:22 2024
 WEST run complete.
