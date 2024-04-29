@@ -4,9 +4,9 @@ import numpy as np
 import operator
 from westpa.core.we_driver import WEDriver
 
-from werl_lcas import LCAS
-from werl_reap import REAP
-from werl_lcasMA import LCAS_MA
+from werl.werl_lcas import LCAS
+from werl.werl_reap import REAP
+from werl.werl_lcasMA import LCAS_MA
 
 ############################# SET WERL PARAMETERS #############################
 
