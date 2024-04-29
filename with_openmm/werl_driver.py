@@ -4,7 +4,7 @@ import numpy as np
 import operator
 from westpa.core.we_driver import WEDriver
 
-#from werl.werl_lcas import LCAS
+from werl.werl_lcas import LCAS
 #from werl.werl_lcasMA import LCAS_MA
 from werl.werl_reap import REAP
 
@@ -147,12 +147,15 @@ class WERLDriver(WEDriver):
                 # resample = WEVO(pcoords, weights, merge_dist=merge_dist, char_dist=char_dist,
                 #                 merge_alg=merge_alg, pmin=pmin, pmax=pmax, dist_exponent=dist_exponent)
                 # split, merge, variation, walker_variations = resample.resample()
-                #resample = WERL(pcoords, n_clusters=5)
-                # resample = LCAS(pcoords, weights, n_clusters=None, pmax=1, pmin=1e-500)
+                
+                # resample = LCAS(pcoords, weights, n_clusters=None)#, pmax=1, pmin=1e-500)
                 # split, merge = resample.lcas()
+                
                 # resample = LCAS_MA(pcoords, weights, n_clusters=5, n_agents=4)
                 # split, merge = resample.lcas_ma()
-                resample = REAP(pcoords, weights, n_clusters=None)
+
+                #resample = REAP(pcoords, weights, n_clusters=None)
+                resample = REAP(pcoords, weights, n_clusters=12)
                 split, merge = resample.reap()
 
                 # TODO: testing filters

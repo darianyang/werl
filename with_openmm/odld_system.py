@@ -32,11 +32,12 @@ class ODLDPropagator(WESTPropagator):
     #initial_position = [0.25, 1, 0]
     #initial_position = [0, 1, 0]
     #initial_position = [0, -10, 0]
-    initial_position = [-10, -6, 0]
+    #initial_position = [-10, -6, 0]
+    initial_position = [-10, -6]
     # pcoord params
     coord_len = 21
     coord_dtype = np.float32
-    coord_ndim = 3
+    coord_ndim = 2
 
     # optionally set a potential, otherwise default 2 well XY
     #potential = four_wells_symmetric
@@ -141,9 +142,14 @@ class ODLDPropagator(WESTPropagator):
             coords[iseg, 0] = segment.pcoord[0]
 
             # calc new coords for each segment with initial pcoord position start
-            x = self.particle_sim(initial_position=segment.pcoord[0])
-            # fill out the rest of the pcoord array
-            coords[iseg, 1:] = x
+            # some initial position manipulation for 2d xy traj output
+            #print(np.concatenate((segment.pcoord[0], np.array([0]))))
+            xyz_position = np.concatenate((segment.pcoord[0], np.array([0])))
+            #print(segment.pcoord[0].dtype)
+            #x = self.particle_sim(initial_position=segment.pcoord[0])
+            x = self.particle_sim(initial_position=xyz_position)
+            # fill out the rest of the pcoord array with xy positions
+            coords[iseg, 1:] = x[:,:self.coord_ndim]
 
             # fill out new coords
             segment.pcoord[...] = coords[iseg, :]
