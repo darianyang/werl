@@ -145,7 +145,7 @@ class REAP(WERL):
         delta = 0.02  # Upper boundary for learning step (default 0.02)
         #delta = 0.5  # Upper boundary for learning step
         # self.pcoords.shape[1] (n_pcoord_dims = n_columns of the pcoords array)
-        n_features = 2  # Number of variables in OP space (2d pcoord for now)
+        n_features = self.pcoords.shape[1]  # Number of variables in OP space (2d pcoord for now)
 
         # Step 2: set initial OP weights (not WE traj weights)
         # only do this if input weights are None
