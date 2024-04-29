@@ -111,7 +111,7 @@ def plot_potential(potential, xlim=None, ylim=None, granularity=1, vmax=None, vm
 #plot_potential(ring_potential, (-3, 3), (-3, 3), granularity=0.01, calc_grad=True)
 
 # WE 2D ODLDs
-plot_potential(we_odld_2d_energy, (0, 10), (0, 10), granularity=0.01, vmax=5)
+#plot_potential(we_odld_2d_energy, (0, 10), (0, 10), granularity=0.01, vmax=5)
 #plot_potential(we_odld_2d_energy, (0, 10), (0, 10), granularity=0.01, vmax=15, calc_grad=True)
 #plot_potential(we_odld_2d_grad, (0, 10), (0, 10), granularity=0.01, vmax=15)
 #plot_potential(we_odld_2d_grad, (-10, 0), (-10, 0), granularity=0.01, vmax=15)
@@ -129,5 +129,5 @@ plot_potential(we_odld_2d_energy, (0, 10), (0, 10), granularity=0.01, vmax=5)
 #plot_potential(SymmetricTwoChannel, (-3, 3), (-3, 3), granularity=0.01, single_param=True, vmax=4)
 #plot_potential(Muller, (-3, 3), (-3, 3), granularity=0.01, single_param=True, vmax=10)
 #plot_potential(Rosenbrock, (-2, 2), (-2, 2), granularity=0.01, single_param=True, vmax=100)
-#plot_potential(Zpotential, (-20, 20), (-20, 20), granularity=0.1, single_param=True, vmax=10)
+plot_potential(Zpotential, (-30, 30), (-30, 30), granularity=0.1, single_param=True, vmin=0, vmax=25)
 #plot_potential(EntropicBox, (-1, 1), (-1, 1), granularity=0.01, single_param=True)

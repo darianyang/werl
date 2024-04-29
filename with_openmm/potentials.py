@@ -507,7 +507,15 @@ def Zpotential(x):
     Returns:
     float: The value of the potential at the given position x.
     """
-    return (x[0]**4 + x[1]**4)/20480 - 3 * np.exp(-0.01 * (x[0]+5)**2 - 0.2 * (x[1]+5)**2) - 3 * np.exp(-0.01 * (x[0]-5)**2 - 0.2 * (x[1]-5)**2) + 5 * np.exp(-0.2 * (x[0]+3*(x[1]-3)**2))/(1+np.exp(-x[0]-3)) + 5 * np.exp(-0.2 * (x[0]+3*(x[1]+3)**2))/(1+np.exp(x[0]-3)) + 3 * np.exp(-0.01 *(x[0]**2 + x[1]**2))
+    # original coefficients: 3, 5, 5, 3
+    return (x[0]**4 + x[1]**4)/20480 - 3 * np.exp(-0.01 * (x[0]+5)**2 - 0.2 * (x[1]+5)**2) - \
+            13 * np.exp(-0.01 * (x[0]-5)**2 - 0.2 * (x[1]-5)**2) + \
+            5 * np.exp(-0.2 * (x[0]+3*(x[1]-3)**2))/(1+np.exp(-x[0]-3)) + \
+            5 * np.exp(-0.2 * (x[0]+3*(x[1]+3)**2))/(1+np.exp(x[0]-3)) + \
+            23 * np.exp(-0.01 *(x[0]**2 + x[1]**2))
+            # originally smaller barrier near middle
+            #3 * np.exp(-0.01 *(x[0]**2 + x[1]**2))
+            
 
 def EntropicBox(x):
     """

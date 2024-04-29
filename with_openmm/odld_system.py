@@ -17,10 +17,10 @@ log = logging.getLogger(__name__)
 
 Z_potential_string = '''\
 (x^4 + y^4)/20480 - 3 * exp(-0.01 * (x+5)^2 - 0.2 * (y+5)^2) - \
-3 * exp(-0.01 * (x-5)^2 - 0.2 * (y-5)^2) + \
+13 * exp(-0.01 * (x-5)^2 - 0.2 * (y-5)^2) + \
 5 * exp(-0.2 * (x+3*(y-3)^2))/(1+exp(-x-3)) + \
 5 * exp(-0.2 * (x+3*(y+3)^2))/(1+exp(x-3)) + \
-3 * exp(-0.01 *(x^2 + y^2))'''
+23 * exp(-0.01 *(x^2 + y^2))'''
 
 class ODLDPropagator(WESTPropagator):
 
@@ -31,7 +31,8 @@ class ODLDPropagator(WESTPropagator):
     #initial_position = [0, 0, 0]
     #initial_position = [0.25, 1, 0]
     #initial_position = [0, 1, 0]
-    initial_position = [0, -10, 0]
+    #initial_position = [0, -10, 0]
+    initial_position = [-10, -6, 0]
     # pcoord params
     coord_len = 21
     coord_dtype = np.float32
@@ -55,6 +56,7 @@ class ODLDPropagator(WESTPropagator):
         initial_state.istate_status = initial_state.ISTATE_STATUS_PREPARED
         return initial_state
 
+    # TODO: import particle sim?
     def particle_sim(self, n_steps=20, potential='4*(x-1)^2*(x+1)^2+y^2',
                      initial_position=[0, 0, 0], T=300, gamma=1, step_size=0.02,
                      save_steps=10, save_traj=None, random_seed=None):
