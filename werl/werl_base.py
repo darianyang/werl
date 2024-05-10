@@ -23,8 +23,8 @@ class WERL:
     '''
     Weighted Ensemble Reinforcement Learning (WERL).
     '''
-    # pmin=1e-12, pmax=0.1
-    def __init__(self, pcoords, weights, pmin=1e-100, pmax=1,
+    
+    def __init__(self, pcoords, weights, pmin=1e-12, pmax=0.1,
                  n_clusters=None, n_split=None, 
                  b=0.07, gamma=0.6, d=2):
         '''
@@ -34,6 +34,7 @@ class WERL:
             Each segment also has a weight attribute.
         pcoords : ndarray
             Last pcoord value of each segment for the current iteration.
+        TODO: option for automatic pcoord input data standard scaling.
         weights : array
             Weight of each segment for the iteration. 
             The sum of all weights should be 1.0.
@@ -86,7 +87,8 @@ class WERL:
         if n_clusters is None:
             # calculate optimal amount of n_clusters
             #self.n_clusters = np.floor(b * self.n_segments ** (gamma * d)).astype(int)
-            self.n_clusters = int(b * (self.n_segments ** (gamma * d)))
+            #self.n_clusters = int(b * (self.n_segments ** (gamma * d)))
+            self.n_clusters = self.calc_n_clusters(self.n_segments, b, gamma, d)
         else:
             # otherwise use input n_cluster number
             self.n_clusters = n_clusters
@@ -103,6 +105,21 @@ class WERL:
         self.to_split = [0] * self.n_segments
         # list of lists for walker positions to merge, begin as all empty
         self.to_merge = [[] for _ in range(self.n_segments)]
+
+    @staticmethod
+    def calc_n_clusters(n_datapoints, b=0.07, gamma=0.6, d=2):
+        '''
+        Parameters
+        ----------
+        b : float, default 1e-4 (REAP) or 0.07 (TSLC)
+            Coefficient for n_clusters heuristic.
+        gamma : float, default 0.7
+            Exponent for n_clusters heuristic (should theoretically be in (0.5, 1)).
+        d : float, default 2 
+            Intrinsic dimensionality of slow manifold for the system. Used in n_clusters heuristic.
+        '''
+        n_clusters = int(b * (n_datapoints ** (gamma * d)))
+        return n_clusters
 
     def _clustering(self):
         '''
@@ -143,6 +160,9 @@ class WERL:
         # this will be a negative index, so start with smallest cluster (-1)
         # and decrease by 1 if needed
         lc_cluster_counter = 1
+
+        # TODO: debugging an indexing error in line 156 (-14 index from size 13 array)
+        print("COUNTS: \n", self.counts)
 
         while splits_remaining > 0:
            

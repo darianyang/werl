@@ -4,8 +4,9 @@ import numpy as np
 import operator
 from westpa.core.we_driver import WEDriver
 
-from werl import WERL
-#from split_test import LCAS_split
+from werl.werl_lcas import LCAS
+#from werl.werl_lcasMA import LCAS_MA
+from werl.werl_reap import REAP
 
 ############################# SET WERL PARAMETERS #############################
 
@@ -113,7 +114,15 @@ class WERLDriver(WEDriver):
                 #nsegs = pcoords.shape[0]
                 #nframes = pcoords.shape[1]
                 #ndims = pcoords.shape[2]
-                
+
+                # TODO: this will allow you to get the pcoords for all frames
+                current_iter_segments = self.current_iter_segments
+
+                curr_segments = np.array(sorted(current_iter_segments, key=operator.attrgetter('weight')), dtype=np.object_)
+                curr_pcoords = np.array(list(map(operator.attrgetter('pcoord'), curr_segments)))
+                curr_weights = np.array(list(map(operator.attrgetter('weight'), curr_segments)))
+
+                #np.save("pcoords_full.npy", curr_pcoords)
                 # pcoord for the last frame of previous iteration
                 # or the first frame of current iteration
                 pcoords = pcoords[:,0,:]
@@ -124,8 +133,8 @@ class WERLDriver(WEDriver):
                 #print("after pcoords", pcoords)
                 
                 # print for sanity check
-                print("pcoords", pcoords)
-                print("weights", weights)
+                #print("pcoords", pcoords)
+                #print("weights", weights)
                 print("Initial weight sum: ", np.sum(weights))
 
                 # run wevo and do split merge based on wevo decisions
@@ -138,11 +147,25 @@ class WERLDriver(WEDriver):
                 # resample = WEVO(pcoords, weights, merge_dist=merge_dist, char_dist=char_dist,
                 #                 merge_alg=merge_alg, pmin=pmin, pmax=pmax, dist_exponent=dist_exponent)
                 # split, merge, variation, walker_variations = resample.resample()
-                resample = WERL(pcoords, n_clusters=5)
+                
+                resample = LCAS(pcoords, weights, n_clusters=12)#, pmax=1, pmin=1e-500)
                 split, merge = resample.lcas()
-                #split, merge = LCAS_split(pcoords, weights)
+                
+                # resample = LCAS_MA(pcoords, weights, n_clusters=5, n_agents=4)
+                # split, merge = resample.lcas_ma()
+
+                #resample = REAP(pcoords, weights, n_clusters=None)
+                # resample = REAP(pcoords, weights, n_clusters=12)
+                # split, merge = resample.reap()
+
+                # TODO: testing filters
+                #split = [1 if i > 1 else i for i in split]
 
                 print(f"LCAS split: {split}\nLCAS merge: {merge}")
+                print("Split indices: ", [i for i, e in enumerate(split) if e != 0])
+                print("split sum: ", np.sum(split))
+                print("merge sum: ", np.sum([np.count_nonzero(i) for i in merge]))
+                #print("counts: ", resample.counts)
                 #print(f"Final variation value after {resample.count} wevo cycles: ", variation)
 
                 # count each operation and segment as a check
@@ -150,17 +173,18 @@ class WERLDriver(WEDriver):
                 splitting = 0
                 merging = 0
 
+                print("segments:", len(segments))
+
                 # go through each seg and split merge
                 for i, seg in enumerate(segments):
                     
                     # split or merge on a segment-by-segment basis
                     if split[i] != 0:
-                        #self._split_by_wevo(bin, seg, split[i])
                         # need an extra walker since split operation reduces total walkers by 1
                         # I think revo doesn't count the current seg
                         self._split_decision(bin, seg, split[i] + 1)
-                        splitting += split[i] + 1
-                        #splitting += split[i]
+                        #splitting += split[i] + 1
+                        splitting += split[i]
                     if len(merge[i]) != 0:
                         # list of all segs objects in the current merge list element
                         to_merge = [segment for num, segment in enumerate(segments) if num in merge[i]]
@@ -182,13 +206,14 @@ class WERLDriver(WEDriver):
                 # this shouldn't be required now that wevo is consistent in total walkers
                 if self.do_adjust_counts:
                     self._adjust_count(ibin)
+                # TODO: temp turned off adjust count for debugging
 
                 print(f"Total = {segs}, splitting = {splitting}, merging = {merging}")
 
                 # TODO: print to check that min and max prob are being controlled by wevo
                 # west.log has this but I should have another check printed
 
-                # TODO: temp fix for no initial splitting needed for wevo to start working
+                # TODO: temp fix for no initial splitting (needed for wevo to start working)
                 # i.e. no wevo cycles were able to run
                 # if resample.count == 1:
                 #     # running H&K resampling

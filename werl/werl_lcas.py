@@ -11,11 +11,12 @@ To merge: 50 total: 11 being merged
 '''
 
 import numpy as np
-from werl_base import WERL
+from .werl_base import WERL
 
 class LCAS(WERL):
     '''
     Weighted Ensemble Reinforcement Learning (WERL).
+    Using Least Counts Adaptive Sampling (LCAS).
     '''
 
     def lcas(self):
@@ -69,8 +70,9 @@ if __name__ == "__main__":
     print(f"pcoord full shape: {pcoords.shape}")
 
     # cut to n walkers for testing
-    pcoords = pcoords[:40,:,:]
-    weights = np.ones(40) / 40
+    n = 80
+    pcoords = pcoords[:n,:,:]
+    weights = np.ones(n) / n
 
     # test init data
     #pcoords = np.array([9.5] * 50).reshape(-1,1)
