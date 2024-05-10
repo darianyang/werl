@@ -23,8 +23,8 @@ class WERL:
     '''
     Weighted Ensemble Reinforcement Learning (WERL).
     '''
-
-    def __init__(self, pcoords, weights, pmin=1e-12, pmax=0.1,
+    # pmin=1e-12, pmax=0.1
+    def __init__(self, pcoords, weights, pmin=1e-100, pmax=1,
                  n_clusters=None, n_split=None, 
                  b=0.07, gamma=0.6, d=2):
         '''

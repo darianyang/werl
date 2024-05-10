@@ -142,11 +142,11 @@ class TSLC(WERL):
         '''
 
         # First clustering attempt using FFT
-        centroids = self.FFT(self.n_clusters)
+        centroids = self.FFT()
         kmeans = KMeans(n_clusters=self.n_clusters, n_init=1, max_iter=1, init=centroids).fit(self.pcoords) # Perform one round of kmeans
         
         while len(np.unique(kmeans.labels_)) != self.n_clusters:
-            centroids = self.FFT(self.pcoords, self.n_clusters)
+            centroids = self.FFT()
             kmeans = KMeans(n_clusters=self.n_clusters, n_init=1, max_iter=1, init=centroids).fit(self.pcoords)
 
         # Update centers, labels, and counts
@@ -191,6 +191,7 @@ class TSLC(WERL):
             pca_trans = pca.fit(points)  # Projection onto d space
             Vi = pca_trans.components_.T  # Must transpose to get desired shape
             Vis.append(Vi)
+        print(Vis)
 
         # 5) Get Gi matrices of shape (D, K) that contain the gradient of 
         # each CV w.r.t. to the cartesian coordinate of the point.
@@ -234,6 +235,7 @@ class TSLC(WERL):
         # since that will use the largest eigenvalue's index of each eigenvector.
 
         weights = eig_vecs[largest_eigval, :] ** 2  # Use the elements of the largest eigenvector for the weights
+        #print(weights, np.sum(weights))
 
         return weights
 
@@ -242,7 +244,7 @@ class TSLC(WERL):
         WE version of the Tangent Space Least Adaptive Clustering (TLSC) algorithm.
         
         Input: Differentiable energy E, collective variables theta1 ... thetaK , number of least count clusters to sample from
-        N, number of parallel runs M, number of iterations I,timesteps per iteration s, intrinsic dimension d
+        N, number of parallel runs M, number of iterations I, timesteps per iteration s, intrinsic dimension d
 
         Args
         -------------
@@ -264,6 +266,9 @@ class TSLC(WERL):
         n_features = 2  # Number of variables in OP space (2d pcoord for now)
 
 
+        if len(np.unique(self.pcoords)) == 1:
+            return self.to_split, self.to_merge
+        
         weights = [np.ones((n_features)) / n_features for _ in range(n_agents)]
         # Init logs
         least_counts_points_log = [[] for _ in range(n_agents)]
@@ -341,19 +346,23 @@ if __name__ == "__main__":
     weights = np.ones(40) / 40
     print(f"pcoord full shape: {pcoords.shape}")
 
+    ## Test data - uniform 
+    #pcoords = np.array([9.5]*50).reshape(-1,1)
+    #weights = np.array([0.02]*50)
+
     # TSLC test
     werl = TSLC(pcoords, weights)
     print("N_CLUSTERS: ", werl.n_clusters)
     split, merge = werl.tslc()
-    print("CLUSTER COUNTS: ", werl.counts)
-    print("CLUSTER COUNTS: ", werl.counts.shape)
-    print("LABELS", werl.labels)
+    #print("CLUSTER COUNTS: ", werl.counts)
+    #print("CLUSTER COUNTS: ", werl.counts.shape)
+    #print("LABELS", werl.labels)
     
     print("SPLIT: ", split, "\nMERGE: ", merge)
     print("SPLIT INDICES: ", [i for i, e in enumerate(split) if e != 0])
     print("split sum: ", np.sum(split))
     print("merge sum: ", np.sum([np.count_nonzero(i) for i in merge]))
-    print("counts: ", werl.counts)
+    #print("counts: ", werl.counts)
 
     # f = open('TSLC.out','w')
     # f.write("N_CLUSTERS: " + str(werl.n_clusters)+'\n')
