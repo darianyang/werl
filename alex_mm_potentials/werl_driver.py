@@ -4,9 +4,9 @@ import numpy as np
 import operator
 from westpa.core.we_driver import WEDriver
 
-from werl_lcas import LCAS
-from werl_reap import REAP
-from werl_tslc import TSLC
+from werl.werl_lcas import LCAS
+from werl.werl_reap import REAP
+from werl.werl_tslc import TSLC
 
 ############################# SET WERL PARAMETERS #############################
 
@@ -150,9 +150,10 @@ class WERLDriver(WEDriver):
                 #resample = WERL(pcoords, n_clusters=5)
                 #resample = LCAS(pcoords, weights, n_clusters=None)
                 #split, merge = resample.lcas()
-                #resample = REAP(pcoords, weights, n_clusters=None)
-                resample = TSLC(pcoords, weights, n_clusters=None, pmin=1e-100, pmax=1)
-                split, merge = resample.tslc()
+                resample = REAP(pcoords, weights, n_clusters=None)
+                split, merge = resample.reap()
+                # resample = TSLC(pcoords, weights, n_clusters=None, pmin=1e-100, pmax=1)
+                # split, merge = resample.tslc()
 
                 # TODO: testing filters
                 #split = [1 if i > 1 else i for i in split]

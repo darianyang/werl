@@ -18,7 +18,7 @@ from sklearn.decomposition import PCA
 from sklearn.metrics import pairwise_distances_argmin_min
 from scipy.spatial.distance import pdist, squareform
 
-from .werl_base import WERL
+from werl.werl_base import WERL
 from collections import Counter
 
 class TSLC(WERL):
@@ -89,6 +89,7 @@ class TSLC(WERL):
 
         # Calculate n_clusters_prime 
         #self.pcoords = self.pcoords.reshape(-1, self.pcoords.shape[2])
+        print('clusters N: ', self.n_clusters)
         n_clusters_prime = int(self.n_clusters * np.log(self.n_clusters) + l)
 
         rng = np.random.default_rng()
@@ -143,9 +144,12 @@ class TSLC(WERL):
 
         # First clustering attempt using FFT
         centroids = self.FFT()
+        print(centroids)
+        print("PCOORDS", self.pcoords)
         kmeans = KMeans(n_clusters=self.n_clusters, n_init=1, max_iter=1, init=centroids).fit(self.pcoords) # Perform one round of kmeans
-        
-        while len(np.unique(kmeans.labels_)) != self.n_clusters:
+        # print(kmeans.cluster_centers_, kmeans.labels_)
+
+        while len(np.unique(kmeans.labels_)) != self.n_clusters and len(np.unique(kmeans.labels_)) != 1:
             centroids = self.FFT()
             kmeans = KMeans(n_clusters=self.n_clusters, n_init=1, max_iter=1, init=centroids).fit(self.pcoords)
 
@@ -340,7 +344,8 @@ if __name__ == "__main__":
     
     # this is the full pcoord array, in this case (80, 5, 2)
     # for 80 walkers, 5 frames of simulation each, and 2 pcoords (X and Y)
-    pcoords = np.load('mm_potentials/pcoords_full.npy')
+    pcoords = np.load('../mm_potentials/pcoords_full.npy')
+
 
     pcoords = pcoords[40:,:,:]
     weights = np.ones(40) / 40
