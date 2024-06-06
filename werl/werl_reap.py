@@ -15,6 +15,7 @@ from scipy.optimize import minimize
 from sklearn.metrics import pairwise_distances_argmin_min
 
 from .werl_base import WERL
+#from werl.werl_base import WERL
 import os
 
 class REAP(WERL):
@@ -23,13 +24,17 @@ class REAP(WERL):
     Using the REAP algorithm from the Shukla group.
     '''
     
-    def select_least_counts(self):
+    def select_least_counts(self, n_select):
         '''
         Select new starting clusters.
         Returns indices of n_select clusters with least counts and closest points to said clusters.
+        n_select allows for a sub-selection of clusters, this way the worst case is LCAS-like.
         '''
         # Which clusters contain lowest populations
-        least_counts = np.asarray(self.counts[::-1][:self.n_clusters])[:, 0]
+        #least_counts = np.asarray(self.counts[::-1][:])[:, 0]
+        #least_counts = np.asarray(self.counts[::-1][:self.n_clusters])[:, 0]
+        least_counts = np.asarray(self.counts[::-1][:n_select])[:, 0]
+        
         closest, _ = pairwise_distances_argmin_min(self.centers, self.pcoords)
         return least_counts, self.pcoords[closest[least_counts]]
 
@@ -113,7 +118,7 @@ class REAP(WERL):
 
         return results
 
-    def reap(self, op_weights_file='op_weights.npy'):
+    def reap(self, op_weights_file='op_weights.npy', n_select=None):
         '''
         WE version of the REinforcement learning based Adaptive SamPling (REAP) algorithm.
         
@@ -131,6 +136,7 @@ class REAP(WERL):
                 TODO: note that the 'multi agents' of MA-REAP is better since the initial states are more diverse,
                       I don't think it'll be really worth it here since the op weights need to be tracked for each
                       'agent', and the equal clusters won't give consistent clusters each time. 
+            n_select (int): number of least-count candidates selected per epoch.
             traj_len (int): length of each trajectory ran.
             delta (float): upper boundary for learning step.
             n_features (int): number of collective variables. (Currently ignored because only two-dimensional systems are used.)
@@ -142,8 +148,15 @@ class REAP(WERL):
         '''
         # Step 1: define some hyperparameters and initialize arrays --> To be provided via init_variables
         n_agents = 1  # Forced
+        
+        # Number of least-count candidates selected per epoch
+        if n_select is None:
+            # default to half of clusters if nothing is provided
+            n_select = int(self.n_clusters / 2)
+
         delta = 0.02  # Upper boundary for learning step (default 0.02)
         #delta = 0.5  # Upper boundary for learning step
+        
         # self.pcoords.shape[1] (n_pcoord_dims = n_columns of the pcoords array)
         n_features = self.pcoords.shape[1]  # Number of variables in OP space (2d pcoord for now)
 
@@ -204,7 +217,7 @@ class REAP(WERL):
             #             would maximize cumulative reward
             #           * I can also skip the LC clusters and just split/merge based on reward,
             #             similar to how REVO does it based on variation
-            least_counts_clusters, least_counts_points = self.select_least_counts()
+            least_counts_clusters, least_counts_points = self.select_least_counts(n_select)
             #print("LC_CLUSTERS: ", least_counts_clusters)
             #print("LC_CLUSTERS_POINTS: ", least_counts_points)
 
@@ -260,8 +273,17 @@ class REAP(WERL):
         rewards = rewards[sorted_indices]
         print("SORTED REWARDS", rewards)
 
+        # make a full length least_counts_clusters since using a n_select subset
+        # replace the end of the self.counts list of clusters with sorted n_select subset of clusters
+        #print(self.counts[:,0])
+        self.counts[:,0][-len(least_counts_clusters):] = least_counts_clusters
+        #print(self.counts[:,0])
+
         # Insert least_count_clusters as a new column before the first column of cluster_counts
-        self.counts = np.insert(self.counts, 0, least_counts_clusters, axis=1)
+        # replaces the previous column sorting
+        # NOTE: using the above replacement step instead
+        #self.counts = np.insert(self.counts, 0, least_counts_clusters, axis=1)
+
         #print("SORTED COUNTS:", self.counts)
 
         # run split merge methods, updating split/merge lists
@@ -280,10 +302,11 @@ if __name__ == "__main__":
     # for 80 walkers, 5 frames of simulation each, and 2 pcoords (X and Y)
     pcoords = np.load('pcoords_full.npy')
     print(f"pcoord full shape: {pcoords.shape}")
+    weights = np.ones(80) / 80
 
     # cut to n walkers for testing
-    pcoords = pcoords[40:,:,:]
-    weights = np.ones(40) / 40
+    # pcoords = pcoords[40:,:,:]
+    # weights = np.ones(40) / 40
 
     # test init data
     #pcoords = np.array([9.5] * 50).reshape(-1,1)
@@ -302,6 +325,6 @@ if __name__ == "__main__":
     print("SPLIT INDICES: ", [i for i, e in enumerate(split) if e != 0])
     print("split sum: ", np.sum(split))
     print("merge sum: ", np.sum([np.count_nonzero(i) for i in merge]))
-    print("counts: ", werl.counts)
+    #print("counts: ", werl.counts)
 
  
