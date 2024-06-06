@@ -108,14 +108,15 @@ def plot_potential(potential, xlim=None, ylim=None, granularity=1, vmax=None, vm
 #plot_potential(O_potential, (-1.5, 1.5), (-1.5, 1.5), granularity=0.01)
 
 # from TSLC
-#plot_potential(ring_potential, (-3, 3), (-3, 3), granularity=0.01, calc_grad=True)
+plot_potential(ring_potential, (-3, 3), (-3, 3), granularity=0.01, calc_grad=False)
+#plot_potential(circular_potential_func, (-5,5), (-5,5), granularity=0.1)
 
 # WE 2D ODLDs
 #plot_potential(we_odld_2d_energy, (0, 10), (0, 10), granularity=0.01, vmin=-10, vmax=10)
 #plot_potential(we_odld_2d_energy, (0, 10), (0, 10), granularity=0.01, vmax=15, calc_grad=True)
 #plot_potential(we_odld_2d_grad, (0, 10), (0, 10), granularity=0.01, vmax=15)
 #plot_potential(we_odld_2d_grad, (-10, 0), (-10, 0), granularity=0.01, vmax=15)
-plot_potential(we_odld_2d_energy, (-10, 0), (-10, 0), granularity=0.01, vmax=10)
+#plot_potential(we_odld_2d_energy, (-10, 0), (-10, 0), granularity=0.01, vmax=10)
 #plot_potential(we_odld_2d_energy, (-10, 0), (-10, 0), granularity=0.01, vmax=10, calc_grad=True)
 #plot_potential(we_odld_2d_grad, (-10, 0), (-10, 0), granularity=0.01, vmax=15)
 #plot_potential(we_odld_2d_new_grad, (0, 1), (0, 1), granularity=0.01)
