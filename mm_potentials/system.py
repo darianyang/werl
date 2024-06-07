@@ -1,6 +1,5 @@
 from __future__ import print_function, division
-import numpy
-from westpa.core.propagators import WESTPropagator
+import numpy as np
 from westpa.core.systems import WESTSystem
 from westpa.core.binning import RectilinearBinMapper
 from westpa.core.binning import FuncBinMapper
@@ -20,19 +19,23 @@ activetarget=0		#if no target state make this zero
 
 #########
 def function_map(coords, mask, output):
-	pass
-
+	# test: bin 0 if sum of xy is < 1000, and bin 1 if > 1000
+    output[np.abs(coords[:,0] + coords[:,1]) < 1000] = 0
+    output[np.abs(coords[:,0] + coords[:,1]) >= 1000] = 1
+    
 class System(WESTSystem):
 	def initialize(self):
 		# pcoord variables
 		self.pcoord_ndim = numberofdim
 		self.pcoord_len = pcoordlength
-		self.pcoord_dtype = numpy.float32 
+		self.pcoord_dtype = np.float32 
 		
-        # bin mapper
-		#self.bin_mapper = FuncBinMapper(function_map, prod(binsperdim)+numberofdim*(2+2*splitIsolated)+activetarget)
-		self.bin_mapper = RectilinearBinMapper([['-inf', 'inf'],['-inf', 'inf']])
+        # bin mapper: FuncBinMapper(function, nbins)
+		#self.bin_mapper = FuncBinMapper(function_map, np.prod(binsperdim)+numberofdim*(2+2*splitIsolated)+activetarget)
+		#self.bin_mapper = RectilinearBinMapper([['-inf', 'inf'],['-inf', 'inf']])
+		#self.bin_mapper = FuncBinMapper(function_map, np.prod(binsperdim)+numberofdim)
+		self.bin_mapper = FuncBinMapper(function_map, 2)
 		
         # target counts (walkers per bin)
-		self.bin_target_counts = numpy.empty((self.bin_mapper.nbins,), numpy.int_)
+		self.bin_target_counts = np.empty((self.bin_mapper.nbins,), np.int_)
 		self.bin_target_counts[...] = bintargetcount
