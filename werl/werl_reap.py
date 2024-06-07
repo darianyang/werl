@@ -118,7 +118,7 @@ class REAP(WERL):
 
         return results
 
-    def reap(self, op_weights_file='op_weights.npy', n_select=None):
+    def reap(self, op_weights_file='op_weights.txt', n_select=None, delta=0.02):
         '''
         WE version of the REinforcement learning based Adaptive SamPling (REAP) algorithm.
         
@@ -131,31 +131,29 @@ class REAP(WERL):
             New weights are saved to the end of this file per iteration.
             The bottom of the file is appended with new optimized weights and 
             these are used for the next iteration.
+        n_select : int
+            Number of least-count candidates selected per epoch.
+        delta : float
+            Upper boundary for learning step, default 0.02.
+
         **kwargs: used to specify model hyperparameters. Must include following keys:
             n_agents (int): number of agents. --> In this implementation this is forced to be 1
                 TODO: note that the 'multi agents' of MA-REAP is better since the initial states are more diverse,
                       I don't think it'll be really worth it here since the op weights need to be tracked for each
                       'agent', and the equal clusters won't give consistent clusters each time. 
-            n_select (int): number of least-count candidates selected per epoch.
-            traj_len (int): length of each trajectory ran.
-            delta (float): upper boundary for learning step.
-            n_features (int): number of collective variables. (Currently ignored because only two-dimensional systems are used.)
-            d (int): dimensionality of the slow manifold (used to compute number of clusters to use). (Should be two for these trials.)
-            gamma (float): parameter to determine number of clusters (theoretically in [0.5, 1]).
-            b (float): parameter to determine number of clusters.
+
         Returns
         -------
+        self.to_split, self.to_merge : lists
+            List of split merge decisions.
         '''
-        # Step 1: define some hyperparameters and initialize arrays --> To be provided via init_variables
+        # Step 1: define some hyperparameters and initialize arrays
         n_agents = 1  # Forced
         
         # Number of least-count candidates selected per epoch
         if n_select is None:
             # default to half of clusters if nothing is provided
             n_select = int(self.n_clusters / 2)
-
-        delta = 0.02  # Upper boundary for learning step (default 0.02)
-        #delta = 0.5  # Upper boundary for learning step
         
         # self.pcoords.shape[1] (n_pcoord_dims = n_columns of the pcoords array)
         n_features = self.pcoords.shape[1]  # Number of variables in OP space (2d pcoord for now)
@@ -166,18 +164,12 @@ class REAP(WERL):
         
         # if the file already exists, grab last row
         if os.path.isfile(op_weights_file) is True:
-            all_iter_weights = np.load(op_weights_file)
+            all_iter_weights = np.atleast_2d(np.loadtxt(op_weights_file))
             weights = [all_iter_weights[-1,:]]
         # otherwise set weights as equal and save new op_weight file
         else:
             all_iter_weights = weights = [np.ones((n_features)) / n_features for _ in range(n_agents)]
-            np.save(op_weights_file, weights)
-
-        # WERL: data is already collected from WE iteration
-        # Step 3: collect some initial data
-        # trajectories = [[] for _ in range(n_agents)]
-        # trajectories = collect_initial_data(num_spawn * 2, traj_len, potential, initial_positions,
-        #                                     trajectories)  # Multiply by 2 to use same initial data as in MA REAP
+            np.savetxt(op_weights_file, weights)
 
         # WERL: cluster, compute rewards, tune weights, return split/merge decision lists
         # REAP: Steps 4-9: cluster, compute rewards, tune weights, run new simulations, and repeat
@@ -207,16 +199,7 @@ class REAP(WERL):
             if len(self.counts) < self.n_clusters:
                 return self.to_split, self.to_merge
 
-            # TODO: REAP will only select and continue from the least count cluster.
-            #       for WERL, I have a few options:
-            #           * I can just split the least count cluster only
-            #               - but I know from LCAS this isn't super effective
-            #           * I can split n_cluster amount of times starting from the LC cluster
-            #               - this is the current LCAS setup that works better than just LC split
-            #           * I can also optimize the reward, choosing the subset of trajectories that 
-            #             would maximize cumulative reward
-            #           * I can also skip the LC clusters and just split/merge based on reward,
-            #             similar to how REVO does it based on variation
+            # grab a n_select subset of the least count clusters to do reward sorting
             least_counts_clusters, least_counts_points = self.select_least_counts(n_select)
             #print("LC_CLUSTERS: ", least_counts_clusters)
             #print("LC_CLUSTERS_POINTS: ", least_counts_points)
@@ -241,7 +224,7 @@ class REAP(WERL):
             weights[i] = optimization_results.x
             weights_log[i].append(weights[i])
             # vstack to put new weights on bottom
-            np.save(op_weights_file, np.vstack((all_iter_weights, weights[i])))
+            np.savetxt(op_weights_file, np.vstack((all_iter_weights, weights[i])))
 
             rewards = self.compute_structure_reward(least_counts_points, weights[i])
 
@@ -263,6 +246,9 @@ class REAP(WERL):
         #       How to determine the ideal split / merge amount?
         #       maybe based on number of walkers, % of them? 20% or 30%?
         #       REAP just uses a user-parameter, e.g. 50
+        #
+        #       For now, using a user-parameter that defaults to n_clusters is not provided
+        #       This kinda works since n_clusters is based on heuristic from dataset size (n_walkers)
 
         # TODO: put this into base class as a sorting method
         # update self.counts array from least count cluster labels to highest reward labels
