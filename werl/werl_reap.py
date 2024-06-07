@@ -274,6 +274,8 @@ class REAP(WERL):
 
         # run split merge methods, updating split/merge lists
         self.do_splitting()
+        # TODO: currently merging highest count cluster... could also merge highest reward our of sub-clusters
+        #       or a combination of the two?
         self.do_merging()
 
         # return finalized split and merge lists

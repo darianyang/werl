@@ -76,7 +76,6 @@ class WERLDriver(WEDriver):
             merged_segment, parent = self._merge_walkers(segments[:2], cumul_weight=None, bin=bin)
             bin.add(merged_segment)
 
-
     def _run_we(self):
         '''
         Run recycle/split/merge. Do not call this function directly; instead, use

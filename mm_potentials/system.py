@@ -8,16 +8,18 @@ from westpa.core.binning import RecursiveBinMapper
 import logging
 log = logging.getLogger('westpa.rc')
 
-#THESE ARE THE FOUR THINGS YOU SHOULD CHANGE
-bintargetcount=80 #number of walkers per bin
-numberofdim=2  # number of dimensions
-binsperdim=[1,1]   # You will have prod(binsperdim)+numberofdim*(2+2*splitIsolated)+activetarget bins total
-pcoordlength=21 # length of the pcoord
+# number of walkers per bin
+bintargetcount = 80
+# number of dimensions
+numberofdim = 2
+# n_bins per dim
+binsperdim = [1, 1]
+# length of the pcoord
+pcoordlength = 21
 
-targetstate=[None,None]    #enter boundaries for target state or None if there is no target state in that dimension
-activetarget=0		#if no target state make this zero
+# tstate (TODO: may not be needed)
+#targetstate=[None,None]
 
-#########
 def function_map(coords, mask, output):
 	# test: bin 0 if sum of xy is < 1000, and bin 1 if > 1000
     output[np.abs(coords[:,0] + coords[:,1]) < 1000] = 0
