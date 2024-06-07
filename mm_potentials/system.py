@@ -39,8 +39,10 @@ class System(WESTSystem):
 		self.pcoord_len = pcoordlength
 		self.pcoord_dtype = np.float32 
 		
-        # bin mapper: FuncBinMapper(function, nbins)
+        # rectilinear bin mapper
 		#self.bin_mapper = RectilinearBinMapper([['-inf', 'inf'],['-inf', 'inf']])
+		# FuncBinMapper(function, nbins)
+		# 2 bins: one for functional bin mapper and one for target state
 		self.bin_mapper = FuncBinMapper(function_map, 2)
 		
         # target counts (walkers per bin)
