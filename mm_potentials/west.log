@@ -1,8 +1,8 @@
 System is being built only off of the system driver
 Maximum wallclock time: 1:00:00
 
-Fri Jun  7 14:21:40 2024
-Iteration 1 (10 requested)
+Fri Jun  7 14:38:11 2024
+Iteration 1 (20 requested)
 Beginning iteration 1
 80 segments remain in iteration 1 (80 total)
 1 of 1 (100.000000%) active bins are populated
@@ -18,41 +18,41 @@ Initial weight sum:  0.9999999999999999
  message: Optimization terminated successfully
  success: True
   status: 0
-     fun: -7.222269005926395
+     fun: -7.270509623667792
        x: [ 5.200e-01  4.800e-01]
      nit: 3
-     jac: [-8.995e+00 -5.302e+00]
+     jac: [-7.343e+00 -7.192e+00]
     nfev: 9
     njev: 3
-LC_CLUSTERS:  [ 6 11 12 10  4  3]
+LC_CLUSTERS:  [ 8 10 12  2  9  5]
 pcoord shape: (80, 2)
 OP weight log: [[array([0.52, 0.48])]]
-LC point log: [[array([[-9.184049, -9.508664],
-       [-9.780097, -9.33453 ],
-       [-9.308129, -9.288137],
-       [-9.281295, -9.385408],
-       [-9.684179, -9.396517],
-       [-9.422878, -9.346005]], dtype=float32)]]
+LC point log: [[array([[-9.147781 , -9.277549 ],
+       [-9.7392025, -9.585968 ],
+       [-9.547149 , -9.186586 ],
+       [-9.417937 , -9.689478 ],
+       [-9.7157   , -9.439418 ],
+       [-9.611836 , -9.621221 ]], dtype=float32)]]
 LC point log shape: (1, 1, 6, 2)
-Cumulative reward log: [[-7.148422055803978]]
-Individual reward log: [[array([1.27408002, 1.70070385, 1.37162625, 1.08707804, 1.08677032,
-       0.70201053])]]
-SORTED LCC:  [ 3  4 10  6 12 11]
-SORTED REWARDS [0.70201053 1.08677032 1.08707804 1.27408002 1.37162625 1.70070385]
-LCAS split: [0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0]
-LCAS merge: [[2, 22, 33, 43, 44, 46, 54, 62, 67, 74], [], [], [], [], [], [], [], [], [13, 24, 30], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []]
-Split indices:  [1, 4, 8, 16, 17, 26, 27, 28, 29, 35, 36, 58, 73]
+Cumulative reward log: [[-7.267487883022803]]
+Individual reward log: [[array([1.7281447 , 1.38054342, 1.20273742, 0.99029817, 0.90429621,
+       1.06448971])]]
+SORTED LCC:  [ 9  2  5 12 10  8]
+SORTED REWARDS [0.90429621 0.99029817 1.06448971 1.20273742 1.38054342 1.7281447 ]
+LCAS split: [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1]
+LCAS merge: [[], [3, 16, 18, 20, 23, 44, 46, 54, 60, 68, 77], [7, 15], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []]
+Split indices:  [0, 11, 17, 19, 22, 25, 43, 45, 55, 57, 75, 78, 79]
 split sum:  13
 merge sum:  13
 segments: 80
-Bin attrs post WERL:  <Bin at 0x16d0d37a0, label=None, count=80, weight=1>
+Bin attrs post WERL:  <Bin at 0x16d2ee5d0, label=None, count=80, weight=1>
 Total = 80, splitting = 13, merging = 15
 Iteration completed successfully
-Iteration wallclock: 0:00:00.282400, cputime: 0:00:00
+Iteration wallclock: 0:00:00.275063, cputime: 0:00:00
 
 
-Fri Jun  7 14:21:40 2024
-Iteration 2 (10 requested)
+Fri Jun  7 14:38:11 2024
+Iteration 2 (20 requested)
 Beginning iteration 2
 80 segments remain in iteration 2 (80 total)
 1 of 1 (100.000000%) active bins are populated
@@ -60,49 +60,49 @@ per-bin minimum non-zero probability:       1
 per-bin maximum probability:                1
 per-bin probability dynamic range (kT):     0
 per-segment minimum non-zero probability:   0.00625
-per-segment maximum non-zero probability:   0.1375
-per-segment probability dynamic range (kT): 3.09104
+per-segment maximum non-zero probability:   0.15
+per-segment probability dynamic range (kT): 3.17805
 norm = 1, error in norm = 0 (0*epsilon)
 Waiting for segments to complete...
 Initial weight sum:  0.9999999999999999
  message: Optimization terminated successfully
  success: True
   status: 0
-     fun: -6.834893091029339
-       x: [ 5.400e-01  4.600e-01]
+     fun: -8.55541460481906
+       x: [ 5.000e-01  5.000e-01]
      nit: 3
-     jac: [-7.527e+00 -6.022e+00]
+     jac: [-8.513e+00 -8.598e+00]
     nfev: 9
     njev: 3
-LC_CLUSTERS:  [ 8 10  9  0  5  6]
+LC_CLUSTERS:  [ 7  0  2  8 10  5]
 pcoord shape: (80, 2)
-OP weight log: [[array([0.54, 0.46])]]
-LC point log: [[array([[-9.972981, -9.343231],
-       [-9.667374, -9.604661],
-       [-9.452491, -8.927725],
-       [-9.332309, -9.135567],
-       [-9.285915, -9.464358],
-       [-8.955307, -9.356612]], dtype=float32)]]
+OP weight log: [[array([0.5, 0.5])]]
+LC point log: [[array([[-8.923685, -9.585672],
+       [-9.176381, -9.923584],
+       [-9.680165, -9.746821],
+       [-9.520723, -9.007281],
+       [-9.80207 , -9.190219],
+       [-9.91553 , -9.564445]], dtype=float32)]]
 LC point log shape: (1, 1, 6, 2)
-Cumulative reward log: [[-6.804797935835799]]
-Individual reward log: [[array([1.50661775, 1.12375508, 1.18069518, 0.97075936, 0.63949954,
-       1.41356617])]]
-SORTED LCC:  [ 5  0 10  9  6  8]
-SORTED REWARDS [0.63949954 0.97075936 1.12375508 1.18069518 1.41356617 1.50661775]
-LCAS split: [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0]
-LCAS merge: [[], [], [], [], [], [], [28, 29, 31, 34, 35, 42, 44, 49, 51, 54, 60, 63, 64], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []]
-Split indices:  [8, 13, 18, 20, 22, 24, 25, 40, 58, 59, 62, 66, 71]
+Cumulative reward log: [[-8.553699368728617]]
+Individual reward log: [[array([1.53492073, 1.82730695, 1.17370857, 1.30433756, 1.47439217,
+       1.24074861])]]
+SORTED LCC:  [ 2  5  8 10  7  0]
+SORTED REWARDS [1.17370857 1.24074861 1.30433756 1.47439217 1.53492073 1.82730695]
+LCAS split: [0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0]
+LCAS merge: [[10, 16, 22, 48, 53, 60, 61, 67, 76, 78], [], [], [], [], [], [], [], [], [18, 27, 30], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []]
+Split indices:  [1, 3, 4, 17, 23, 35, 36, 43, 50, 56, 64, 70, 75]
 split sum:  13
 merge sum:  13
 segments: 80
-Bin attrs post WERL:  <Bin at 0x16d0d17c0, label=None, count=80, weight=1>
-Total = 80, splitting = 13, merging = 14
+Bin attrs post WERL:  <Bin at 0x16d2ed6d0, label=None, count=80, weight=1>
+Total = 80, splitting = 13, merging = 15
 Iteration completed successfully
-Iteration wallclock: 0:00:00.216850, cputime: 0:00:00
+Iteration wallclock: 0:00:00.216184, cputime: 0:00:00
 
 
-Fri Jun  7 14:21:40 2024
-Iteration 3 (10 requested)
+Fri Jun  7 14:38:11 2024
+Iteration 3 (20 requested)
 Beginning iteration 3
 80 segments remain in iteration 3 (80 total)
 1 of 1 (100.000000%) active bins are populated
@@ -110,49 +110,49 @@ per-bin minimum non-zero probability:       1
 per-bin maximum probability:                1
 per-bin probability dynamic range (kT):     0
 per-segment minimum non-zero probability:   0.003125
-per-segment maximum non-zero probability:   0.16875
-per-segment probability dynamic range (kT): 3.98898
+per-segment maximum non-zero probability:   0.15
+per-segment probability dynamic range (kT): 3.8712
 norm = 1, error in norm = 0 (0*epsilon)
 Waiting for segments to complete...
 Initial weight sum:  0.9999999999999999
  message: Optimization terminated successfully
  success: True
   status: 0
-     fun: -7.136431190356837
-       x: [ 5.200e-01  4.800e-01]
+     fun: -6.590295338696827
+       x: [ 4.800e-01  5.200e-01]
      nit: 3
-     jac: [-5.772e+00 -8.614e+00]
+     jac: [-5.981e+00 -7.153e+00]
     nfev: 9
     njev: 3
-LC_CLUSTERS:  [ 8 10 12  3  6  9]
+LC_CLUSTERS:  [11  5  9 12  8 10]
 pcoord shape: (80, 2)
-OP weight log: [[array([0.52, 0.48])]]
-LC point log: [[array([[-9.301965 , -9.987032 ],
-       [-9.766112 , -9.707997 ],
-       [-9.037786 , -8.981903 ],
-       [-9.439846 , -9.0421295],
-       [-9.801811 , -9.1303005],
-       [-9.145848 , -9.418524 ]], dtype=float32)]]
+OP weight log: [[array([0.48, 0.52])]]
+LC point log: [[array([[-9.418027, -8.725588],
+       [-9.033386, -9.560881],
+       [-8.814757, -9.308813],
+       [-9.51273 , -9.733546],
+       [-9.022452, -9.806428],
+       [-9.628699, -9.313027]], dtype=float32)]]
 LC point log shape: (1, 1, 6, 2)
-Cumulative reward log: [[-7.079592387527433]]
-Individual reward log: [[array([1.51741936, 1.45806472, 1.5105212 , 0.74864025, 1.27632531,
-       0.62546034])]]
-SORTED LCC:  [ 9  3  6 10 12  8]
-SORTED REWARDS [0.62546034 0.74864025 1.27632531 1.45806472 1.5105212  1.51741936]
-LCAS split: [0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0]
-LCAS merge: [[], [], [], [], [], [8, 16], [], [], [], [], [22, 26, 27, 45, 47, 54, 60, 63, 64, 65, 68], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []]
-Split indices:  [3, 4, 11, 13, 19, 38, 48, 62, 66, 67, 74, 76, 77]
+Cumulative reward log: [[-6.566861915979609]]
+Individual reward log: [[array([1.58048228, 0.88130447, 1.3521347 , 0.71598288, 1.42044807,
+       0.63994293])]]
+SORTED LCC:  [10 12  5  9  8 11]
+SORTED REWARDS [0.63994293 0.71598288 0.88130447 1.3521347  1.42044807 1.58048228]
+LCAS split: [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0]
+LCAS merge: [[], [], [], [], [], [], [], [], [], [], [14, 43, 46, 52, 56, 57, 58, 60, 61, 67, 68, 70], [], [], [], [], [], [], [], [], [], [], [36], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []]
+Split indices:  [9, 11, 13, 17, 18, 20, 22, 29, 41, 44, 71, 73, 77]
 split sum:  13
 merge sum:  13
 segments: 80
-Bin attrs post WERL:  <Bin at 0x16d0d3020, label=None, count=80, weight=1>
+Bin attrs post WERL:  <Bin at 0x16d2ee8a0, label=None, count=80, weight=1>
 Total = 80, splitting = 13, merging = 15
 Iteration completed successfully
-Iteration wallclock: 0:00:00.213092, cputime: 0:00:00
+Iteration wallclock: 0:00:00.216428, cputime: 0:00:00
 
 
-Fri Jun  7 14:21:41 2024
-Iteration 4 (10 requested)
+Fri Jun  7 14:38:11 2024
+Iteration 4 (20 requested)
 Beginning iteration 4
 80 segments remain in iteration 4 (80 total)
 1 of 1 (100.000000%) active bins are populated
@@ -160,49 +160,49 @@ per-bin minimum non-zero probability:       1
 per-bin maximum probability:                1
 per-bin probability dynamic range (kT):     0
 per-segment minimum non-zero probability:   0.0015625
-per-segment maximum non-zero probability:   0.16875
-per-segment probability dynamic range (kT): 4.68213
+per-segment maximum non-zero probability:   0.15
+per-segment probability dynamic range (kT): 4.56435
 norm = 1, error in norm = 0 (0*epsilon)
 Waiting for segments to complete...
-Initial weight sum:  1.0
+Initial weight sum:  0.9999999999999999
  message: Optimization terminated successfully
  success: True
   status: 0
-     fun: -6.864650694791368
-       x: [ 5.000e-01  5.000e-01]
+     fun: -6.451327807804264
+       x: [ 4.600e-01  5.400e-01]
      nit: 3
-     jac: [-5.421e+00 -8.309e+00]
+     jac: [-3.933e+00 -8.597e+00]
     nfev: 9
     njev: 3
-LC_CLUSTERS:  [12  4  1  9  7  6]
+LC_CLUSTERS:  [ 7  0 12 10  8 11]
 pcoord shape: (80, 2)
-OP weight log: [[array([0.5, 0.5])]]
-LC point log: [[array([[-9.856574 , -8.657283 ],
-       [-8.813173 , -9.619967 ],
-       [-9.552649 , -9.504246 ],
-       [-9.242658 , -9.946442 ],
-       [-9.7860985, -9.707581 ],
-       [-9.358018 , -8.996593 ]], dtype=float32)]]
+OP weight log: [[array([0.46, 0.54])]]
+LC point log: [[array([[-9.401868, -8.743141],
+       [-8.952904, -8.981725],
+       [-9.622582, -9.039315],
+       [-9.266499, -9.182369],
+       [-8.90871 , -9.314894],
+       [-9.423696, -9.936398]], dtype=float32)]]
 LC point log shape: (1, 1, 6, 2)
-Cumulative reward log: [[-6.806894932551781]]
-Individual reward log: [[array([1.9519639 , 1.30312305, 0.51141333, 1.2152358 , 1.21882096,
-       0.66409365])]]
-SORTED LCC:  [ 1  6  9  7  4 12]
-SORTED REWARDS [0.51141333 0.66409365 1.2152358  1.21882096 1.30312305 1.9519639 ]
-LCAS split: [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0]
-LCAS merge: [[4, 5, 7, 23], [], [], [22, 26, 29, 32, 47, 50, 51, 58, 71], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []]
-Split indices:  [6, 10, 15, 24, 25, 28, 30, 34, 35, 39, 55, 57, 76]
+Cumulative reward log: [[-6.358056492449637]]
+Individual reward log: [[array([1.40223757, 1.42201776, 1.17194945, 0.6312774 , 0.88324807,
+       0.94059756])]]
+SORTED LCC:  [10  8 11 12  7  0]
+SORTED REWARDS [0.6312774  0.88324807 0.94059756 1.17194945 1.40223757 1.42201776]
+LCAS split: [1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0]
+LCAS merge: [[], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [27, 28], [], [], [], [], [], [], [], [], [33, 39, 46, 47, 55, 57, 58, 60, 68, 72, 73], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []]
+Split indices:  [0, 1, 2, 7, 10, 13, 26, 43, 50, 51, 52, 63, 71]
 split sum:  13
 merge sum:  13
 segments: 80
-Bin attrs post WERL:  <Bin at 0x16d0d33e0, label=None, count=80, weight=1>
+Bin attrs post WERL:  <Bin at 0x16d2ef2f0, label=None, count=80, weight=1>
 Total = 80, splitting = 13, merging = 15
 Iteration completed successfully
-Iteration wallclock: 0:00:00.259222, cputime: 0:00:00
+Iteration wallclock: 0:00:00.256184, cputime: 0:00:00
 
 
-Fri Jun  7 14:21:41 2024
-Iteration 5 (10 requested)
+Fri Jun  7 14:38:12 2024
+Iteration 5 (20 requested)
 Beginning iteration 5
 80 segments remain in iteration 5 (80 total)
 1 of 1 (100.000000%) active bins are populated
@@ -210,49 +210,49 @@ per-bin minimum non-zero probability:       1
 per-bin maximum probability:                1
 per-bin probability dynamic range (kT):     0
 per-segment minimum non-zero probability:   0.00078125
-per-segment maximum non-zero probability:   0.16875
-per-segment probability dynamic range (kT): 5.37528
-norm = 1, error in norm = 0 (0*epsilon)
+per-segment maximum non-zero probability:   0.15
+per-segment probability dynamic range (kT): 5.2575
+norm = 1, error in norm = -2.22045e-16 (-1*epsilon)
 Waiting for segments to complete...
-Initial weight sum:  0.9999999999999999
+Initial weight sum:  1.0
  message: Optimization terminated successfully
  success: True
   status: 0
-     fun: -6.100622363391208
+     fun: -5.880095682781757
        x: [ 4.800e-01  5.200e-01]
      nit: 3
-     jac: [-3.604e+00 -8.405e+00]
+     jac: [-6.878e+00 -4.959e+00]
     nfev: 9
     njev: 3
-LC_CLUSTERS:  [ 2  6  4  9 10 11]
+LC_CLUSTERS:  [8 4 9 0 3 6]
 pcoord shape: (80, 2)
 OP weight log: [[array([0.48, 0.52])]]
-LC point log: [[array([[-9.356978, -8.752984],
-       [-9.88577 , -8.697809],
-       [-9.271683, -9.900967],
-       [-9.330301, -9.689417],
-       [-9.071408, -9.828106],
-       [-8.948517, -9.666052]], dtype=float32)]]
+LC point log: [[array([[-9.8062105, -8.816988 ],
+       [-8.841113 , -9.899595 ],
+       [-8.745199 , -9.497717 ],
+       [-9.391418 , -9.560728 ],
+       [-9.021633 , -9.011368 ],
+       [-9.897346 , -9.541211 ]], dtype=float32)]]
 LC point log shape: (1, 1, 6, 2)
-Cumulative reward log: [[-6.004598309561467]]
-Individual reward log: [[array([1.09599478, 1.89573305, 0.80602223, 0.46325656, 0.96297852,
-       0.87663722])]]
-SORTED LCC:  [ 9  4 11 10  2  6]
-SORTED REWARDS [0.46325656 0.80602223 0.87663722 0.96297852 1.09599478 1.89573305]
-LCAS split: [1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-LCAS merge: [[], [], [], [11, 14, 17, 19, 53], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [32, 51, 56, 62, 67, 68, 73, 74], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []]
-Split indices:  [0, 1, 8, 9, 10, 15, 20, 22, 24, 33, 40, 63, 65]
+Cumulative reward log: [[-5.841708168029918]]
+Individual reward log: [[array([1.47679782, 1.35641878, 0.90760111, 0.21717609, 1.06128941,
+       0.86081248])]]
+SORTED LCC:  [0 6 9 3 4 8]
+SORTED REWARDS [0.21717609 0.86081248 0.90760111 1.06128941 1.35641878 1.47679782]
+LCAS split: [1, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+LCAS merge: [[], [5, 15, 17, 28, 42, 46, 57], [], [], [], [], [], [], [], [40, 41, 47, 49, 61, 66], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []]
+Split indices:  [0, 2, 3, 6, 8, 16, 20, 23, 25, 27, 30, 34, 60]
 split sum:  13
 merge sum:  13
 segments: 80
-Bin attrs post WERL:  <Bin at 0x16d0d3c50, label=None, count=80, weight=1>
+Bin attrs post WERL:  <Bin at 0x16d2eef30, label=None, count=80, weight=1>
 Total = 80, splitting = 13, merging = 15
 Iteration completed successfully
-Iteration wallclock: 0:00:00.230757, cputime: 0:00:00
+Iteration wallclock: 0:00:00.234981, cputime: 0:00:00
 
 
-Fri Jun  7 14:21:41 2024
-Iteration 6 (10 requested)
+Fri Jun  7 14:38:12 2024
+Iteration 6 (20 requested)
 Beginning iteration 6
 80 segments remain in iteration 6 (80 total)
 1 of 1 (100.000000%) active bins are populated
@@ -260,246 +260,750 @@ per-bin minimum non-zero probability:       1
 per-bin maximum probability:                1
 per-bin probability dynamic range (kT):     0
 per-segment minimum non-zero probability:   0.000390625
-per-segment maximum non-zero probability:   0.16875
-per-segment probability dynamic range (kT): 6.06843
-norm = 1, error in norm = 0 (0*epsilon)
+per-segment maximum non-zero probability:   0.15
+per-segment probability dynamic range (kT): 5.95064
+norm = 1, error in norm = -1.11022e-16 (-0.5*epsilon)
 Waiting for segments to complete...
-Initial weight sum:  0.9999999999999999
+Initial weight sum:  1.0
  message: Optimization terminated successfully
  success: True
   status: 0
-     fun: -6.078446090085354
+     fun: -7.205512654907109
        x: [ 5.000e-01  5.000e-01]
      nit: 3
-     jac: [-6.837e+00 -5.320e+00]
+     jac: [-8.005e+00 -6.406e+00]
     nfev: 9
     njev: 3
-LC_CLUSTERS:  [10  2 12  5  6  9]
+LC_CLUSTERS:  [12  8  7  2 11  6]
 pcoord shape: (80, 2)
 OP weight log: [[array([0.5, 0.5])]]
-LC point log: [[array([[-8.387638, -9.34132 ],
-       [-9.406379, -8.62705 ],
-       [-9.704921, -9.108996],
-       [-8.895525, -9.101886],
-       [-9.585903, -9.743115],
-       [-8.911071, -9.898981]], dtype=float32)]]
+LC point log: [[array([[-8.75788 , -8.784845],
+       [-8.581139, -9.634719],
+       [-8.92086 , -9.909393],
+       [-9.063212, -8.709272],
+       [-9.994582, -9.130667],
+       [-9.810321, -9.621931]], dtype=float32)]]
 LC point log shape: (1, 1, 6, 2)
-Cumulative reward log: [[-6.048120913936066]]
-Individual reward log: [[array([1.21514741, 1.08069801, 0.89723541, 0.81523189, 0.91417784,
-       1.15595553])]]
-SORTED LCC:  [ 5 12  6  2  9 10]
-SORTED REWARDS [0.81523189 0.89723541 0.91417784 1.08069801 1.15595553 1.21514741]
-LCAS split: [0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-LCAS merge: [[], [], [], [], [], [], [], [], [14, 17, 19, 21, 29, 44, 53, 54, 56, 60, 70], [], [], [16, 34], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []]
-Split indices:  [6, 7, 9, 12, 13, 22, 24, 32, 35, 37, 42, 43, 62]
+Cumulative reward log: [[-7.173534918917372]]
+Individual reward log: [[array([1.47950762, 1.17253894, 1.06692742, 1.16868261, 1.34259138,
+       0.97526469])]]
+SORTED LCC:  [ 6  7  2  8 11 12]
+SORTED REWARDS [0.97526469 1.06692742 1.16868261 1.17253894 1.34259138 1.47950762]
+LCAS split: [0, 0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0]
+LCAS merge: [[], [], [], [], [], [], [], [], [], [], [], [], [], [], [25, 30, 34, 35], [], [], [], [], [], [], [22, 23, 26, 27, 28, 38, 41, 50, 55], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []]
+Split indices:  [3, 6, 8, 9, 11, 13, 17, 43, 51, 62, 69, 71, 72]
 split sum:  13
 merge sum:  13
 segments: 80
-Bin attrs post WERL:  <Bin at 0x16d0d2210, label=None, count=80, weight=1>
+Bin attrs post WERL:  <Bin at 0x16d2ef5c0, label=None, count=80, weight=1>
 Total = 80, splitting = 13, merging = 15
 Iteration completed successfully
-Iteration wallclock: 0:00:00.227807, cputime: 0:00:00
+Iteration wallclock: 0:00:00.224666, cputime: 0:00:00
 
 
-Fri Jun  7 14:21:41 2024
-Iteration 7 (10 requested)
+Fri Jun  7 14:38:12 2024
+Iteration 7 (20 requested)
 Beginning iteration 7
 80 segments remain in iteration 7 (80 total)
 1 of 1 (100.000000%) active bins are populated
 per-bin minimum non-zero probability:       1
 per-bin maximum probability:                1
 per-bin probability dynamic range (kT):     0
-per-segment minimum non-zero probability:   0.000390625
-per-segment maximum non-zero probability:   0.16875
-per-segment probability dynamic range (kT): 6.06843
-norm = 1, error in norm = 0 (0*epsilon)
+per-segment minimum non-zero probability:   0.000195313
+per-segment maximum non-zero probability:   0.15
+per-segment probability dynamic range (kT): 6.64379
+norm = 1, error in norm = 2.22045e-16 (1*epsilon)
 Waiting for segments to complete...
 Initial weight sum:  1.0
  message: Optimization terminated successfully
  success: True
   status: 0
-     fun: -6.260922026043897
-       x: [ 5.200e-01  4.800e-01]
+     fun: -6.700254210118429
+       x: [ 4.800e-01  5.200e-01]
      nit: 3
-     jac: [-8.366e+00 -3.980e+00]
+     jac: [-5.954e+00 -7.389e+00]
     nfev: 9
     njev: 3
-LC_CLUSTERS:  [ 9  3  4  8 12  6]
+LC_CLUSTERS:  [3 8 4 9 7 0]
 pcoord shape: (80, 2)
-OP weight log: [[array([0.52, 0.48])]]
-LC point log: [[array([[-8.442938, -9.207831],
-       [-8.689452, -9.939818],
-       [-9.759399, -9.520046],
-       [-9.639651, -9.863368],
-       [-8.55212 , -9.609767],
-       [-8.708611, -9.314999]], dtype=float32)]]
+OP weight log: [[array([0.48, 0.52])]]
+LC point log: [[array([[-9.974618, -8.742007],
+       [-9.676508, -9.161095],
+       [-8.781967, -8.720246],
+       [-9.357241, -9.763294],
+       [-8.772251, -9.916461],
+       [-9.591126, -8.854582]], dtype=float32)]]
 LC point log shape: (1, 1, 6, 2)
-Cumulative reward log: [[-6.173199660378959]]
-Individual reward log: [[array([1.10186574, 1.32868685, 0.90835447, 1.12907202, 1.14469948,
-       0.64824346])]]
-SORTED LCC:  [ 6  4  9  8 12  3]
-SORTED REWARDS [0.64824346 0.90835447 1.10186574 1.12907202 1.14469948 1.32868685]
-LCAS split: [0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0]
-LCAS merge: [[], [], [], [], [7, 9, 10], [], [], [], [], [], [], [], [], [], [], [], [23, 31, 33, 53, 54, 56, 58, 60, 68, 75], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []]
-Split indices:  [5, 6, 12, 14, 19, 21, 25, 30, 34, 39, 63, 71, 73]
+Cumulative reward log: [[-6.6715397196585124]]
+Individual reward log: [[array([1.57929618, 0.66966675, 1.35715897, 0.71698746, 1.38767448,
+       0.98947036])]]
+SORTED LCC:  [8 9 0 4 7 3]
+SORTED REWARDS [0.66966675 0.71698746 0.98947036 1.35715897 1.38767448 1.57929618]
+LCAS split: [0, 0, 1, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0]
+LCAS merge: [[], [], [], [], [], [], [], [], [18, 26, 31, 32, 44], [], [], [], [], [], [], [], [], [], [], [], [34, 41, 45, 49, 50, 55, 58, 72], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []]
+Split indices:  [2, 3, 5, 7, 10, 13, 15, 16, 17, 21, 29, 66, 73]
 split sum:  13
 merge sum:  13
 segments: 80
-Bin attrs post WERL:  <Bin at 0x16d0d1e50, label=None, count=80, weight=1>
+Bin attrs post WERL:  <Bin at 0x16d2efa70, label=None, count=80, weight=1>
 Total = 80, splitting = 13, merging = 15
 Iteration completed successfully
-Iteration wallclock: 0:00:00.236346, cputime: 0:00:00
+Iteration wallclock: 0:00:00.249966, cputime: 0:00:00
 
 
-Fri Jun  7 14:21:42 2024
-Iteration 8 (10 requested)
+Fri Jun  7 14:38:12 2024
+Iteration 8 (20 requested)
 Beginning iteration 8
 80 segments remain in iteration 8 (80 total)
 1 of 1 (100.000000%) active bins are populated
 per-bin minimum non-zero probability:       1
 per-bin maximum probability:                1
 per-bin probability dynamic range (kT):     0
-per-segment minimum non-zero probability:   0.000390625
-per-segment maximum non-zero probability:   0.16875
-per-segment probability dynamic range (kT): 6.06843
+per-segment minimum non-zero probability:   0.000195313
+per-segment maximum non-zero probability:   0.15
+per-segment probability dynamic range (kT): 6.64379
 norm = 1, error in norm = 0 (0*epsilon)
 Waiting for segments to complete...
 Initial weight sum:  0.9999999999999999
  message: Optimization terminated successfully
  success: True
   status: 0
-     fun: -4.06530810555573
-       x: [ 5.000e-01  5.000e-01]
+     fun: -6.7871365079058625
+       x: [ 4.600e-01  5.400e-01]
      nit: 3
-     jac: [-3.164e+00 -4.967e+00]
+     jac: [-5.442e+00 -7.933e+00]
     nfev: 9
     njev: 3
-LC_CLUSTERS:  [ 7  5  3 12  1 10]
+LC_CLUSTERS:  [12  1  3  2 10  9]
 pcoord shape: (80, 2)
-OP weight log: [[array([0.5, 0.5])]]
-LC point log: [[array([[-9.585159, -9.970017],
-       [-9.105347, -9.48213 ],
-       [-9.220395, -8.590869],
-       [-8.712661, -9.361265],
-       [-9.003386, -9.155158],
-       [-9.467593, -9.690494]], dtype=float32)]]
+OP weight log: [[array([0.46, 0.54])]]
+LC point log: [[array([[-9.873433 , -8.376114 ],
+       [-9.387425 , -9.767327 ],
+       [-8.971189 , -9.937444 ],
+       [-9.8919115, -8.918244 ],
+       [-9.831182 , -9.702427 ],
+       [-9.283009 , -8.635116 ]], dtype=float32)]]
 LC point log shape: (1, 1, 6, 2)
-Cumulative reward log: [[-4.029248716245846]]
-Individual reward log: [[array([1.18328566, 0.20871553, 1.00410466, 0.51019547, 0.44488391,
-       0.71412288])]]
-SORTED LCC:  [ 5  1 12 10  3  7]
-SORTED REWARDS [0.20871553 0.44488391 0.51019547 0.71412288 1.00410466 1.18328566]
-LCAS split: [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0]
-LCAS merge: [[1, 6, 9, 15, 37, 40, 43, 47, 50, 54], [], [], [], [5, 10, 22], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []]
-Split indices:  [8, 18, 21, 23, 26, 29, 30, 35, 36, 42, 48, 63, 71]
+Cumulative reward log: [[-6.73732283224894]]
+Individual reward log: [[array([1.79689609, 0.73347227, 1.14032481, 1.14988643, 1.15226595,
+       0.81429096])]]
+SORTED LCC:  [ 1  9  3  2 10 12]
+SORTED REWARDS [0.73347227 0.81429096 1.14032481 1.14988643 1.15226595 1.79689609]
+LCAS split: [0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+LCAS merge: [[], [], [], [], [], [9, 18, 21, 22, 23, 30, 33, 72, 73], [], [], [], [], [], [], [], [], [15, 16, 19, 24], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []]
+Split indices:  [4, 8, 10, 12, 20, 25, 26, 32, 40, 43, 45, 64, 66]
 split sum:  13
 merge sum:  13
 segments: 80
-Bin attrs post WERL:  <Bin at 0x16d0d2a80, label=None, count=80, weight=1>
+Bin attrs post WERL:  <Bin at 0x16d2ed9a0, label=None, count=80, weight=1>
 Total = 80, splitting = 13, merging = 15
 Iteration completed successfully
-Iteration wallclock: 0:00:00.232787, cputime: 0:00:00
+Iteration wallclock: 0:00:00.227902, cputime: 0:00:00
 
 
-Fri Jun  7 14:21:42 2024
-Iteration 9 (10 requested)
+Fri Jun  7 14:38:12 2024
+Iteration 9 (20 requested)
 Beginning iteration 9
 80 segments remain in iteration 9 (80 total)
 1 of 1 (100.000000%) active bins are populated
 per-bin minimum non-zero probability:       1
 per-bin maximum probability:                1
 per-bin probability dynamic range (kT):     0
-per-segment minimum non-zero probability:   0.000195313
-per-segment maximum non-zero probability:   0.16875
-per-segment probability dynamic range (kT): 6.76157
+per-segment minimum non-zero probability:   9.76563e-05
+per-segment maximum non-zero probability:   0.15
+per-segment probability dynamic range (kT): 7.33694
 norm = 1, error in norm = 0 (0*epsilon)
 Waiting for segments to complete...
-Initial weight sum:  0.9999999999999999
+Initial weight sum:  1.0
  message: Optimization terminated successfully
  success: True
   status: 0
-     fun: -5.111148341476168
-       x: [ 4.800e-01  5.200e-01]
+     fun: -6.836099774662426
+       x: [ 4.400e-01  5.600e-01]
      nit: 3
-     jac: [-3.978e+00 -6.157e+00]
+     jac: [-5.956e+00 -7.528e+00]
     nfev: 9
     njev: 3
-LC_CLUSTERS:  [ 3  6  5  1  9 11]
+LC_CLUSTERS:  [ 5 11 10  8 12  1]
 pcoord shape: (80, 2)
-OP weight log: [[array([0.48, 0.52])]]
-LC point log: [[array([[-9.311258, -8.666245],
-       [-9.636501, -9.360538],
-       [-9.221055, -9.113023],
-       [-9.073183, -9.859977],
-       [-8.992168, -8.619032],
-       [-9.849652, -9.445435]], dtype=float32)]]
+OP weight log: [[array([0.44, 0.56])]]
+LC point log: [[array([[-9.7132225, -8.456539 ],
+       [-9.669542 , -8.853028 ],
+       [-9.731688 , -9.893375 ],
+       [-8.747706 , -9.442409 ],
+       [-9.367358 , -8.682412 ],
+       [-8.571629 , -9.991295 ]], dtype=float32)]]
 LC point log shape: (1, 1, 6, 2)
-Cumulative reward log: [[-5.067574500714204]]
-Individual reward log: [[array([1.20210566, 0.62295436, 0.49017389, 0.69675804, 1.22563313,
-       0.87352327])]]
-SORTED LCC:  [ 5  6  1 11  3  9]
-SORTED REWARDS [0.49017389 0.62295436 0.69675804 0.87352327 1.20210566 1.22563313]
-LCAS split: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0]
-LCAS merge: [[], [], [8, 29, 32, 37, 45, 62, 63], [], [5, 7, 9, 10, 15, 20], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []]
-Split indices:  [22, 24, 25, 27, 47, 50, 53, 54, 59, 64, 65, 68, 72]
+Cumulative reward log: [[-6.804658614173702]]
+Individual reward log: [[array([1.5110257 , 0.96271426, 1.04967057, 0.77729515, 0.87424692,
+       1.66114717])]]
+SORTED LCC:  [ 8 12 11 10  5  1]
+SORTED REWARDS [0.77729515 0.87424692 0.96271426 1.04967057 1.5110257  1.66114717]
+LCAS split: [0, 1, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+LCAS merge: [[2, 5, 6, 11, 15, 24, 25, 47, 67], [], [], [], [], [], [], [], [9, 13, 16, 44], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []]
+Split indices:  [1, 3, 4, 7, 17, 20, 28, 29, 30, 36, 46, 60, 64]
 split sum:  13
 merge sum:  13
 segments: 80
-Bin attrs post WERL:  <Bin at 0x16d0d1d60, label=None, count=80, weight=1>
+Bin attrs post WERL:  <Bin at 0x16d2ee3f0, label=None, count=80, weight=1>
 Total = 80, splitting = 13, merging = 15
 Iteration completed successfully
-Iteration wallclock: 0:00:00.226271, cputime: 0:00:00
+Iteration wallclock: 0:00:00.240572, cputime: 0:00:00
 
 
-Fri Jun  7 14:21:42 2024
-Iteration 10 (10 requested)
+Fri Jun  7 14:38:13 2024
+Iteration 10 (20 requested)
 Beginning iteration 10
 80 segments remain in iteration 10 (80 total)
 1 of 1 (100.000000%) active bins are populated
 per-bin minimum non-zero probability:       1
 per-bin maximum probability:                1
 per-bin probability dynamic range (kT):     0
-per-segment minimum non-zero probability:   0.000195313
-per-segment maximum non-zero probability:   0.16875
-per-segment probability dynamic range (kT): 6.76157
+per-segment minimum non-zero probability:   4.88281e-05
+per-segment maximum non-zero probability:   0.15
+per-segment probability dynamic range (kT): 8.03008
+norm = 1, error in norm = -1.11022e-16 (-0.5*epsilon)
+Waiting for segments to complete...
+Initial weight sum:  0.9999999999999999
+ message: Optimization terminated successfully
+ success: True
+  status: 0
+     fun: -7.149743379325161
+       x: [ 4.200e-01  5.800e-01]
+     nit: 3
+     jac: [-6.758e+00 -7.433e+00]
+    nfev: 9
+    njev: 3
+LC_CLUSTERS:  [ 4 11  5  6  0  3]
+pcoord shape: (80, 2)
+OP weight log: [[array([0.42, 0.58])]]
+LC point log: [[array([[-8.061142, -9.953547],
+       [-9.100367, -8.852406],
+       [-8.68619 , -9.903912],
+       [-9.384358, -8.657101],
+       [-9.780293, -8.693631],
+       [-8.978006, -9.211022]], dtype=float32)]]
+LC point log shape: (1, 1, 6, 2)
+Cumulative reward log: [[-7.136240165744073]]
+Individual reward log: [[array([1.86835985, 0.92567265, 1.18804077, 1.12295681, 1.46540843,
+       0.57930487])]]
+SORTED LCC:  [ 3 11  6  5  0  4]
+SORTED REWARDS [0.57930487 0.92567265 1.12295681 1.18804077 1.46540843 1.86835985]
+LCAS split: [0, 0, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+LCAS merge: [[], [], [], [], [], [], [7, 12, 14, 15, 16, 28, 52, 65, 70], [], [], [18, 40, 44, 45], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []]
+Split indices:  [2, 3, 4, 5, 8, 10, 11, 13, 20, 23, 31, 47, 48]
+split sum:  13
+merge sum:  13
+segments: 80
+Bin attrs post WERL:  <Bin at 0x16d2ee8a0, label=None, count=80, weight=1>
+Total = 80, splitting = 13, merging = 15
+Iteration completed successfully
+Iteration wallclock: 0:00:00.223292, cputime: 0:00:00
+
+
+Fri Jun  7 14:38:13 2024
+Iteration 11 (20 requested)
+Beginning iteration 11
+80 segments remain in iteration 11 (80 total)
+1 of 1 (100.000000%) active bins are populated
+per-bin minimum non-zero probability:       1
+per-bin maximum probability:                1
+per-bin probability dynamic range (kT):     0
+per-segment minimum non-zero probability:   2.44141e-05
+per-segment maximum non-zero probability:   0.15
+per-segment probability dynamic range (kT): 8.72323
 norm = 1, error in norm = 0 (0*epsilon)
 Waiting for segments to complete...
 Initial weight sum:  0.9999999999999999
  message: Optimization terminated successfully
  success: True
   status: 0
-     fun: -4.9247268685223675
-       x: [ 5.000e-01  5.000e-01]
+     fun: -6.158592799978612
+       x: [ 4.400e-01  5.600e-01]
      nit: 3
-     jac: [-6.457e+00 -3.392e+00]
+     jac: [-7.765e+00 -4.896e+00]
     nfev: 9
     njev: 3
-LC_CLUSTERS:  [ 2  9 12  8 10  5]
+LC_CLUSTERS:  [11  6  5  4  8 10]
 pcoord shape: (80, 2)
-OP weight log: [[array([0.5, 0.5])]]
-LC point log: [[array([[-8.957117, -9.868449],
-       [-8.474938, -9.387198],
-       [-9.771959, -9.149291],
-       [-9.973652, -9.38916 ],
-       [-8.954037, -8.979365],
-       [-9.160476, -9.093343]], dtype=float32)]]
+OP weight log: [[array([0.44, 0.56])]]
+LC point log: [[array([[-9.742864, -8.272922],
+       [-8.062116, -9.807931],
+       [-9.001432, -9.341083],
+       [-9.923974, -9.488855],
+       [-9.812915, -9.811466],
+       [-8.672946, -9.315214]], dtype=float32)]]
 LC point log shape: (1, 1, 6, 2)
-Cumulative reward log: [[-4.863424949738569]]
-Individual reward log: [[array([0.95449462, 0.96434788, 0.88892522, 0.94224728, 0.78020806,
-       0.39450381])]]
-SORTED LCC:  [ 5 10 12  8  2  9]
-SORTED REWARDS [0.39450381 0.78020806 0.88892522 0.94224728 0.95449462 0.96434788]
-LCAS split: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1]
-LCAS merge: [[], [], [], [], [], [], [], [], [], [], [], [], [], [17, 20, 27, 28, 36, 37, 40, 46, 54, 58, 59], [], [21, 35], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []]
-Split indices:  [11, 16, 26, 33, 39, 42, 49, 50, 51, 53, 60, 61, 79]
+Cumulative reward log: [[-6.101206182354329]]
+Individual reward log: [[array([1.67876885, 1.73573605, 0.30646639, 0.78459472, 1.07841157,
+       0.57461521])]]
+SORTED LCC:  [ 5 10  4  8 11  6]
+SORTED REWARDS [0.30646639 0.57461521 0.78459472 1.07841157 1.67876885 1.73573605]
+LCAS split: [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1]
+LCAS merge: [[], [], [8, 9, 12, 17, 18, 30, 37, 49, 69], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [26, 34, 35, 48], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []]
+Split indices:  [6, 11, 21, 22, 23, 24, 27, 31, 33, 41, 43, 46, 79]
 split sum:  13
 merge sum:  13
 segments: 80
-Bin attrs post WERL:  <Bin at 0x16d0d33e0, label=None, count=80, weight=1>
+Bin attrs post WERL:  <Bin at 0x16d2ef200, label=None, count=80, weight=1>
+Total = 80, splitting = 13, merging = 15
+Recycled 0.000390625 probability (1 walkers) from target state 'final'
+Iteration completed successfully
+Iteration wallclock: 0:00:00.246242, cputime: 0:00:00
+
+
+Fri Jun  7 14:38:13 2024
+Iteration 12 (20 requested)
+Beginning iteration 12
+80 segments remain in iteration 12 (80 total)
+1 of 1 (100.000000%) active bins are populated
+per-bin minimum non-zero probability:       1
+per-bin maximum probability:                1
+per-bin probability dynamic range (kT):     0
+per-segment minimum non-zero probability:   1.2207e-05
+per-segment maximum non-zero probability:   0.15
+per-segment probability dynamic range (kT): 9.41638
+norm = 1, error in norm = 0 (0*epsilon)
+Waiting for segments to complete...
+Initial weight sum:  1.0
+ message: Optimization terminated successfully
+ success: True
+  status: 0
+     fun: -5.48010028665836
+       x: [ 4.200e-01  5.800e-01]
+     nit: 3
+     jac: [-4.222e+00 -6.391e+00]
+    nfev: 9
+    njev: 3
+LC_CLUSTERS:  [ 3  8  5  0 11  6]
+pcoord shape: (80, 2)
+OP weight log: [[array([0.42, 0.58])]]
+LC point log: [[array([[-9.595933 , -8.390786 ],
+       [-9.271797 , -8.305393 ],
+       [-8.770363 , -9.017679 ],
+       [-9.307011 , -9.1547575],
+       [-9.928181 , -9.332531 ],
+       [-9.889731 , -9.70731  ]], dtype=float32)]]
+LC point log shape: (1, 1, 6, 2)
+Cumulative reward log: [[-5.4367201589759775]]
+Individual reward log: [[array([1.4763673 , 1.34447895, 0.87309422, 0.27049781, 0.57299648,
+       0.94266553])]]
+SORTED LCC:  [ 0 11  5  6  8  3]
+SORTED REWARDS [0.27049781 0.57299648 0.87309422 0.94266553 1.34447895 1.4763673 ]
+LCAS split: [1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0]
+LCAS merge: [[], [], [], [], [], [], [], [], [], [], [14, 15, 18, 19, 34], [13, 42, 43, 46, 48, 57, 68, 74], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []]
+Split indices:  [0, 1, 8, 9, 20, 25, 29, 32, 33, 39, 45, 59, 75]
+split sum:  13
+merge sum:  13
+segments: 80
+Bin attrs post WERL:  <Bin at 0x16d2ef5c0, label=None, count=80, weight=1>
+Total = 80, splitting = 13, merging = 15
+Recycled 0.000390625 probability (2 walkers) from target state 'final'
+Iteration completed successfully
+Iteration wallclock: 0:00:00.251986, cputime: 0:00:00
+
+
+Fri Jun  7 14:38:13 2024
+Iteration 13 (20 requested)
+Beginning iteration 13
+80 segments remain in iteration 13 (80 total)
+1 of 1 (100.000000%) active bins are populated
+per-bin minimum non-zero probability:       1
+per-bin maximum probability:                1
+per-bin probability dynamic range (kT):     0
+per-segment minimum non-zero probability:   6.10352e-06
+per-segment maximum non-zero probability:   0.15
+per-segment probability dynamic range (kT): 10.1095
+norm = 1, error in norm = 0 (0*epsilon)
+Waiting for segments to complete...
+Initial weight sum:  1.0
+ message: Optimization terminated successfully
+ success: True
+  status: 0
+     fun: -6.282958827784077
+       x: [ 4.400e-01  5.600e-01]
+     nit: 3
+     jac: [-7.693e+00 -5.175e+00]
+    nfev: 9
+    njev: 3
+LC_CLUSTERS:  [ 9  6  4 11  1  7]
+pcoord shape: (80, 2)
+OP weight log: [[array([0.44, 0.56])]]
+LC point log: [[array([[-8.335656, -9.865686],
+       [-8.640801, -9.005668],
+       [-9.948248, -8.708431],
+       [-9.338388, -9.049358],
+       [-9.225391, -8.345887],
+       [-9.085627, -9.214894]], dtype=float32)]]
+LC point log shape: (1, 1, 6, 2)
+Cumulative reward log: [[-6.232583830744614]]
+Individual reward log: [[array([1.8898661 , 1.16350519, 1.17180479, 0.35148161, 1.26398678,
+       0.44231435])]]
+SORTED LCC:  [11  7  6  4  1  9]
+SORTED REWARDS [0.35148161 0.44231435 1.16350519 1.17180479 1.26398678 1.8898661 ]
+LCAS split: [1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+LCAS merge: [[], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [17, 18, 24, 25, 30, 39, 49, 50, 51, 54, 60, 72], [26], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []]
+Split indices:  [0, 1, 3, 4, 10, 11, 12, 23, 32, 42, 44, 46, 47]
+split sum:  13
+merge sum:  13
+segments: 80
+Bin attrs post WERL:  <Bin at 0x16d2ef7a0, label=None, count=80, weight=1>
+Total = 80, splitting = 13, merging = 15
+Recycled 0.00117187 probability (1 walkers) from target state 'final'
+Iteration completed successfully
+Iteration wallclock: 0:00:00.235377, cputime: 0:00:00
+
+
+Fri Jun  7 14:38:14 2024
+Iteration 14 (20 requested)
+Beginning iteration 14
+80 segments remain in iteration 14 (80 total)
+1 of 1 (100.000000%) active bins are populated
+per-bin minimum non-zero probability:       1
+per-bin maximum probability:                1
+per-bin probability dynamic range (kT):     0
+per-segment minimum non-zero probability:   3.05176e-06
+per-segment maximum non-zero probability:   0.15
+per-segment probability dynamic range (kT): 10.8027
+norm = 1, error in norm = 0 (0*epsilon)
+Waiting for segments to complete...
+Initial weight sum:  0.9999999999999999
+ message: Optimization terminated successfully
+ success: True
+  status: 0
+     fun: -6.2568582341967796
+       x: [ 4.600e-01  5.400e-01]
+     nit: 3
+     jac: [-7.974e+00 -4.794e+00]
+    nfev: 9
+    njev: 3
+LC_CLUSTERS:  [ 0  7  9 11 12  8]
+pcoord shape: (80, 2)
+OP weight log: [[array([0.46, 0.54])]]
+LC point log: [[array([[-8.610839 , -9.300597 ],
+       [-9.747058 , -8.412787 ],
+       [-8.387662 , -9.824963 ],
+       [-8.6797905, -8.975306 ],
+       [-8.92082  , -9.366011 ],
+       [-9.258356 , -8.589393 ]], dtype=float32)]]
+LC point log shape: (1, 1, 6, 2)
+Cumulative reward log: [[-6.1932492181176455]]
+Individual reward log: [[array([1.0067301 , 1.25346209, 1.81104406, 0.88340303, 0.70685995,
+       0.595359  ])]]
+SORTED LCC:  [ 8 12 11  0  7  9]
+SORTED REWARDS [0.595359   0.70685995 0.88340303 1.0067301  1.25346209 1.81104406]
+LCAS split: [1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0]
+LCAS merge: [[], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [29, 35, 37, 40, 52, 57, 65, 66, 69], [30, 33, 36, 46], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []]
+Split indices:  [0, 6, 28, 38, 39, 43, 44, 45, 47, 48, 55, 72, 73]
+split sum:  13
+merge sum:  13
+segments: 80
+Bin attrs post WERL:  <Bin at 0x16d2edd60, label=None, count=80, weight=1>
 Total = 80, splitting = 13, merging = 15
 Iteration completed successfully
-Iteration wallclock: 0:00:00.233994, cputime: 0:00:00
+Iteration wallclock: 0:00:00.232143, cputime: 0:00:00
 
 
-Fri Jun  7 14:21:42 2024
+Fri Jun  7 14:38:14 2024
+Iteration 15 (20 requested)
+Beginning iteration 15
+80 segments remain in iteration 15 (80 total)
+1 of 1 (100.000000%) active bins are populated
+per-bin minimum non-zero probability:       1
+per-bin maximum probability:                1
+per-bin probability dynamic range (kT):     0
+per-segment minimum non-zero probability:   1.52588e-06
+per-segment maximum non-zero probability:   0.15
+per-segment probability dynamic range (kT): 11.4958
+norm = 1, error in norm = 0 (0*epsilon)
+Waiting for segments to complete...
+Initial weight sum:  0.9999999999999999
+ message: Optimization terminated successfully
+ success: True
+  status: 0
+     fun: -6.83516198653934
+       x: [ 4.400e-01  5.600e-01]
+     nit: 3
+     jac: [-6.312e+00 -7.246e+00]
+    nfev: 9
+    njev: 3
+LC_CLUSTERS:  [ 2  5 12  0  7  6]
+pcoord shape: (80, 2)
+OP weight log: [[array([0.44, 0.56])]]
+LC point log: [[array([[-8.2267275, -9.258816 ],
+       [-9.988505 , -9.689962 ],
+       [-9.800661 , -8.372491 ],
+       [-9.070779 , -7.97672  ],
+       [-9.174122 , -8.5988865],
+       [-9.632908 , -8.304676 ]], dtype=float32)]]
+LC point log shape: (1, 1, 6, 2)
+Cumulative reward log: [[-6.816471044950091]]
+Individual reward log: [[array([1.11543449, 1.3910077 , 1.30226477, 1.28245255, 0.52801085,
+       1.21599163])]]
+SORTED LCC:  [ 7  2  6  0 12  5]
+SORTED REWARDS [0.52801085 1.11543449 1.21599163 1.28245255 1.30226477 1.3910077 ]
+LCAS split: [1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0]
+LCAS merge: [[], [], [], [], [], [], [], [9, 11, 12, 13, 14, 15, 17, 20, 31, 48, 61], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [49, 51], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []]
+Split indices:  [0, 1, 2, 5, 8, 10, 16, 25, 26, 27, 29, 32, 74]
+split sum:  13
+merge sum:  13
+segments: 80
+Bin attrs post WERL:  <Bin at 0x16d2ee7b0, label=None, count=80, weight=1>
+Total = 80, splitting = 13, merging = 15
+Iteration completed successfully
+Iteration wallclock: 0:00:00.239592, cputime: 0:00:00
+
+
+Fri Jun  7 14:38:14 2024
+Iteration 16 (20 requested)
+Beginning iteration 16
+80 segments remain in iteration 16 (80 total)
+1 of 1 (100.000000%) active bins are populated
+per-bin minimum non-zero probability:       1
+per-bin maximum probability:                1
+per-bin probability dynamic range (kT):     0
+per-segment minimum non-zero probability:   7.62939e-07
+per-segment maximum non-zero probability:   0.15
+per-segment probability dynamic range (kT): 12.189
+norm = 1, error in norm = -1.11022e-16 (-0.5*epsilon)
+Waiting for segments to complete...
+Initial weight sum:  1.0
+ message: Optimization terminated successfully
+ success: True
+  status: 0
+     fun: -6.823640431180433
+       x: [ 4.200e-01  5.800e-01]
+     nit: 3
+     jac: [-4.632e+00 -8.411e+00]
+    nfev: 9
+    njev: 3
+LC_CLUSTERS:  [ 5  1 10  6 11  8]
+pcoord shape: (80, 2)
+OP weight log: [[array([0.42, 0.58])]]
+LC point log: [[array([[-9.577699 , -9.863873 ],
+       [-9.00458  , -7.8289385],
+       [-9.259055 , -8.145303 ],
+       [-9.569309 , -8.013631 ],
+       [-9.082948 , -9.571966 ],
+       [-8.320371 , -9.640094 ]], dtype=float32)]]
+LC point log shape: (1, 1, 6, 2)
+Cumulative reward log: [[-6.7480687069705265]]
+Individual reward log: [[array([1.21164993, 1.29734562, 0.87344902, 1.30176082, 0.66582645,
+       1.47360858])]]
+SORTED LCC:  [11 10  5  1  6  8]
+SORTED REWARDS [0.66582645 0.87344902 1.21164993 1.29734562 1.30176082 1.47360858]
+LCAS split: [0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+LCAS merge: [[], [], [], [], [], [], [], [], [], [], [11, 19, 24, 26, 28, 30], [], [], [], [], [], [], [44, 49, 52, 56, 58, 72, 74], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []]
+Split indices:  [4, 7, 8, 12, 15, 16, 22, 27, 40, 41, 42, 43, 45]
+split sum:  13
+merge sum:  13
+segments: 80
+Bin attrs post WERL:  <Bin at 0x16d2ee030, label=None, count=80, weight=1>
+Total = 80, splitting = 13, merging = 15
+Recycled 0.000390625 probability (1 walkers) from target state 'final'
+Iteration completed successfully
+Iteration wallclock: 0:00:00.230703, cputime: 0:00:00
+
+
+Fri Jun  7 14:38:14 2024
+Iteration 17 (20 requested)
+Beginning iteration 17
+80 segments remain in iteration 17 (80 total)
+1 of 1 (100.000000%) active bins are populated
+per-bin minimum non-zero probability:       1
+per-bin maximum probability:                1
+per-bin probability dynamic range (kT):     0
+per-segment minimum non-zero probability:   7.62939e-07
+per-segment maximum non-zero probability:   0.15
+per-segment probability dynamic range (kT): 12.189
+norm = 1, error in norm = -1.11022e-16 (-0.5*epsilon)
+Waiting for segments to complete...
+Initial weight sum:  1.0
+ message: Optimization terminated successfully
+ success: True
+  status: 0
+     fun: -6.19528011491621
+       x: [ 4.000e-01  6.000e-01]
+     nit: 3
+     jac: [-4.228e+00 -7.507e+00]
+    nfev: 9
+    njev: 3
+LC_CLUSTERS:  [ 1 11  8  0 10  6]
+pcoord shape: (80, 2)
+OP weight log: [[array([0.4, 0.6])]]
+LC point log: [[array([[-9.054286, -9.999652],
+       [-9.530752, -8.972478],
+       [-9.729451, -9.98326 ],
+       [-9.191291, -7.927822],
+       [-8.428525, -9.708609],
+       [-8.910015, -7.627914]], dtype=float32)]]
+LC point log shape: (1, 1, 6, 2)
+Cumulative reward log: [[-6.129710036842244]]
+Individual reward log: [[array([1.01319616, 0.35018131, 1.37658105, 0.8686051 , 1.27874422,
+       1.30797228])]]
+SORTED LCC:  [11  0  1 10  6  8]
+SORTED REWARDS [0.35018131 0.8686051  1.01319616 1.27874422 1.30797228 1.37658105]
+LCAS split: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0]
+LCAS merge: [[1, 2, 3, 6, 7, 10, 12, 13, 14, 22], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [50, 55, 56], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []]
+Split indices:  [15, 18, 23, 24, 25, 26, 29, 34, 35, 37, 54, 57, 75]
+split sum:  13
+merge sum:  13
+segments: 80
+Bin attrs post WERL:  <Bin at 0x16d2ee4e0, label=None, count=80, weight=1>
+Total = 80, splitting = 13, merging = 15
+Iteration completed successfully
+Iteration wallclock: 0:00:00.244421, cputime: 0:00:00
+
+
+Fri Jun  7 14:38:15 2024
+Iteration 18 (20 requested)
+Beginning iteration 18
+80 segments remain in iteration 18 (80 total)
+1 of 1 (100.000000%) active bins are populated
+per-bin minimum non-zero probability:       1
+per-bin maximum probability:                1
+per-bin probability dynamic range (kT):     0
+per-segment minimum non-zero probability:   7.62939e-07
+per-segment maximum non-zero probability:   0.15
+per-segment probability dynamic range (kT): 12.189
+norm = 1, error in norm = 0 (0*epsilon)
+Waiting for segments to complete...
+Initial weight sum:  1.0
+ message: Optimization terminated successfully
+ success: True
+  status: 0
+     fun: -6.051899381566629
+       x: [ 4.200e-01  5.800e-01]
+     nit: 3
+     jac: [-6.228e+00 -5.925e+00]
+    nfev: 9
+    njev: 3
+LC_CLUSTERS:  [ 1  5 12 10  0  7]
+pcoord shape: (80, 2)
+OP weight log: [[array([0.42, 0.58])]]
+LC point log: [[array([[-9.489507 , -7.9400034],
+       [-8.714039 , -8.765862 ],
+       [-8.255671 , -9.638523 ],
+       [-9.818924 , -9.594193 ],
+       [-8.780218 , -9.6584635],
+       [-8.715297 , -7.511339 ]], dtype=float32)]]
+LC point log shape: (1, 1, 6, 2)
+Cumulative reward log: [[-6.0458402152507595]]
+Individual reward log: [[array([1.11444664, 0.4643781 , 1.21090824, 1.10869655, 0.76786529,
+       1.38560456])]]
+SORTED LCC:  [ 5  0 10  1 12  7]
+SORTED REWARDS [0.4643781  0.76786529 1.10869655 1.11444664 1.21090824 1.38560456]
+LCAS split: [0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+LCAS merge: [[], [], [], [], [6, 7, 8, 9, 12, 19], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [48, 51, 56, 57, 58, 60, 63], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []]
+Split indices:  [1, 3, 13, 14, 16, 17, 18, 20, 25, 29, 38, 39, 42]
+split sum:  13
+merge sum:  13
+segments: 80
+Bin attrs post WERL:  <Bin at 0x16d2ede50, label=None, count=80, weight=1>
+Total = 80, splitting = 13, merging = 15
+Iteration completed successfully
+Iteration wallclock: 0:00:00.224790, cputime: 0:00:00
+
+
+Fri Jun  7 14:38:15 2024
+Iteration 19 (20 requested)
+Beginning iteration 19
+80 segments remain in iteration 19 (80 total)
+1 of 1 (100.000000%) active bins are populated
+per-bin minimum non-zero probability:       1
+per-bin maximum probability:                1
+per-bin probability dynamic range (kT):     0
+per-segment minimum non-zero probability:   3.8147e-07
+per-segment maximum non-zero probability:   0.15
+per-segment probability dynamic range (kT): 12.8821
+norm = 1, error in norm = 0 (0*epsilon)
+Waiting for segments to complete...
+Initial weight sum:  1.0
+ message: Optimization terminated successfully
+ success: True
+  status: 0
+     fun: -4.755108173804832
+       x: [ 4.400e-01  5.600e-01]
+     nit: 3
+     jac: [-6.320e+00 -3.526e+00]
+    nfev: 9
+    njev: 3
+LC_CLUSTERS:  [10  0  4 12  7  3]
+pcoord shape: (80, 2)
+OP weight log: [[array([0.44, 0.56])]]
+LC point log: [[array([[-9.872485 , -7.9547353],
+       [-9.859486 , -8.966269 ],
+       [-9.443354 , -8.518997 ],
+       [-8.77724  , -8.55867  ],
+       [-9.217578 , -8.910624 ],
+       [-9.760062 , -9.969896 ]], dtype=float32)]]
+LC point log shape: (1, 1, 6, 2)
+Cumulative reward log: [[-4.699217966981237]]
+Individual reward log: [[array([1.3841008 , 0.75189781, 0.63802596, 0.41733068, 0.18895622,
+       1.37479671])]]
+SORTED LCC:  [ 7 12  4  0  3 10]
+SORTED REWARDS [0.18895622 0.41733068 0.63802596 0.75189781 1.37479671 1.3841008 ]
+LCAS split: [0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0]
+LCAS merge: [[], [], [], [], [], [], [], [], [], [10, 12], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [30, 32, 33, 36, 37, 38, 40, 41, 42, 48, 49], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []]
+Split indices:  [2, 3, 22, 23, 25, 26, 27, 28, 58, 59, 61, 73, 74]
+split sum:  13
+merge sum:  13
+segments: 80
+Bin attrs post WERL:  <Bin at 0x16d2eed50, label=None, count=80, weight=1>
+Total = 80, splitting = 13, merging = 15
+Iteration completed successfully
+Iteration wallclock: 0:00:00.255218, cputime: 0:00:00
+
+
+Fri Jun  7 14:38:15 2024
+Iteration 20 (20 requested)
+Beginning iteration 20
+80 segments remain in iteration 20 (80 total)
+1 of 1 (100.000000%) active bins are populated
+per-bin minimum non-zero probability:       1
+per-bin maximum probability:                1
+per-bin probability dynamic range (kT):     0
+per-segment minimum non-zero probability:   1.90735e-07
+per-segment maximum non-zero probability:   0.15
+per-segment probability dynamic range (kT): 13.5753
+norm = 1, error in norm = 0 (0*epsilon)
+Waiting for segments to complete...
+Initial weight sum:  1.0
+ message: Optimization terminated successfully
+ success: True
+  status: 0
+     fun: -6.592666926984721
+       x: [ 4.200e-01  5.800e-01]
+     nit: 3
+     jac: [-5.316e+00 -7.517e+00]
+    nfev: 9
+    njev: 3
+LC_CLUSTERS:  [ 1 10  4 12  9  5]
+pcoord shape: (80, 2)
+OP weight log: [[array([0.42, 0.58])]]
+LC point log: [[array([[-8.404115 , -7.4292574],
+       [-9.7187395, -7.9768977],
+       [-8.907376 , -9.545475 ],
+       [-8.701631 , -9.855296 ],
+       [-9.544776 , -9.829721 ],
+       [-9.260773 , -7.954744 ]], dtype=float32)]]
+LC point log shape: (1, 1, 6, 2)
+Cumulative reward log: [[-6.548657910663753]]
+Individual reward log: [[array([1.79044498, 1.12046409, 0.7660846 , 1.1791573 , 1.00681356,
+       0.72970241])]]
+SORTED LCC:  [ 5  4  9 10 12  1]
+SORTED REWARDS [0.72970241 0.7660846  1.00681356 1.12046409 1.1791573  1.79044498]
+LCAS split: [1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+LCAS merge: [[], [], [], [], [], [], [], [], [], [40, 62, 68, 69], [], [], [17, 22, 24, 26, 32, 54, 57, 58, 73], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []]
+Split indices:  [0, 1, 2, 3, 13, 20, 27, 36, 37, 38, 50, 56, 60]
+split sum:  13
+merge sum:  13
+segments: 80
+Bin attrs post WERL:  <Bin at 0x16d2ee4e0, label=None, count=80, weight=1>
+Total = 80, splitting = 13, merging = 15
+Iteration completed successfully
+Iteration wallclock: 0:00:00.307902, cputime: 0:00:00
+
+
+Fri Jun  7 14:38:15 2024
 WEST run complete.

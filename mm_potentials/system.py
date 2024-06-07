@@ -17,13 +17,20 @@ binsperdim = [1, 1]
 # length of the pcoord
 pcoordlength = 21
 
-# tstate (TODO: may not be needed)
-#targetstate=[None,None]
+# tstate boundary per dim
+#targetstate=[-2,-2]
+targetstate=[-8,-8]
 
 def function_map(coords, mask, output):
 	# test: bin 0 if sum of xy is < 1000, and bin 1 if > 1000
-    output[np.abs(coords[:,0] + coords[:,1]) < 1000] = 0
-    output[np.abs(coords[:,0] + coords[:,1]) >= 1000] = 1
+    # output[np.abs(coords[:,0] + coords[:,1]) < 1000] = 0
+    # output[np.abs(coords[:,0] + coords[:,1]) >= 1000] = 1
+	
+	# for 2D ODLD: tstate is < 2 in x and y
+	# so put everything in bin 0 unless it's in the target state (bin 1)
+	output[(coords[:,0] < targetstate[0]) & (coords[:,0] < targetstate[0])] = 0
+	output[(coords[:,0] >= targetstate[1]) & (coords[:,0] >= targetstate[1])] = 1
+	
     
 class System(WESTSystem):
 	def initialize(self):
@@ -33,9 +40,7 @@ class System(WESTSystem):
 		self.pcoord_dtype = np.float32 
 		
         # bin mapper: FuncBinMapper(function, nbins)
-		#self.bin_mapper = FuncBinMapper(function_map, np.prod(binsperdim)+numberofdim*(2+2*splitIsolated)+activetarget)
 		#self.bin_mapper = RectilinearBinMapper([['-inf', 'inf'],['-inf', 'inf']])
-		#self.bin_mapper = FuncBinMapper(function_map, np.prod(binsperdim)+numberofdim)
 		self.bin_mapper = FuncBinMapper(function_map, 2)
 		
         # target counts (walkers per bin)
