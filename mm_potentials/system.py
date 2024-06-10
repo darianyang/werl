@@ -28,8 +28,8 @@ def function_map(coords, mask, output):
 	
 	# for 2D ODLD: tstate is < 2 in x and y
 	# so put everything in bin 0 unless it's in the target state (bin 1)
-	output[(coords[:,0] < targetstate[0]) & (coords[:,0] < targetstate[0])] = 0
-	output[(coords[:,0] >= targetstate[1]) & (coords[:,0] >= targetstate[1])] = 1
+	output[(coords[:,0] < targetstate[0]) & (coords[:,1] < targetstate[0])] = 0
+	output[(coords[:,0] >= targetstate[1]) & (coords[:,1] >= targetstate[1])] = 1
 	
     
 class System(WESTSystem):
