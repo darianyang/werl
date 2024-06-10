@@ -18,8 +18,8 @@ binsperdim = [1, 1]
 pcoordlength = 21
 
 # tstate boundary per dim
-#targetstate=[-2,-2]
-targetstate=[-8,-8]
+targetstate=[-2,-2]
+#targetstate=[-8,-8]
 
 def function_map(coords, mask, output):
 	# test: bin 0 if sum of xy is < 1000, and bin 1 if > 1000
