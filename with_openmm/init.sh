@@ -1,7 +1,7 @@
 #!/bin/bash
 
 rm -f west.h5 op_weights.txt
-BSTATES="--bstate initial,-15,-15"
+BSTATES="--bstate initial,-10,-6"
 TSTATES="--tstate final,-15,5"
 
 #w_init $BSTATES $TSTATES "$@"
