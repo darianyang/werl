@@ -2,12 +2,11 @@
 
 #rm -f west.h5 op_weights.txt
 rm -f west.h5
-#BSTATES="--bstate initial,-9.5,-9.5"
-#TSTATES="--tstate final,-1.9,-1.9"
 
-# fake coords since handled in prop and system
-BSTATES="--bstate initial,1,1"
-TSTATES="--tstate final,1,1"
+# bstates are handled in odld.py but tstates must be accurately placed in bin
+BSTATES="--bstate initial,-9.5,-9.5"
+TSTATES="--tstate final,-1.5,-1.5"
+#TSTATES="--tstate final,1000,1000"
 
 #w_init $BSTATES $TSTATES "$@"
 #w_init $BSTATES "$@"
