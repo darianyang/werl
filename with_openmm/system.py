@@ -2,8 +2,6 @@ from __future__ import print_function, division
 import numpy as np
 from westpa.core.systems import WESTSystem
 from westpa.core.binning import RectilinearBinMapper
-from westpa.core.binning import FuncBinMapper
-from westpa.core.binning import RecursiveBinMapper
 from westpa.core.binning import VectorizingFuncBinMapper
 
 import logging
@@ -17,39 +15,6 @@ numberofdim = 2
 binsperdim = [1, 1]
 # length of the pcoord
 pcoordlength = 21
-
-# tstate boundary per dim
-#targetstate=[-2,-2]
-#targetstate=[-8,-8]
-
-def function_map(coords, mask, output):
-	"""
-	Functional mapper for assigning bins based on pcoords.
-	Iterates entire coords array passed (all frames).
-
-    Parameters
-    ----------
-    coords : ndarray
-        An array with pcoord and weight info.
-    mask : ndarray
-        Array of 1 (True) and 0 (False), to filter out unwanted segment info.
-    output : list
-        The main list that, for each segment, holds the bin assignment.
-
-    Returns
-    ------
-    output : list
-        The main list that, for each segment, holds the bin assignment.
-	"""
-	# test: bin 0 if sum of xy is < 1000, and bin 1 if > 1000
-    # output[np.abs(coords[:,0] + coords[:,1]) < 1000] = 0
-    # output[np.abs(coords[:,0] + coords[:,1]) >= 1000] = 1
-	
-	# for 2D ODLD: tstate is < 2 in x and y
-	# so put everything in bin 0 unless it's in the target state (bin 1)
-	# output[:] = 0
-	# output[(coords[:,0] > -2) & (coords[:,1] > -2)] = 1
-	pass
 
 def vec_function_map(coords):
 	"""
@@ -87,7 +52,6 @@ class System(WESTSystem):
 		#self.bin_mapper = RectilinearBinMapper([['-inf', 'inf'],['-inf', 'inf']])
 		# FuncBinMapper(function, nbins)
 		# 2 bins: one for functional bin mapper and one for target state
-		#self.bin_mapper = FuncBinMapper(function_map, 2)
 		self.bin_mapper = VectorizingFuncBinMapper(vec_function_map, 2)
 		
         # target counts (walkers per bin)
