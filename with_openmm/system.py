@@ -8,7 +8,8 @@ import logging
 log = logging.getLogger('westpa.rc')
 
 # number of walkers per bin
-bintargetcount = 80
+#bintargetcount = 100
+bintargetcount = 5
 # number of dimensions
 numberofdim = 2
 # n_bins per dim
@@ -50,9 +51,11 @@ class System(WESTSystem):
 		
         # rectilinear bin mapper
 		#self.bin_mapper = RectilinearBinMapper([['-inf', 'inf'],['-inf', 'inf']])
+		self.bin_mapper = RectilinearBinMapper([['-inf', -20, -10, 0, 10, 20, 'inf'],
+                                                ['-inf', 0, 6, 'inf']])
 		# FuncBinMapper(function, nbins)
-		# 2 bins: one for functional bin mapper and one for target state
-		self.bin_mapper = VectorizingFuncBinMapper(vec_function_map, 2)
+		# 2 bins: one for 'binless' resampling and one for target state
+		#self.bin_mapper = VectorizingFuncBinMapper(vec_function_map, 2)
 		
         # target counts (walkers per bin)
 		self.bin_target_counts = np.empty((self.bin_mapper.nbins,), np.int_)

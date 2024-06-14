@@ -2,7 +2,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-weights = np.load("op_weights.npy")
+#weights = np.load("op_weights.npy")
+weights = np.load("op_weights.txt")
 print(weights.shape)
 #weights = np.load("op_weights-reap2-25i.npy")
 

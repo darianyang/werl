@@ -149,19 +149,20 @@ class WERLDriver(WEDriver):
                 # split, merge, variation, walker_variations = resample.resample()
                 
                 #resample = LCAS(pcoords, weights, n_clusters=12)#, pmax=1, pmin=1e-500)
-                resample = LCAS(pcoords, weights, n_clusters=None)
-                split, merge = resample.lcas()
+                # resample = LCAS(pcoords, weights, n_clusters=None)
+                # split, merge = resample.lcas()
                 
                 # resample = LCAS_MA(pcoords, weights, n_clusters=5, n_agents=4)
                 # split, merge = resample.lcas_ma()
 
-                #resample = REAP(pcoords, weights, n_clusters=None)
+                resample = REAP(pcoords, weights, n_clusters=None)
                 # resample = REAP(pcoords, weights, n_clusters=12)
-                #split, merge = resample.reap()
+                split, merge = resample.reap()
 
                 # TODO: testing filters
                 #split = [1 if i > 1 else i for i in split]
 
+                print(f"n_clusters: {resample.n_clusters}")
                 print(f"LCAS split: {split}\nLCAS merge: {merge}")
                 print("Split indices: ", [i for i, e in enumerate(split) if e != 0])
                 print("split sum: ", np.sum(split))
