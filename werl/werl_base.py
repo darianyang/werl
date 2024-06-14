@@ -93,7 +93,7 @@ class WERL:
             # otherwise use input n_cluster number
             self.n_clusters = n_clusters
 
-        print("n_clusters: ", self.n_clusters)
+        #print("n_clusters: ", self.n_clusters)
 
         # use n_clusters for n walkers to split if not given
         if n_split is None:
@@ -162,7 +162,7 @@ class WERL:
         lc_cluster_counter = 1
 
         # TODO: debugging an indexing error in line 156 (-14 index from size 13 array)
-        print("COUNTS: \n", self.counts)
+        #print("COUNTS: \n", self.counts)
 
         while splits_remaining > 0:
            

@@ -198,29 +198,29 @@ def four_wells_symmetric_func(x, y):
 four_wells_symmetric = gaussian_bivariate_string().replace('-80', '-25', 1)
 
 
-# # Potential for TSLC
-# def circular_potential_func(v, r=2, c=-250, a=-10):
-#     '''
-#     Computes circular potential value at point v = (x, y ,z).
-#     It is assumed the circle is centered at the origin.
+# Potential for TSLC
+def circular_potential_func(v, r=2, c=-250, a=-10):
+    '''
+    Computes circular potential value at point v = (x, y ,z).
+    It is assumed the circle is centered at the origin.
     
-#     Args
-#     -----------------
-#     v (array-like): 3d coordinates of point in cartesian coordinates. 
-#     r (float): circle radius.
-#     c (float): energy minimum at the circle. Should be negative for the circle to be a stable equilibrium line.
-#     a (float): exponential scaling factor (adjusts how quickly the energy increases far form the circle). Should be negative.
+    Args
+    -----------------
+    v (array-like): 3d coordinates of point in cartesian coordinates. 
+    r (float): circle radius.
+    c (float): energy minimum at the circle. Should be negative for the circle to be a stable equilibrium line.
+    a (float): exponential scaling factor (adjusts how quickly the energy increases far form the circle). Should be negative.
     
-#     Returns
-#     -----------------
-#     potential (float): potential value at v.
-#     '''
-#     x, y, z = v
-#     circle_radius = r
-#     d_squared = z ** 2 + np.square(np.sqrt(x ** 2 + y ** 2) - circle_radius)
-#     potential = c * np.exp(a * d_squared)
+    Returns
+    -----------------
+    potential (float): potential value at v.
+    '''
+    x, y, z = v
+    circle_radius = r
+    d_squared = z ** 2 + np.square(np.sqrt(x ** 2 + y ** 2) - circle_radius)
+    potential = c * np.exp(a * d_squared)
 
-#     return potential
+    return potential
 
 
 def circular_potential_string(r=2, c=-250, a=-10):
@@ -229,8 +229,22 @@ def circular_potential_string(r=2, c=-250, a=-10):
 
     return circular_potential
 
-
 circular_potential = circular_potential_string()
+
+# from TSLC paper
+def ring_potential(x, y):
+    #Potential Parameters:
+    a=10
+    
+    b=250
+    
+    rad=2 #rad is radius of circle
+    
+    #distance to circle
+    d = np.square(np.sqrt(np.square(x)+np.square(y)) - rad)
+    V = -b*np.exp(-d*a)
+    
+    return V
 
 
 # potentials from REAP paper
@@ -291,21 +305,6 @@ def O_potential(x, y):
 
     V1 = AA[0]*np.exp(aa[0] * np.square(x-XX[0]) + bb[0] * (x-XX[0]) * (y-YY[0]) +cc[0]*np.square(y-YY[0]))
     return V1
-
-# from TSLC paper
-def ring_potential(x, y):
-    #Potential Parameters:
-    a=10
-    
-    b=250
-    
-    rad=2 #rad is radius of circle
-    
-    #distance to circle
-    d = np.square(np.sqrt(np.square(x)+np.square(y)) - rad)
-    V = -b*np.exp(-d*a)
-    
-    return V
 
 def we_odld_2d_energy(x, y):
     A = 2

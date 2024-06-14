@@ -60,8 +60,8 @@ class ODLDPropagator(WESTPropagator):
     # reflect_at_y = None
 
     # friction coefficient
-    sigma = 0.001 ** (0.5)  
-    #sigma = 0.01 ** (0.5)  
+    #sigma = 0.001 ** (0.5)
+    sigma = 0.01 ** (0.5)  
     ###########################
     ###########################
     ###########################
