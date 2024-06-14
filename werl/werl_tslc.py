@@ -144,12 +144,9 @@ class TSLC(WERL):
 
         # First clustering attempt using FFT
         centroids = self.FFT()
-        print(centroids)
-        print("PCOORDS", self.pcoords)
         kmeans = KMeans(n_clusters=self.n_clusters, n_init=1, max_iter=1, init=centroids).fit(self.pcoords) # Perform one round of kmeans
-        # print(kmeans.cluster_centers_, kmeans.labels_)
 
-        while len(np.unique(kmeans.labels_)) != self.n_clusters and len(np.unique(kmeans.labels_)) != 1:
+        while len(np.unique(kmeans.labels_)) != self.n_clusters and len(np.unique(kmeans.labels_)) != 1: 
             centroids = self.FFT()
             kmeans = KMeans(n_clusters=self.n_clusters, n_init=1, max_iter=1, init=centroids).fit(self.pcoords)
 
