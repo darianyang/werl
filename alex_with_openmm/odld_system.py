@@ -23,8 +23,8 @@ Z_potential_string = '''\
 23 * exp(-0.01 *(x^2 + y^2))'''
 
 #circular_potential_string = "-250*exp(-10*(z^2 + (sqrt(x^2 + y^2) - 2)^2))"
-#ring_potential_string = "-250 * exp(-10 * (sqrt(x^2 + y^2) - 2)^2)"
-big_ring_potential_string = "-250 * exp(-0.5 * (sqrt(x^2 + y^2) - 10)^2)"
+ring_potential_string = "-250 * exp(-10 * (sqrt(x^2 + y^2) - 2)^2)"
+#big_ring_potential_string = "-250 * exp(-0.5 * (sqrt(x^2 + y^2) - 10)^2)"
 
 
 class ODLDPropagator(WESTPropagator):
@@ -39,8 +39,8 @@ class ODLDPropagator(WESTPropagator):
     #initial_position = [0, -10, 0]
     #initial_position = [-10, -6, 0]
     #initial_position = [-10, -6]
-    #initial_position = [0, 1.95]
-    initial_position = [0, 10]
+    initial_position = [0, 1.8]
+    #initial_position = [0, 10]
     # pcoord params
     coord_len = 21
     coord_dtype = np.float32
@@ -51,8 +51,8 @@ class ODLDPropagator(WESTPropagator):
     #potential = L_potential_string
     #potential = Z_potential_string
     #potential = circular_potential_string
-    #potential = ring_potential_string
-    potential = big_ring_potential_string
+    potential = ring_potential_string
+    #potential = big_ring_potential_string
 
     def __init__(self, rc=None):
         super().__init__(rc)
@@ -157,7 +157,8 @@ class ODLDPropagator(WESTPropagator):
             xyz_position = np.concatenate((segment.pcoord[0], np.array([0])))
             #print(segment.pcoord[0].dtype)
             #x = self.particle_sim(initial_position=segment.pcoord[0])
-            x = self.particle_sim(initial_position=xyz_position)
+            #x = self.particle_sim(initial_position=xyz_position)
+            x = self.particle_sim(initial_position=xyz_position, gamma=5, T=50) # lower temp
             # fill out the rest of the pcoord array with xy positions
             coords[iseg, 1:] = x[:,:self.coord_ndim]
 

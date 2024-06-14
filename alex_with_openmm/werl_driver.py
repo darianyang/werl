@@ -8,6 +8,7 @@ from werl.werl_lcas import LCAS
 #from werl.werl_lcasMA import LCAS_MA
 from werl.werl_reap import REAP
 from werl.werl_tslc import TSLC
+#from werl.werl_fast import FAST
 
 ############################# SET WERL PARAMETERS #############################
 
@@ -150,15 +151,15 @@ class WERLDriver(WEDriver):
                 # split, merge, variation, walker_variations = resample.resample()
                 
                 #resample = TSLC(pcoords, weights, n_clusters=12)#, pmax=1, pmin=1e-500)
-                resample = TSLC(pcoords, weights, n_clusters=None, pmin=1e-100, pmax=1)
-                split, merge = resample.tslc()
+                #resample = TSLC(pcoords, weights, n_clusters=None, pmin=1e-100, pmax=1)
+                #split, merge = resample.tslc()
                 
                 # resample = LCAS_MA(pcoords, weights, n_clusters=5, n_agents=4)
                 # split, merge = resample.lcas_ma()
 
                 #resample = REAP(pcoords, weights, n_clusters=12)
-                #resample = REAP(pcoords, weights, n_clusters=None)
-                #split, merge = resample.reap()
+                resample = REAP(pcoords, weights, n_clusters=None)
+                split, merge = resample.reap()
 
                 # TODO: testing filters
                 #split = [1 if i > 1 else i for i in split]
