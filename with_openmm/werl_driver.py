@@ -149,8 +149,8 @@ class WERLDriver(WEDriver):
                 # split, merge, variation, walker_variations = resample.resample()
                 
                 #resample = LCAS(pcoords, weights, n_clusters=12)#, pmax=1, pmin=1e-500)
-                # resample = LCAS(pcoords, weights, n_clusters=None)
-                # split, merge = resample.lcas()
+                #resample = LCAS(pcoords, weights, n_clusters=None)
+                #split, merge = resample.lcas()
                 
                 # resample = LCAS_MA(pcoords, weights, n_clusters=5, n_agents=4)
                 # split, merge = resample.lcas_ma()

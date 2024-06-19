@@ -15,9 +15,18 @@ four_wells_symmetric = potentials.gaussian_bivariate_string().replace('-80', '-2
 PI = np.pi
 log = logging.getLogger(__name__)
 
+# with metastable well
+# Z_potential_string = '''\
+# (x^4 + y^4)/20480 - 3 * exp(-0.01 * (x+5)^2 - 0.2 * (y+5)^2) - \
+# 13 * exp(-0.01 * (x-5)^2 - 0.2 * (y-5)^2) + \
+# 5 * exp(-0.2 * (x+3*(y-3)^2))/(1+exp(-x-3)) + \
+# 5 * exp(-0.2 * (x+3*(y+3)^2))/(1+exp(x-3)) + \
+# 23 * exp(-0.01 *(x^2 + y^2))'''
+
+# with barrier
 Z_potential_string = '''\
 (x^4 + y^4)/20480 - 3 * exp(-0.01 * (x+5)^2 - 0.2 * (y+5)^2) - \
-13 * exp(-0.01 * (x-5)^2 - 0.2 * (y-5)^2) + \
+-30 * exp(-0.01 * (x-5)^2 - 0.2 * (y-5)^2) + \
 5 * exp(-0.2 * (x+3*(y-3)^2))/(1+exp(-x-3)) + \
 5 * exp(-0.2 * (x+3*(y+3)^2))/(1+exp(x-3)) + \
 23 * exp(-0.01 *(x^2 + y^2))'''
