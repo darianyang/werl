@@ -94,7 +94,8 @@ def plot_potential(potential, xlim=None, ylim=None, granularity=1, vmax=None, vm
     # cset = plt.contour(Z, [-2, -1, 0, 1, 2, 3], linewidths=2, cmap=plt.cm.binary, extent=[xlim[0], xlim[1], ylim[1], ylim[0]])
     # plt.clabel(cset, inline=True,fmt='%1.1f', fontsize=10)
     plt.colorbar(im)  # adding the colobar on the right
-    plt.show()
+    plt.savefig("Z-B.pdf")
+    #plt.show()
 
 # from MA-REAP
 #plot_potential(two_wells_complex_func, (0,100), (0,100))
