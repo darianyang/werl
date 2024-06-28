@@ -139,7 +139,8 @@ class WERLDriver(WEDriver):
                 # resample = WEVO(pcoords, weights, merge_dist=merge_dist, char_dist=char_dist,
                 #                 merge_alg=merge_alg, pmin=pmin, pmax=pmax, dist_exponent=dist_exponent)
                 # split, merge, variation, walker_variations = resample.resample()
-                resample = FAST(pcoords, weights, n_split=10, pmin=1e-100)
+                # TODO: FAST resampler yields very low weights (at least in 1D ODLD) - address if persists
+                resample = FAST(pcoords, weights, n_split=10, pmin=1e-12)
                 split, merge = resample.fast()
                 #split, merge = resample.lcas(n_split=10)
                 #split, merge = resample.lcas(n_split=10)

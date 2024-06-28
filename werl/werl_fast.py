@@ -111,9 +111,9 @@ class FAST(WERL):
         Here, alpha=1 is the default - no scaling/balancing performed for undiredcted component
         '''
 
-        print('LABELS:', self.labels)
-        print('DIR:', directed)
-        print('UNDIR:', undirected,'\n')
+        #print('LABELS:', self.labels)
+        #print('DIR:', directed)
+        #print('UNDIR:', undirected,'\n')
         dir_rewards = [r[0] for r in directed]
         undir_rewards = [r[0] for r in undirected]
 
@@ -133,7 +133,6 @@ class FAST(WERL):
         ## Get each state's reward proportion
         total_reward = np.sum(rewards)
         reward_props = [float("{:.3f}".format(r/total_reward)) for r in rewards]
-        print('REWARD PROPS:', reward_props)
         num_to_split_frac = [r*self.n_split for r in reward_props]
 
         ## Decide num to split from each cluster based on reward proportion
@@ -149,17 +148,19 @@ class FAST(WERL):
         ## Get and sort the reward indices
         reward_w_ind = [(i, r) for i, r in enumerate(reward_props)]
         sorted_reward_indices = [r[0] for r in sorted(reward_w_ind, key=lambda x:x[1], reverse=True)]
-        print('SORTED REWARD INDICES:', sorted_reward_indices)
+        # print('SORTED REWARD INDICES:', sorted_reward_indices)
 
-        print('TOTAL NUM TO SPLIT:', self.n_split)
-        print('SUM OF NUM TO SPLIT:', np.sum(num_to_split), '\n')
-        print('CALCULATED NUM TO SPLIT:', num_to_split) 
+        # print('TOTAL NUM TO SPLIT:', self.n_split)
+        # print('SUM OF NUM TO SPLIT:', np.sum(num_to_split), '\n')
+        # print('CALCULATED NUM TO SPLIT:', num_to_split) 
         
 
         ## Make necessary corrections to num_to_split
         # If more splits are calculated for a cluster than members, 
         # redistribute splits to the next highest reward cluster
-
+        print()
+        print("CORRECTING SPLITS PER CLUSTER AFTER REWARD CALCULATION")
+        print("======================================================")
         _, label_counts = np.unique(self.labels, return_counts=True)
         for i, n in enumerate(sorted_reward_indices):
             while num_to_split[n] > label_counts[n]:
@@ -189,21 +190,57 @@ class FAST(WERL):
                         num_to_split[num] += 1
                         print("Added a split to High Reward Cluster", num)
                         break
-        
-        print('CORRECTED NUM TO SPLIT:', num_to_split) 
-        print('CORRECTED SUM OF NUM TO SPLIT:', np.sum(num_to_split))
 
         ## Select splits randomly from each cluster n times, for each n in num_to_split
         splits_remaining = self.n_split
+
+        # This is a dictionary that relates state labels to the number of segments with weights > pmin
+        # I use this to redistribute the splits and avoid errors - can surely be improved
+        avail_splits = {i:0 for i in np.unique(self.labels)}
+        for i, seg_label in enumerate(self.labels):
+            if self.weights[i] > self.pmin:
+                avail_splits[self.labels[i]] += 1
+
+        # Here, we can then control for weight threshold by modifying num_to_split before splitting
+        print()
+        print("CORRECTING SPLITS PER CLUSTER IF WEIGHT THRESHOLD IS SET")
+        print("========================================================")
+        diff_counter = []
+        for i in range(len(num_to_split)):
+            diff_counter.append(list(avail_splits.values())[i] - num_to_split[i])
+        
+        # diff counter tells us if we are splitting too many from each cluster after correcting for weight
+        # diff counter is sorted by ascending cluster ids, same as num_to_split, so the comparison is done pairwise
+        print("DIFF:", diff_counter)
+        for i, diff in enumerate(diff_counter):
+            avail_vals = [val for val in avail_splits.values()]
+            counter = 0 # This will track the high reward cluster that we try to redistribute splits into, reset for each
+            while diff < 0:
+                this_high_cluster = sorted_reward_indices[counter] 
+
+                # If a split can be made from this high(est) reward cluster, move the split to that cluster and update all
+                if diff_counter[this_high_cluster] > 0 and i != this_high_cluster: 
+                    num_to_split[i] -= 1 # remove a split from the problematic cluster
+                    num_to_split[this_high_cluster] += 1 # Add a split to this high reward cluster
+                    diff += 1 
+                    avail_vals[this_high_cluster] = avail_vals[this_high_cluster] - 1 
+                    diff_counter[this_high_cluster] = diff_counter[this_high_cluster] - 1 
+                    print("Moving a split from cluster "+ str(i+1)+" to high reward cluster "+str(this_high_cluster+1)+" (rank "+str(counter+1)+")")
+                    print("Updated num_to_split:", num_to_split)
+                else:
+                    counter += 1 # If a split cannot be made in this high(est) reward cluster, move to next highest
+                    print("No additional splits possible in cluster "+str(this_high_cluster+1)+"(rank "+str(counter+1)+") - Attempt next cluster")
+            
+        print('CORRECTED NUM TO SPLIT:', num_to_split) 
+        print('CORRECTED SUM OF NUM TO SPLIT:', np.sum(num_to_split))
+        print("========================================================")
         while splits_remaining > 0:
             # go through each segment index label and tag to split
             # no need to "randomize" selection - there is no specific ordering relating to the cluster labels
             for i, seg_label in enumerate(self.labels):
                 # if there are still splits to make in the cluster
                 if num_to_split[seg_label] > 0:
-                    # check if weight is above min threshold
-                    ## TODO: This conditional can be problematic if all of the weights are low in the state
-                    ## especially if splits are consistently happening in one state (typical in 1D ODLD) 
+                    # check if weight is above min threshold 
                     if self.weights[i] > self.pmin and self.to_split[i] == 0:
                         # increase split counter on this segment by 1
                         self.to_split[i] += 1
@@ -211,6 +248,8 @@ class FAST(WERL):
                         splits_remaining -= 1
                         # update num_to_split
                         num_to_split[seg_label] -= 1
+                        # update avail_splits dict
+                        avail_splits[self.labels[i]] -= 1    
 
                 # extra precaution
                 if splits_remaining == 0:
@@ -363,12 +402,12 @@ class FAST(WERL):
 if __name__ == "__main__":
     ## 1D TEST SET
     # np.random.seed(55) # for testing
-    pcoords = np.random.uniform(8, 10, size=40) # Generate random initial states
-    weights = np.ones(40) / 40
+    #pcoords = np.random.uniform(-10, -8, size=40) # Generate random initial states
+    #weights = np.ones(40) / 40
 
     ## 2D TEST SET
-    #pcoords = np.load("mm_potentials/pcoords_full.npy")*-1
-    #weights = np.ones(len(pcoords)) / len(pcoords)
+    pcoords = np.load("mm_potentials/pcoords_full.npy")
+    weights = np.ones(len(pcoords)) / len(pcoords)
     
     print(f"pcoord full shape: {pcoords.shape}")
 
