@@ -1,8 +1,8 @@
 #!/bin/bash
 
 rm -f west.h5
-BSTATES="--bstate initial,-5,-5"
-TSTATES="--tstate final,5,5"
+BSTATES="--bstate initial,-15,-15"
+TSTATES="--tstate final,15,15"
 
 #w_init $BSTATES $TSTATES "$@"
 #w_init $BSTATES "$@"

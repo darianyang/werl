@@ -51,7 +51,7 @@ class ODLDPropagator(WESTPropagator):
     #initial_position = [0, -10, 0]
     #initial_position = [-10, -6, 0]
     #initial_position = [-10, -6]
-    initial_position = [-5, -5]
+    initial_position = [-15, -15]
     # pcoord params
     coord_len = 21
     coord_dtype = np.float32

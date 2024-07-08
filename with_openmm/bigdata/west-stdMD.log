@@ -1,0 +1,76 @@
+System is being built only off of the system driver
+Maximum wallclock time: 1 day, 0:00:00
+
+Mon Jul  8 12:52:38 2024
+Iteration 1 (10000 requested)
+Beginning iteration 1
+80 segments remain in iteration 1 (80 total)
+1 of 1 (100.000000%) active bins are populated
+per-bin minimum non-zero probability:       1
+per-bin maximum probability:                1
+per-bin probability dynamic range (kT):     0
+per-segment minimum non-zero probability:   0.0125
+per-segment maximum non-zero probability:   0.0125
+per-segment probability dynamic range (kT): 0
+norm = 1, error in norm = -1.11022e-16 (-0.5*epsilon)
+Waiting for segments to complete...
+Iteration completed successfully
+Iteration wallclock: 0:00:07.654102, cputime: 0:00:00
+
+
+Mon Jul  8 12:52:46 2024
+Iteration 2 (10000 requested)
+Beginning iteration 2
+80 segments remain in iteration 2 (80 total)
+1 of 1 (100.000000%) active bins are populated
+per-bin minimum non-zero probability:       1
+per-bin maximum probability:                1
+per-bin probability dynamic range (kT):     0
+per-segment minimum non-zero probability:   0.0125
+per-segment maximum non-zero probability:   0.0125
+per-segment probability dynamic range (kT): 0
+norm = 1, error in norm = -1.11022e-16 (-0.5*epsilon)
+Waiting for segments to complete...
+Iteration completed successfully
+Iteration wallclock: 0:00:05.204278, cputime: 0:00:00
+
+
+Mon Jul  8 12:52:51 2024
+Iteration 3 (10000 requested)
+Beginning iteration 3
+80 segments remain in iteration 3 (80 total)
+1 of 1 (100.000000%) active bins are populated
+per-bin minimum non-zero probability:       1
+per-bin maximum probability:                1
+per-bin probability dynamic range (kT):     0
+per-segment minimum non-zero probability:   0.0125
+per-segment maximum non-zero probability:   0.0125
+per-segment probability dynamic range (kT): 0
+norm = 1, error in norm = -1.11022e-16 (-0.5*epsilon)
+Waiting for segments to complete...
+Process worker-4-7fa55398aed0:
+Traceback (most recent call last):
+  File "/home/dty7/Apps/anaconda3/envs/werl/lib/python3.11/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/home/dty7/Apps/anaconda3/envs/werl/lib/python3.11/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/home/dty7/Apps/anaconda3/envs/werl/lib/python3.11/site-packages/westpa/work_managers/processes.py", line 78, in task_loop
+    if not self.task_queue.empty():
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/dty7/Apps/anaconda3/envs/werl/lib/python3.11/multiprocessing/queues.py", line 129, in empty
+    return not self._poll()
+               ^^^^^^^^^^^^
+  File "/home/dty7/Apps/anaconda3/envs/werl/lib/python3.11/multiprocessing/connection.py", line 257, in poll
+    return self._poll(timeout)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/dty7/Apps/anaconda3/envs/werl/lib/python3.11/multiprocessing/connection.py", line 440, in _poll
+    r = wait([self], timeout)
+        ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/dty7/Apps/anaconda3/envs/werl/lib/python3.11/multiprocessing/connection.py", line 940, in wait
+    with _WaitSelector() as selector:
+  File "/home/dty7/Apps/anaconda3/envs/werl/lib/python3.11/selectors.py", line 203, in __exit__
+    self.close()
+  File "/home/dty7/Apps/anaconda3/envs/werl/lib/python3.11/selectors.py", line 269, in close
+    self._fd_to_key.clear()
+KeyboardInterrupt
+interrupted; shutting down
