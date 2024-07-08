@@ -138,5 +138,5 @@ plt.axvline(10, color="k", linestyle="--")
 plt.axhline(-10, color="k", linestyle="--")
 plt.axhline(10, color="k", linestyle="--")
 
-#plt.savefig("S-potential.pdf")
+plt.savefig("S-potential.pdf")
 plt.show()
