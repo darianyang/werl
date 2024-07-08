@@ -34,10 +34,10 @@ log = logging.getLogger(__name__)
 # updated with well and barrier
 S_potential_string = '''\
 (x^4 + y^4)/20480 - 3 * exp(-0.01 * (x+5)^2 - 0.2 * (y+5)^2) - \
--30 * exp(-0.002 * (x-5)^2 - 0.2 * (y-5)^2) + \
+-22 * exp(-0.0025 * (x-5)^2 - 0.2 * (y-5)^2) + \
 -50 * exp(-0.2 * (x+3*(y-3)^2))/(1+exp(-x-3)) + \
 50 * exp(-0.2 * (x+3*(y+3)^2))/(1+exp(x-3)) + \
-23 * exp(-0.01 *(x^2 + y^2))'''
+16 * exp(-0.01 *(x^2 + y^2))'''
 
 class ODLDPropagator(WESTPropagator):
 
