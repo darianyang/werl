@@ -8,7 +8,7 @@ import logging
 log = logging.getLogger('westpa.rc')
 
 # number of walkers per bin
-bintargetcount = 100
+bintargetcount = 80
 #bintargetcount = 5
 # number of dimensions
 numberofdim = 2
@@ -36,7 +36,8 @@ def vec_function_map(coords):
 	x, y = coords
 
 	# set tstate conditions
-	if x < -10 and 0 < y < 6:
+	#if x < -10 and 0 < y < 6:
+	if x > 10 and y > 10:
 		return 1
 	# otherwise assign to binless bin
 	else:

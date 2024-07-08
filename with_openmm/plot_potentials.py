@@ -94,8 +94,6 @@ def plot_potential(potential, xlim=None, ylim=None, granularity=1, vmax=None, vm
     # cset = plt.contour(Z, [-2, -1, 0, 1, 2, 3], linewidths=2, cmap=plt.cm.binary, extent=[xlim[0], xlim[1], ylim[1], ylim[0]])
     # plt.clabel(cset, inline=True,fmt='%1.1f', fontsize=10)
     plt.colorbar(im)  # adding the colobar on the right
-    plt.savefig("Z-B.pdf")
-    #plt.show()
 
 # from MA-REAP
 #plot_potential(two_wells_complex_func, (0,100), (0,100))
@@ -130,5 +128,15 @@ def plot_potential(potential, xlim=None, ylim=None, granularity=1, vmax=None, vm
 #plot_potential(SymmetricTwoChannel, (-3, 3), (-3, 3), granularity=0.01, single_param=True, vmax=4)
 #plot_potential(Muller, (-3, 3), (-3, 3), granularity=0.01, single_param=True, vmax=10)
 #plot_potential(Rosenbrock, (-2, 2), (-2, 2), granularity=0.01, single_param=True, vmax=100)
-plot_potential(Zpotential, (-30, 30), (-30, 30), granularity=0.1, single_param=True, vmin=0, vmax=25)
+#plot_potential(Zpotential, (-30, 30), (-30, 30), granularity=0.1, single_param=True, vmin=0, vmax=25)
+plot_potential(Zpotential_barrier, (-30, 30), (-30, 30), granularity=0.1, single_param=True, vmin=0, vmax=30)
 #plot_potential(EntropicBox, (-1, 1), (-1, 1), granularity=0.01, single_param=True)
+
+# states
+plt.axvline(-10, color="k", linestyle="--")
+plt.axvline(10, color="k", linestyle="--")
+plt.axhline(-10, color="k", linestyle="--")
+plt.axhline(10, color="k", linestyle="--")
+
+plt.savefig("S-potential.pdf")
+plt.show()

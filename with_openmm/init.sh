@@ -1,13 +1,13 @@
 #!/bin/bash
 
 rm -f west.h5
-BSTATES="--bstate initial,-10,-6"
-TSTATES="--tstate final,-15,5"
+BSTATES="--bstate initial,-5,-5"
+TSTATES="--tstate final,5,5"
 
 #w_init $BSTATES $TSTATES "$@"
 #w_init $BSTATES "$@"
 
-w_init $BSTATES $TSTATES --segs-per-state 100 "$@"
+w_init $BSTATES $TSTATES --segs-per-state 80 "$@"
 #w_init $BSTATES --segs-per-state 100 "$@"
 #w_init $BSTATES --segs-per-state 80 "$@"
 
