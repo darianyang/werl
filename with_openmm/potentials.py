@@ -525,8 +525,8 @@ def Zpotential_barrier(x):
     """
     # original coefficients: 3, 5, 5, 3
     return (x[0]**4 + x[1]**4)/20480 - 3 * np.exp(-0.01 * (x[0]+5)**2 - 0.2 * (x[1]+5)**2) - \
-            -22 * np.exp(-0.0025 * (x[0]-5)**2 - 0.2 * (x[1]-5)**2) + \
-            -50 * np.exp(-0.2 * (x[0]+3*(x[1]-3)**2))/(1+np.exp(-x[0]-3)) + \
+            -35 * np.exp(-0.004 * (x[0]-5)**2 - 0.2 * (x[1]-5)**2) + \
+            -35 * np.exp(-0.075 * (x[0]+3*(x[1]-3)**2))/(1+np.exp(-x[0]-3)) + \
             50 * np.exp(-0.2 * (x[0]+3*(x[1]+3)**2))/(1+np.exp(x[0]-3)) + \
             16 * np.exp(-0.01 *(x[0]**2 + x[1]**2))
             # originally smaller barrier near middle
