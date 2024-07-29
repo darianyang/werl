@@ -9,11 +9,12 @@ log = logging.getLogger('westpa.rc')
 
 # number of walkers per bin
 #bintargetcount = 80
-bintargetcount = 4
+bintargetcount = 8
+#bintargetcount = 4
 # number of dimensions
 numberofdim = 2
 # n_bins per dim
-binsperdim = [1, 1]
+#binsperdim = [1, 1]
 # length of the pcoord
 pcoordlength = 21
 
@@ -50,14 +51,19 @@ class System(WESTSystem):
 		self.pcoord_len = pcoordlength
 		self.pcoord_dtype = np.float32 
 		
+		# TODO: add third pcoord of noise
+
         # rectilinear bin mapper
 		#self.bin_mapper = RectilinearBinMapper([['-inf', 'inf'],['-inf', 'inf']])
-		# note that this bin mapping with stdHK didn't work very well at all, worse than stdMD
+		# using 1D pcoord for the 2D DOF particle space
+		self.bin_mapper = RectilinearBinMapper([['-inf', -20, -15, -10, -5, 0, 5, 10, 20, 'inf'],
+                                                ['-inf', 10, 'inf']])
+		# rough estimate of the 2D landscape
 		# self.bin_mapper = RectilinearBinMapper([['-inf', -20, -10, 0, 10, 20, 'inf'],
         #                                         ['-inf', -20, -10, 0, 10, 20, 'inf']])
-		# here I'm making the bins better with knowledge of the system/potential
-		self.bin_mapper = RectilinearBinMapper([['-inf', -16, -6, -3, 0, 10, 'inf'],
-                                                ['-inf', -16, -5, 0, 2, 4, 10, 'inf']])
+		# optimal 2D bins with knowledge of the system/potential
+		# self.bin_mapper = RectilinearBinMapper([['-inf', -16, -6, -3, 0, 10, 'inf'],
+        #                                         ['-inf', -16, -5, 0, 2, 4, 10, 'inf']])
 		# FuncBinMapper(function, nbins)
 		# 2 bins: one for 'binless' resampling and one for target state
 		#self.bin_mapper = VectorizingFuncBinMapper(vec_function_map, 2)

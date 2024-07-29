@@ -34,7 +34,7 @@ log = logging.getLogger(__name__)
 # updated with well and barrier
 S_potential_string = '''\
 (x^4 + y^4)/20480 - 3 * exp(-0.01 * (x+5)^2 - 0.2 * (y+5)^2) - \
--35 * exp(-0.004 * (x-5)^2 - 0.2 * (y-5)^2) + \
+-60 * exp(-0.003 * (x-5)^2 - 0.2 * (y-5)^2) + \
 -35 * exp(-0.075 * (x+3*(y-3)^2))/(1+exp(-x-3)) + \
 50 * exp(-0.2 * (x+3*(y+3)^2))/(1+exp(x-3)) + \
 16 * exp(-0.01 *(x^2 + y^2))'''

@@ -133,18 +133,18 @@ plot_potential(Zpotential_barrier, (-30, 30), (-30, 30), granularity=0.1, single
 #plot_potential(EntropicBox, (-1, 1), (-1, 1), granularity=0.01, single_param=True)
 
 # states / bins
-# for bin in [-20, -10, 0, 10, 20]:
-#     plt.axvline(bin, color="k", linestyle="--")
-#     plt.axhline(bin, color="k", linestyle="--")
+for bin in [-20, -10, 0, 10, 20]:
+    plt.axvline(bin, color="k", linestyle="--")
+    plt.axhline(bin, color="k", linestyle="--")
 
-# opt bins
-#for xbin in [-14, -6, -5, -4, 10]:
-for xbin in [-16, -6, -3, 0, 10]:
-    plt.axvline(xbin, color="k", linestyle="--")
-#for ybin in [-6, 2, 4, 5, 6, 10]:
-for ybin in [-16, -5, 0, 2, 4, 10]:
-    plt.axhline(ybin, color="k", linestyle="--")
+# # opt bins
+# #for xbin in [-14, -6, -5, -4, 10]:
+# for xbin in [-16, -6, -3, 0, 10]:
+#     plt.axvline(xbin, color="k", linestyle="--")
+# #for ybin in [-6, 2, 4, 5, 6, 10]:
+# for ybin in [-16, -5, 0, 2, 4, 10]:
+#     plt.axhline(ybin, color="k", linestyle="--")
 
-#plt.savefig("S-potential.pdf")
+plt.savefig("S-potential-1path.pdf")
 #plt.savefig("S-potential-bins-opt.png", dpi=600, transparent=True)
 plt.show()
