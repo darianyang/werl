@@ -23,13 +23,21 @@ log = logging.getLogger(__name__)
 # 5 * exp(-0.2 * (x+3*(y+3)^2))/(1+exp(x-3)) + \
 # 23 * exp(-0.01 *(x^2 + y^2))'''
 
-# with barrier
-Z_potential_string = '''\
+# # with barrier
+# Z_potential_string = '''\
+# (x^4 + y^4)/20480 - 3 * exp(-0.01 * (x+5)^2 - 0.2 * (y+5)^2) - \
+# -30 * exp(-0.01 * (x-5)^2 - 0.2 * (y-5)^2) + \
+# 5 * exp(-0.2 * (x+3*(y-3)^2))/(1+exp(-x-3)) + \
+# 5 * exp(-0.2 * (x+3*(y+3)^2))/(1+exp(x-3)) + \
+# 23 * exp(-0.01 *(x^2 + y^2))'''
+
+# updated with well and barrier
+S_potential_string = '''\
 (x^4 + y^4)/20480 - 3 * exp(-0.01 * (x+5)^2 - 0.2 * (y+5)^2) - \
--30 * exp(-0.01 * (x-5)^2 - 0.2 * (y-5)^2) + \
-5 * exp(-0.2 * (x+3*(y-3)^2))/(1+exp(-x-3)) + \
-5 * exp(-0.2 * (x+3*(y+3)^2))/(1+exp(x-3)) + \
-23 * exp(-0.01 *(x^2 + y^2))'''
+-35 * exp(-0.004 * (x-5)^2 - 0.2 * (y-5)^2) + \
+-35 * exp(-0.075 * (x+3*(y-3)^2))/(1+exp(-x-3)) + \
+50 * exp(-0.2 * (x+3*(y+3)^2))/(1+exp(x-3)) + \
+16 * exp(-0.01 *(x^2 + y^2))'''
 
 class ODLDPropagator(WESTPropagator):
 
@@ -42,7 +50,8 @@ class ODLDPropagator(WESTPropagator):
     #initial_position = [0, 1, 0]
     #initial_position = [0, -10, 0]
     #initial_position = [-10, -6, 0]
-    initial_position = [-10, -6]
+    #initial_position = [-10, -6]
+    initial_position = [-15, -15]
     # pcoord params
     coord_len = 21
     coord_dtype = np.float32
@@ -51,7 +60,8 @@ class ODLDPropagator(WESTPropagator):
     # optionally set a potential, otherwise default 2 well XY
     #potential = four_wells_symmetric
     #potential = L_potential_string
-    potential = Z_potential_string
+    #potential = Z_potential_string
+    potential = S_potential_string
 
     def __init__(self, rc=None):
         super().__init__(rc)

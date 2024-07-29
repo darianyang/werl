@@ -17,5 +17,5 @@ for k, c in zip(kfiles, colors):
 plt.legend()
 plt.xlim(0,500)
 #plt.savefig("Z-well-comp.pdf")
-plt.savefig("Z-well-B-comp.pdf")
-#plt.show()
+#plt.savefig("Z-well-B-comp.pdf")
+plt.show()
