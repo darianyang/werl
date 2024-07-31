@@ -150,20 +150,20 @@ class WERLDriver(WEDriver):
                 # split, merge, variation, walker_variations = resample.resample()
                 #resample = WERL(pcoords, n_clusters=5)
                 
-                resample = LCAS(pcoords, weights, n_clusters=None, pmin=1e-12)
+                resample = LCAS(pcoords, weights, n_clusters=20, pmin=1e-12)
                 split, merge = resample.lcas()
                 
                 # resample = LCAS_MA(pcoords, weights, n_clusters=5, n_agents=4)
                 # split, merge = resample.lcas_ma()
                 
-                #resample = REAP(pcoords, weights, n_clusters=None, pmin=1e-12)
+                #resample = REAP(pcoords, weights, n_clusters=20, pmin=1e-12)
                 #split, merge = resample.reap()
 
-                #resample = TSLC(pcoords, weights, n_clusters=None, pmin=1e-12)
+                #resample = TSLC(pcoords, weights, n_clusters=20, pmin=1e-12)
                 #split, merge = resample.tslc()
 
-                #resample = FAST(pcoords, weights, n_clusters=None)
-                #resample = FAST(pcoords, weights, n_clusters=None, pmin=1e-12)
+                #resample = FAST(pcoords, weights, n_clusters=20)
+                #resample = FAST(pcoords, weights, n_clusters=20, pmin=1e-12)
                 #split, merge = resample.fast()
 
                 # TODO: testing filters

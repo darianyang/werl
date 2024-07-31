@@ -1,0 +1,39 @@
+System is being built only off of the system driver
+Maximum wallclock time: 1:00:00
+
+Mon Jul 29 14:11:52 2024
+Iteration 1 (100 requested)
+Beginning iteration 1
+80 segments remain in iteration 1 (80 total)
+1 of 1 (100.000000%) active bins are populated
+per-bin minimum non-zero probability:       1
+per-bin maximum probability:                1
+per-bin probability dynamic range (kT):     0
+per-segment minimum non-zero probability:   0.0125
+per-segment maximum non-zero probability:   0.0125
+per-segment probability dynamic range (kT): 0
+norm = 1, error in norm = -1.11022e-16 (-0.5*epsilon)
+Waiting for segments to complete...
+exception caught; shutting down
+-- ERROR    [w_run] -- error message: not enough values to unpack (expected 2, got 1)
+-- ERROR    [w_run] -- Traceback (most recent call last):
+  File "/Users/alexgoldberg/anaconda3/envs/werl/lib/python3.11/site-packages/westpa/cli/core/w_run.py", line 61, in run_simulation
+    sim_manager.run()
+  File "/Users/alexgoldberg/anaconda3/envs/werl/lib/python3.11/site-packages/westpa/core/sim_manager.py", line 762, in run
+    self.propagate()
+  File "/Users/alexgoldberg/anaconda3/envs/werl/lib/python3.11/site-packages/westpa/core/sim_manager.py", line 607, in propagate
+    incoming = future.get_result()
+               ^^^^^^^^^^^^^^^^^^^
+  File "/Users/alexgoldberg/anaconda3/envs/werl/lib/python3.11/site-packages/westpa/work_managers/core.py", line 334, in get_result
+    raise self._exception.with_traceback(self._traceback)
+  File "/Users/alexgoldberg/anaconda3/envs/werl/lib/python3.11/site-packages/westpa/work_managers/serial.py", line 23, in submit
+    result = fn(*(args if args is not None else ()), **(kwargs if kwargs is not None else {}))
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/alexgoldberg/anaconda3/envs/werl/lib/python3.11/site-packages/westpa/core/wm_ops.py", line 40, in propagate
+    incoming_segments = {segment.seg_id: segment for segment in propagator.propagate(segments)}
+                                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/alexgoldberg/Desktop/projects/WERL/werl/alex_mm_potentials/odld.py", line 167, in propagate
+    gradx, grady = self._calc_gradient(xi, yi)
+    ^^^^^^^^^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+

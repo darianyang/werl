@@ -15,7 +15,11 @@ for k, c in zip(kfiles, colors):
                          x_units="agg", color=c, tau=21e-12)
     kap.plot_rate()
 
-plt.legend()
+handles, labels = plt.gca().get_legend_handles_labels()
+by_label = dict(zip(labels, handles))
+
+#plt.legend(by_label.values(), by_label.keys(), loc='lower right')
+plt.legend(by_label.values(), by_label.keys(), loc='lower right')
 #plt.xlim(0,5000)
 #plt.savefig("2D_ODLD-comp.pdf")
 plt.show()

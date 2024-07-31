@@ -32,14 +32,15 @@ def vec_function_map(coords):
     bin_assignment : int
 	"""
 	# for Z-potential: tstate is X<-10 & 0<Y<6
-	# for 2D ODLD potential: tstate is X>-1.5 & Y>-1.5 should I change to -2? 
+	# for 2D ODLD potential: tstate is X>-1.5 & Y>-1.5 should I change to -2?
+        # for circular potential: tstate is -0.25<X<0.25 & Y < -1.9 
 	# put everything in bin 0 unless it's in the target state (bin 1)
 	x, y = coords
 
 	# set tstate conditions
 	#if x < -10 and 0 < y < 6:
 	#if x > 10 and y > 10:
-	if x > -1.5 and y > -1.5:
+	#if x > -1.5 and y > -1.5: # 2D ODLD
 		return 1
 	# otherwise assign to binless bin
 	else:

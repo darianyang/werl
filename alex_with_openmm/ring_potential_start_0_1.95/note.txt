@@ -1,1 +1,0 @@
-Starting at (0, 1.95) puts the starting point on the ring itself, rather than the high relatively high potential surface in the center and around the ring.

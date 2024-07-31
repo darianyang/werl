@@ -15,7 +15,8 @@ log = logging.getLogger(__name__)
 ##########################
 ### SET POTENTIAL HERE ###
 ##########################
-potential = we_odld_2d_grad
+#potential = we_odld_2d_grad
+potential = ring_potential
 #potential = we_odld_2d_energy
 #potential = L_potential
 ##########################
@@ -31,7 +32,8 @@ class ODLDPropagator(WESTPropagator):
     #xy_position = [0, 0]
     #xy_position = [1, 1]
     #xy_position = [9.5, 9.5]
-    xy_position = [-9.5, -9.5]
+    #xy_position = [-9.5, -9.5] # 2D ODLD
+    xy_position = [0, 1.95] # TSLC ring potential
     #xy_position = [1.8, 1.8]
     # pcoord params
     coord_len = 21
@@ -48,16 +50,17 @@ class ODLDPropagator(WESTPropagator):
     # reflect_at_x = 10
     # reflect_at_y0 = 0
     # reflect_at_y = 10
+    
+    ### FOR 2D ODLD ### 
+    #reflect_at_x0 = -10
+    #reflect_at_x = 0
+    #reflect_at_y0 = -10
+    #reflect_at_y = 0
 
-    reflect_at_x0 = -10
-    reflect_at_x = 0
-    reflect_at_y0 = -10
-    reflect_at_y = 0
-
-    # reflect_at_x0 = None
-    # reflect_at_x = None
-    # reflect_at_y0 = None
-    # reflect_at_y = None
+    reflect_at_x0 = None
+    reflect_at_x = None
+    reflect_at_y0 = None
+    reflect_at_y = None
 
     # friction coefficient
     #sigma = 0.001 ** (0.5)
