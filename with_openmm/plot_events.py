@@ -60,6 +60,7 @@ for h5, c in zip(h5_files, colors):
 
 ax.set_ylabel("Total Recycling Events")
 ax.set_xlabel("Aggregate Simulation Time ($\mu$$s$)")
+plt.xlim(0,5)
 plt.yscale("log")
 plt.legend()
 plt.tight_layout()
