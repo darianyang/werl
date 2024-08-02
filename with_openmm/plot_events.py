@@ -3,7 +3,8 @@ import h5py
 import numpy as np
 import matplotlib.pyplot as plt
 
-plt.style.use("/Users/darian/github/wedap/wedap/styles/default.mplstyle")
+#plt.style.use("/Users/darian/github/wedap/wedap/styles/default.mplstyle")
+plt.style.use("/home/dty7/Projects/wedap/wedap/styles/default.mplstyle")
 
 def calc_events(h5, tau=21e-12):
     """
@@ -62,5 +63,5 @@ ax.set_xlabel("Aggregate Simulation Time ($\mu$$s$)")
 plt.yscale("log")
 plt.legend()
 plt.tight_layout()
-plt.show()
+#plt.show()
 plt.savefig("figures/events2.pdf")
