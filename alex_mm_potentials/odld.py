@@ -15,8 +15,8 @@ log = logging.getLogger(__name__)
 ##########################
 ### SET POTENTIAL HERE ###
 ##########################
-potential = we_odld_2d_grad
-#potential = we_odld_2d_energy
+#potential = we_odld_2d_grad
+potential = we_odld_2d_energy
 #potential = L_potential
 ##########################
 ##########################

@@ -108,8 +108,8 @@ def plot_potential(potential, xlim=None, ylim=None, granularity=1, vmax=None, vm
 #plot_potential(O_potential, (-1.5, 1.5), (-1.5, 1.5), granularity=0.01)
 
 # from TSLC
-#plot_potential(ring_potential, (-3, 3), (-3, 3), granularity=0.01, calc_grad=False)
-plot_potential(big_ring_potential, (-15, 15), (-15, 15), granularity=0.01, calc_grad=False) # for bigger ring
+plot_potential(ring_potential, (-3, 3), (-3, 3), granularity=0.01, calc_grad=False)
+#plot_potential(big_ring_potential, (-15, 15), (-15, 15), granularity=0.01, calc_grad=False) # for bigger ring
 
 # WE 2D ODLDs
 #plot_potential(we_odld_2d_energy, (0, 10), (0, 10), granularity=0.01, vmax=5)

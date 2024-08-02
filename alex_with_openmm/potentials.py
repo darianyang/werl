@@ -231,7 +231,6 @@ def circular_potential_string(r=2, c=-250, a=-10):
 
 
 circular_potential = circular_potential_string()
-#print(circular_potential)
 
 
 # potentials from REAP paper
@@ -293,42 +292,20 @@ def O_potential(x, y):
     V1 = AA[0]*np.exp(aa[0] * np.square(x-XX[0]) + bb[0] * (x-XX[0]) * (y-YY[0]) +cc[0]*np.square(y-YY[0]))
     return V1
 
-
 # from TSLC paper
 def ring_potential(x, y):
-    # Potential should be lowest on the ring decaying exp with the square of the dist from the center of ring
     #Potential Parameters:
-
-    a=10 # Scales the decay - smaller value to increase width of low potential ring
+    a=10
     
     b=250
     
-    #rad=2
-    rad=2 #rad is radius of circle 
+    rad=2 #rad is radius of circle
     
     #distance to circle
     d = np.square(np.sqrt(np.square(x)+np.square(y)) - rad)
     V = -b*np.exp(-d*a)
     
     return V
-
-def big_ring_potential(x, y):
-    # Potential should be lowest on the ring decaying exp with the square of the dist from the center of ring
-    #Potential Parameters:
-
-    a=0.5 # Scales the decay - smaller value to increase width of low potential ring
-    
-    b=250
-    
-    #rad=2
-    rad=10 #rad is radius of circle 
-    
-    #distance to circle
-    d = np.square(np.sqrt(np.square(x)+np.square(y)) - rad)
-    V = -b*np.exp(-d*a)
-    
-    return V
-
 
 def we_odld_2d_energy(x, y):
     A = 2
@@ -336,11 +313,11 @@ def we_odld_2d_energy(x, y):
     #B = 10
     C = 0.5
     # for -10 to 0
-    # x0 = 0
-    # y0 = 0
+    x0 = 0
+    y0 = 0
     # for 0 to 10
-    x0 = 1
-    y0 = 1
+    #x0 = 1
+    #y0 = 1
 
     twopi_by_A = 2 * np.pi / A
     half_B = B / 2
@@ -532,10 +509,26 @@ def Zpotential(x):
     """
     # original coefficients: 3, 5, 5, 3
     return (x[0]**4 + x[1]**4)/20480 - 3 * np.exp(-0.01 * (x[0]+5)**2 - 0.2 * (x[1]+5)**2) - \
-            13 * np.exp(-0.01 * (x[0]-5)**2 - 0.2 * (x[1]-5)**2) + \
+            3 * np.exp(-0.01 * (x[0]-5)**2 - 0.2 * (x[1]-5)**2) + \
             5 * np.exp(-0.2 * (x[0]+3*(x[1]-3)**2))/(1+np.exp(-x[0]-3)) + \
             5 * np.exp(-0.2 * (x[0]+3*(x[1]+3)**2))/(1+np.exp(x[0]-3)) + \
-            23 * np.exp(-0.01 *(x[0]**2 + x[1]**2))
+            3 * np.exp(-0.01 *(x[0]**2 + x[1]**2))
+def Zpotential_barrier(x):
+    """
+    Zpotential - Z-shaped potential.
+    
+    Parameters:
+    x (array-like): Position x in R²
+    
+    Returns:
+    float: The value of the potential at the given position x.
+    """
+    # original coefficients: 3, 5, 5, 3
+    return (x[0]**4 + x[1]**4)/20480 - 3 * np.exp(-0.01 * (x[0]+5)**2 - 0.2 * (x[1]+5)**2) - \
+            -35 * np.exp(-0.004 * (x[0]-5)**2 - 0.2 * (x[1]-5)**2) + \
+            -35 * np.exp(-0.075 * (x[0]+3*(x[1]-3)**2))/(1+np.exp(-x[0]-3)) + \
+            50 * np.exp(-0.2 * (x[0]+3*(x[1]+3)**2))/(1+np.exp(x[0]-3)) + \
+            16 * np.exp(-0.01 *(x[0]**2 + x[1]**2))
             # originally smaller barrier near middle
             #3 * np.exp(-0.01 *(x[0]**2 + x[1]**2))
             
