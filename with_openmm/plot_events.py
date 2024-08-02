@@ -38,6 +38,7 @@ def calc_events(h5, tau=21e-12):
             prev_segs = west[f"iterations/iter_{iter:08d}/new_weights/index"]["prev_seg_id"]
             # append the sum of n_segs recycled
             events.append(len(prev_segs))
+        # otherwise: 0 events for the iteration
         else:
             events.append(0)
     # cumsum the events per iteration
@@ -58,4 +59,5 @@ ax.set_ylabel("Total Recycling Events")
 ax.set_xlabel("Aggregate Simulation Time ($\mu$$s$)")
 plt.yscale("log")
 plt.legend()
-plt.show()
+#plt.show()
+plt.savefig("figures/events.pdf")
