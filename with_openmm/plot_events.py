@@ -3,6 +3,8 @@ import h5py
 import numpy as np
 import matplotlib.pyplot as plt
 
+plt.style.use("/Users/darian/github/wedap/wedap/styles/default.mplstyle")
+
 def calc_events(h5, tau=21e-12):
     """
     Get the cumulative sum of events and aggregate simulation times.
@@ -46,7 +48,7 @@ def calc_events(h5, tau=21e-12):
 
     return agg_time, events
 
-fig, ax = plt.subplots()
+fig, ax = plt.subplots(figsize=(10,4))
 
 h5_files = ["stdMD", "stdHK", "LCAS", "REAP", "stdHK1D"]
 colors = ["gray", "tab:blue", "tab:orange", "tab:red", "tab:green"]
@@ -59,5 +61,6 @@ ax.set_ylabel("Total Recycling Events")
 ax.set_xlabel("Aggregate Simulation Time ($\mu$$s$)")
 plt.yscale("log")
 plt.legend()
-#plt.show()
-plt.savefig("figures/events.pdf")
+plt.tight_layout()
+plt.show()
+plt.savefig("figures/events2.pdf")
