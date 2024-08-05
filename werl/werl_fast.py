@@ -84,11 +84,28 @@ class FAST(WERL):
 
         Returns a tuple (reward, cluster id)
         '''
-
         ## Get min and max instances across all states, as well as each state's instances
         ## TODO: What to do in the case of a tie? 
+        ## TODO: Undirected reward only gives 10-11 clusters when 20 requested
+        ### This is because having high number of clusters generates non-unique clusters
+        ### Does this add artificial reward to these clusters? They all will be 1.0 undirected reward
+        ### It may be the best case to set these rewards to zero, since they are technically already represented
+        ### Something to revisit later, because it really only happens in the first iteration
 
         clust_and_counts = np.unique(self.labels, return_counts=True)
+        print(clust_and_counts)
+
+        clusts = list(clust_and_counts[0])
+        clustcounts = list(clust_and_counts[1])
+
+        # If there are not enough unique cluster centers, "make" unique empty clustere
+        # They are still there, but np.unique misses them because walkers will not be assigned to the non-unique clusters
+        if len(clust_and_counts[0]) != self.n_clusters:
+            for i in range(clusts[-1]+1, self.n_clusters):
+                clusts.append(i)
+                clustcounts.append(0)
+
+        clust_and_counts = [clusts, clustcounts]
         counts = [c for c in clust_and_counts[1]]
         min_count, max_count = np.min(counts), np.max(counts)
 
@@ -111,13 +128,16 @@ class FAST(WERL):
         Here, alpha=1 is the default - no scaling/balancing performed for undiredcted component
         '''
 
-        #print('LABELS:', self.labels)
+        print('LABELS:', self.labels)
         #print('DIR:', directed)
         #print('UNDIR:', undirected,'\n')
         dir_rewards = [r[0] for r in directed]
         undir_rewards = [r[0] for r in undirected]
 
         rewards = []
+       #if len(dir_rewards) != len(undir_rewards):
+       #     raise Exception
+
         for i in range(len(dir_rewards)):
             rewards.append(dir_rewards[i] + alpha*undir_rewards[i])
 
@@ -208,10 +228,14 @@ class FAST(WERL):
         diff_counter = []
         for i in range(len(num_to_split)):
             diff_counter.append(list(avail_splits.values())[i] - num_to_split[i])
-        
+
         # diff counter tells us if we are splitting too many from each cluster after correcting for weight
         # diff counter is sorted by ascending cluster ids, same as num_to_split, so the comparison is done pairwise
-        print("DIFF:", diff_counter)
+        print("Per cluster difference between number of segments in cluster and splits demanded from cluster:")
+        print(diff_counter)
+        if np.sum(diff_counter) == np.sum([np.abs(i) for i in diff_counter]):
+            print("No changes are needed in this iteration.")
+
         for i, diff in enumerate(diff_counter):
             avail_vals = [val for val in avail_splits.values()]
             counter = 0 # This will track the high reward cluster that we try to redistribute splits into, reset for each
@@ -257,15 +281,8 @@ class FAST(WERL):
 
     def do_prop_merging(self, rewards):
         '''
-        Do merging based on the reward prop for each state to total reward
-
-        Importantly, this is not strictly proportional to the splitting.
-        Instead, merging pairs are selected starting from the lowest reward cluster.
-        If done proportionally, we are guaranteeing merging in all clusters.
-        This is not nearly as valuable as guaranteeing splitting in all clusters,
-        and instead (I believe) actively hinders the exploitation goal.
-        Focusing merging on the lowest reward clusters should not severely impact exploration,
-        especially in common cases where there are no splits in the lowest reward cluster(s).
+        Merge segments, prioritizing merging starting from the lowest reward clusters
+        TODO: implement pmax that disallows merging segments with p > pmax
 
         Updates self.to_merge
         '''

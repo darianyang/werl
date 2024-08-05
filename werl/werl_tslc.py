@@ -146,10 +146,19 @@ class TSLC(WERL):
         centroids = self.FFT()
         kmeans = KMeans(n_clusters=self.n_clusters, n_init=1, max_iter=1, init=centroids).fit(self.pcoords) # Perform one round of kmeans
 
+        ## TODO: This line is a problem if there are non-unique cluster centers (problem during first iteration for high cluster count)
+        ## TODO: This may need to be adjusted later, but for now it works. If high number of LC clusters are taken by user, it could fail first iter
+        fail_unique = 0
         while len(np.unique(kmeans.labels_)) != self.n_clusters and len(np.unique(kmeans.labels_)) != 1: 
             centroids = self.FFT()
+            print(len(np.unique(kmeans.labels_)))
             kmeans = KMeans(n_clusters=self.n_clusters, n_init=1, max_iter=1, init=centroids).fit(self.pcoords)
-
+            fail_unique+=1
+            if fail_unique == 3:
+                print("Failed to generate "+str(self.n_clusters)+" clusters. This may occur during first iteration with high n_clusters")
+                break
+        
+        
         # Update centers, labels, and counts
         self.centers = kmeans.cluster_centers_
         self.labels = kmeans.labels_
