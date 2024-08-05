@@ -3,6 +3,8 @@ import matplotlib.pyplot as plt
 from potentials import *
 import sympy as sp
 
+plt.style.use("/Users/darian/github/wedap/wedap/styles/default.mplstyle")
+
 def calculate_gradient(func, x, y, epsilon=1e-6):
     '''
     Use finite differencing to approx the gradient of each energy potential.
@@ -84,7 +86,8 @@ def plot_potential(potential, xlim=None, ylim=None, granularity=1, vmax=None, vm
     # note that to accurately get the potential needs to be plotted as negative
     # TODO: not certain why yet
     #im = plt.pcolormesh(x, y, np.abs(Z), cmap=plt.cm.jet, vmax=vmax, vmin=vmin)
-    im = plt.pcolormesh(x, y, Z, cmap=plt.cm.jet, vmax=vmax, vmin=vmin)
+    #im = plt.pcolormesh(x, y, Z, cmap=plt.cm.jet, vmax=vmax, vmin=vmin)
+    im = plt.pcolormesh(x, y, Z, cmap="terrain", vmax=vmax, vmin=vmin)
     #im = plt.pcolormesh(x, y, -np.log((np.min(np.abs(Z))+np.abs(Z))), cmap=plt.cm.jet, vmax=vmax, vmin=vmin)
     #im = plt.pcolormesh(x, y, -np.log(Z/np.max(Z)), cmap=plt.cm.jet, vmax=vmax, vmin=vmin)
     #plt.xlim(xlim)
@@ -93,7 +96,10 @@ def plot_potential(potential, xlim=None, ylim=None, granularity=1, vmax=None, vm
     # adding the Contour lines with labels
     # cset = plt.contour(Z, [-2, -1, 0, 1, 2, 3], linewidths=2, cmap=plt.cm.binary, extent=[xlim[0], xlim[1], ylim[1], ylim[0]])
     # plt.clabel(cset, inline=True,fmt='%1.1f', fontsize=10)
-    plt.colorbar(im)  # adding the colobar on the right
+    cbar = plt.colorbar(im)  # adding the colobar on the right
+    cbar.set_label("$U(x)$")
+    plt.xlabel("x")
+    plt.ylabel("y")
 
 # from MA-REAP
 #plot_potential(two_wells_complex_func, (0,100), (0,100))
@@ -133,9 +139,13 @@ plot_potential(Zpotential_barrier, (-30, 30), (-30, 30), granularity=0.1, single
 #plot_potential(EntropicBox, (-1, 1), (-1, 1), granularity=0.01, single_param=True)
 
 # states / bins
-for bin in [-20, -10, 0, 10, 20]:
-    plt.axvline(bin, color="k", linestyle="--")
-    plt.axhline(bin, color="k", linestyle="--")
+# for bin in [-20, -10, 0, 10, 20]:
+#     plt.axvline(bin, color="k", linestyle="--")
+#     plt.axhline(bin, color="k", linestyle="--")
+
+# markers
+plt.scatter(-15, -15, marker="o", s=200, edgecolors="k", color="white")
+plt.scatter(15, 15, marker="X", s=200, edgecolors="k", color="white")
 
 # # opt bins
 # #for xbin in [-14, -6, -5, -4, 10]:
@@ -145,6 +155,9 @@ for bin in [-20, -10, 0, 10, 20]:
 # for ybin in [-16, -5, 0, 2, 4, 10]:
 #     plt.axhline(ybin, color="k", linestyle="--")
 
-plt.savefig("S-potential-1path.pdf")
+plt.tight_layout()
+#plt.savefig("S-potential-1path.pdf")
 #plt.savefig("S-potential-bins-opt.png", dpi=600, transparent=True)
+#plt.savefig("S-potential.pdf")
+plt.savefig("S-potential.png", dpi=1200, transparent=True)
 plt.show()
