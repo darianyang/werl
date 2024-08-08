@@ -7,7 +7,10 @@
 rm -f west.log
 
 # Run w_run
-w_init --bstate 'basis,1,108' --tstate 'target,50,-130'
+#w_init --bstate 'basis,4,4,4,4,4,4' --tstate 'target,1,1,1,1,1,1'
+w_init --bstate 'basis,4,4,4,4,4,4' 
+
+#w_init --bstate 'basis,1,108' --tstate 'target,50,-130'
 # Note these states have the pcoord of:
 # Basis: -86.38787085,43.94791794 --> Corresponds to C7eq of alanine dipeptide
 # Target: 56.9945094,-164.70361737--> Corresponds to C7ax of alanine dipeptide (Closest center 119)
