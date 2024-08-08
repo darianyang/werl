@@ -172,7 +172,8 @@ class SynMDPropagator(WESTPropagator):
         super(SynMDPropagator, self).__init__(rc)
 
         rc_parameters = rc.config.get(['west', 'propagation', 'parameters'])
-        self.topology = md.load(rc_parameters['topology'])
+        # this is only needed for the h5 plugin to save coords in h5 files
+        #self.topology = md.load(rc_parameters['topology'])
 
         if 'synd_model' in rc_parameters.keys():
             model_path = rc_parameters['synd_model']
