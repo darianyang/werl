@@ -59,8 +59,8 @@ class System(WESTSystem):
 		#self.bin_mapper = RectilinearBinMapper([['-inf', -20, -15, -10, -5, 0, 5, 10, 20, 'inf'],
         #                                        ['-inf', 10, 'inf']])
 		# rough estimate of the 2D landscape
-		 self.bin_mapper = RectilinearBinMapper([['-inf', -20, -10, 0, 10, 20, 'inf'],
-                                                 ['-inf', -20, -10, 0, 10, 20, 'inf']])
+		self.bin_mapper = RectilinearBinMapper([['-inf', -20, -10, 0, 10, 20, 'inf'],
+                                                ['-inf', -20, -10, 0, 10, 20, 'inf']])
 		# optimal 2D bins with knowledge of the system/potential
 		# self.bin_mapper = RectilinearBinMapper([['-inf', -16, -6, -3, 0, 10, 'inf'],
         #                                         ['-inf', -16, -5, 0, 2, 4, 10, 'inf']])

@@ -18,7 +18,7 @@ from sklearn.decomposition import PCA
 from sklearn.metrics import pairwise_distances_argmin_min
 from scipy.spatial.distance import pdist, squareform
 
-from werl.werl_base import WERL
+from .werl_base import WERL
 from collections import Counter
 
 class TSLC(WERL):
