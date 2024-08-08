@@ -3,7 +3,8 @@
 #SYSTEMS=(template-stdMD-test)
 #SYSTEMS=(template-stdHK1D template-stdHK2D template-LCAS template-REAP)
 #SYSTEMS=(template-stdHK2D template-LCAS template-REAP)
-SYSTEMS=(template-FAST template-TSLC)
+#SYSTEMS=(template-FAST template-TSLC)
+SYSTEMS=(template-REAP)
 ITERS=2000
 
 # loop each sys
