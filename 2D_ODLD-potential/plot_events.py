@@ -48,8 +48,12 @@ def calc_events(h5, tau=21e-12):
 
 fig, ax = plt.subplots()
 
-h5_files = ["stdMD", "stdHK2D", "LCAS", "REAP", "TSLC", "FAST"]
-colors = ["gray", "tab:blue", "tab:orange", "tab:red", "tab:green", "tab:purple"]
+#h5_files = ["stdMD", "stdHK1D", "stdHK1D_finer", "stdHK2D", "LCAS", "REAP", "TSLC", "FAST"]
+#colors = ["gray", "black", "brown", "tab:blue", "tab:orange", "tab:red", "tab:green", "tab:purple"]
+
+h5_files = ["stdMD", "stdHK1D", "stdHK2D", "LCAS", "REAP", "TSLC", "FAST"]
+colors = ["gray", "black", "tab:blue", "tab:orange", "tab:red", "tab:green", "tab:purple"]
+
 
 for h5, c in zip(h5_files, colors):
     #fig, ax = plt.subplots()

@@ -2,7 +2,7 @@
 
 #SYSTEMS=(template-FAST template-LCAS template-REAP template-TSLC template-stdMD template-stdHK2D)
 #SYSTEMS=(template-stdMD template-stdHK2D)
-SYSTEMS=(template-TSLC)
+SYSTEMS=(template-stdHK1D_finer)
 
 # loop each sys
 for SYS in ${SYSTEMS[@]} ; do

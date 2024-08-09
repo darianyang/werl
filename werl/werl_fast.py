@@ -2,7 +2,7 @@
 import numpy as np
 from scipy.optimize import minimize
 from sklearn.metrics import pairwise_distances_argmin_min
-from .werl_base import WERL
+from werl.werl_base import WERL
 from math import ceil
 
 

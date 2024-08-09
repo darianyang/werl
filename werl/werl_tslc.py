@@ -17,9 +17,11 @@ from sklearn.decomposition import PCA
 
 from sklearn.metrics import pairwise_distances_argmin_min
 from scipy.spatial.distance import pdist, squareform
+from scipy.optimize import minimize
 
 from .werl_base import WERL
 from collections import Counter
+import os
 
 class TSLC(WERL):
     '''
@@ -40,22 +42,89 @@ class TSLC(WERL):
         closest, _ = pairwise_distances_argmin_min(self.centers, self.pcoords)
         return least_counts, self.pcoords[closest[least_counts]]
 
+    def tune_weights(self, rewards_function, weights, delta=0.02):
+        '''
+        Defines constraints for optimization and maximizes rewards function. 
+        Returns OptimizeResult object.
+
+        Parameters
+        ----------
+        delta : float, default 0.02 - same as default for REAP. TSLC sim repo had delta=0.25
+            Upper boundary for learning step.
+        '''
+        weights_prev = weights
+
+        # Create constraints
+        constraints = []
+
+        # Inequality constraints (fun(x, *args) >= 0)
+        constraints.append({
+            'type': 'ineq',
+            'fun': lambda weights, weights_prev, delta: delta - np.abs((weights_prev - weights)),
+            'jac': lambda weights, weights_prev, delta: np.diagflat(np.sign(weights_prev - weights)),
+            'args': (weights_prev, delta),
+        })
+
+        # This constraint makes the weights be always positive
+        constraints.append({
+            'type': 'ineq',
+            'fun': lambda weights: weights,
+            'jac': lambda weights: np.eye(weights.shape[0]),
+        })
+
+        # Equality constraints (fun(x, *args) = 0)
+        constraints.append({
+            'type': 'eq',
+            'fun': lambda weights: weights.sum() - 1,
+            'jac': lambda weights: np.ones(weights.shape[0]),
+        })
+
+        #print(lambda x: -rewards_function(x))
+        #print(weights_prev)
+        results = minimize(lambda x: -rewards_function(x), weights_prev, method='SLSQP', constraints=constraints)
+
+        return results
+
+    def calc_function_pcoords():
+        '''
+        Calculates temporary "pcoords" used in the reward calculation
+        Returns the "pcoords" calculated from x, y, (z), etc
+
+        fun_list: List of functions used as potential CVs
+        TODO: write functionality for user input of function list - currently using just arctan
+        '''
+        pass
+
     def compute_structure_reward(self, selected_points, weights):
         '''
         Computes the reward for each structure and returns it as an array.
-        This is the exact function DTY defined in werl_reap.py
+        This is the an adapted version of the function DTY defined in werl_reap.py
+        TODO: currently the adjustments are hardcoded for using 1 function
         '''
-        #print("Selected Points: ", selected_points)
-        mu = self.pcoords.mean(axis=0)
-        sigma = self.pcoords.std(axis=0)
-        #selected_points = selected_points[:, :2]  # Drop third dimension
 
-        # Shape is (selected_points.shape[0],)
-        # print(weights * np.abs(selected_points - mu) / sigma)
-        # print((weights * np.abs(selected_points - mu) / sigma).shape)
-        # print((weights * np.abs(selected_points - mu) / sigma).sum(axis=1))
-        reward = (weights * np.abs(selected_points - mu) / sigma)
-        # make sure 2d array sum axis indexable
+        # Here, we need to also consider each function value for our reward calculation
+        # We could potentially store these as some auxiliary data, or write them out to their own log
+        fun_tmp_pcoords = np.zeros((len(self.pcoords), 3))  # Here, there are 3 columns because 2 pcoords and 1 function
+        for i, xy in enumerate(self.pcoords):
+            x, y = xy[0], xy[1]
+            tmp_pcoord = np.arctan(y/x)
+            fun_tmp_pcoords[i] = ([self.pcoords[i][0], self.pcoords[i][1], tmp_pcoord])
+
+        mu = fun_tmp_pcoords.mean(axis=0)
+        sigma = fun_tmp_pcoords.std(axis=0)
+        
+
+        # Additionally, we need to append the function values at each lc cluster point
+        fun_selected_points = np.zeros((len(selected_points), 3))
+        for i, xy in enumerate(selected_points):
+            x, y = xy[0], xy[1]
+            tmp_pcoord = np.arctan(y/x)
+            fun_selected_points[i] = ([selected_points[i][0], selected_points[i][1], tmp_pcoord])
+        
+        # With all dimensions taken care of, we can now calculate the reward
+        reward = (weights * np.abs(fun_selected_points - mu) / sigma)
+        print(reward)
+        # make sure array sum axis indexable
         #reward = np.atleast_2d(reward)
 
         # print("Reward shape: ", reward.shape)
@@ -67,11 +136,18 @@ class TSLC(WERL):
             '''
             Returns the cumulative reward for current weights and a callable to the 
             cumulative reward function (necessary to finetune weights).
-            This is the exact function DTY defined in werl_reap.py
+            This is an adapted version of the function DTY defined in werl_reap.py
+            TODO: currently the adjustment to selected points array is hardcoded for using 1 function
             '''
+            # we need to append the function values at each lc cluster point
+            fun_selected_points = np.zeros((len(selected_points), 3))
+            for i, xy in enumerate(selected_points):
+                x, y = xy[0], xy[1]
+                tmp_pcoord = np.arctan(y/x)
+                fun_selected_points[i] = ([selected_points[i][0], selected_points[i][1], tmp_pcoord])
 
             def rewards_function(w):
-                r = self.compute_structure_reward(selected_points, w)
+                r = self.compute_structure_reward(fun_selected_points, w)
                 R = r.sum()
                 return R
 
@@ -177,7 +253,7 @@ class TSLC(WERL):
         self.counts : list of tuples
             Count of each cluster label amount.
 
-        Returns: weights - size (1, num CVs)
+        Returns: weights - shape (1, num CVs)
         '''
         
         # Get N lc clusters from the cluster id and its associated trajs 
@@ -241,15 +317,15 @@ class TSLC(WERL):
         # largest_eigvec = eig_vecs[largest_eigval]
 
         # 9) Compute w_k = w~_k ** 2 for k = [1, ..., K] in w~
-        # MA-REAP code uses eig_vecs[:, largest_eigval], but I think that may be incorrect
+        # MA-TSLC code uses eig_vecs[:, largest_eigval], but I think that may be incorrect
         # since that will use the largest eigenvalue's index of each eigenvector.
-
+        # weights = eig_vecs[:, largest_eigval] ** 2  # This is the MA-TSLC code
         weights = eig_vecs[largest_eigval, :] ** 2  # Use the elements of the largest eigenvector for the weights
-        #print(weights, np.sum(weights))
+        print(weights, np.sum(weights))
 
         return weights
 
-    def tslc(self, N=5):
+    def tslc(self, op_weights_file='tslc_op_weights.txt', N=5):
         '''
         WE version of the Tangent Space Least Adaptive Clustering (TLSC) algorithm.
         
@@ -274,19 +350,29 @@ class TSLC(WERL):
         n_agents = 1  # Forced
         delta = 0.02  # Upper boundary for learning step
         n_features = 2  # Number of variables in OP space (2d pcoord for now)
+        n_functions = 1 # Number of functions used (1 for now)
 
 
         if len(np.unique(self.pcoords)) == 1:
             return self.to_split, self.to_merge
         
-        weights = [np.ones((n_features)) / n_features for _ in range(n_agents)]
         # Init logs
         least_counts_points_log = [[] for _ in range(n_agents)]
         cumulative_reward_log = [[] for _ in range(n_agents)]
         weights_log = [[] for _ in range(n_agents)]
         individual_rewards_log = [[] for _ in range(n_agents)]
 
+
         # Step 2: set initial OP weights (not WE traj weights)
+        # if the file already exists, grab last row
+        if os.path.isfile(op_weights_file) is True:
+            all_iter_weights = np.atleast_2d(np.loadtxt(op_weights_file))
+            weights = [all_iter_weights[-1,:]]
+        # otherwise set weights as equal and save new op_weight file
+        else:
+            all_iter_weights = weights = [np.ones((n_features+n_functions)) / (n_features+n_functions) for _ in range(n_agents)]
+            np.savetxt(op_weights_file, weights)
+        
         for i in range(n_agents):
 
             kmeans = self.tslc_clustering()
@@ -302,18 +388,25 @@ class TSLC(WERL):
             R, reward_fun = self.compute_cumulative_reward(least_counts_points, weights[i]) # reward_fxn used in weight opt
             cumulative_reward_log[i].append(-R)
 
-            weights[i] = self.tslc_weighting(kmeans)
+            optimization_results = self.tune_weights(reward_fun, weights[i], delta=delta)
+            # Check if optimization worked
+            if optimization_results.success:
+                print(optimization_results)
+                pass
+            else:
+                print("ERROR: CHECK OPTIMIZATION RESULTS")
+                break
+
+            # get and save out new weights
+            weights[i] = optimization_results.x
             weights_log[i].append(weights[i])
 
-            # print(weights[i])
-            # print(least_counts_points)
+            #weights[i] = self.tslc_weighting(kmeans)
+            #weights_log[i].append(weights[i])
+            # vstack to put new weights on bottom
+            np.savetxt(op_weights_file, np.vstack((all_iter_weights, weights[i])))
 
-            ## This is sketchy - basically there are 3 weights (x, y, arctan)
-            ## But we only have x,y pcoords, so I throw that arctan away - bad!
-            ## Do I need to update the pcoords with whatever fxn is selected? 
-            ## i.e. calculate arctan and store as a 3rd dimension? 
-
-            rewards = self.compute_structure_reward(least_counts_points, weights[i][:len(least_counts_points[0])])
+            rewards = self.compute_structure_reward(least_counts_points, weights[i])
 
             individual_rewards_log[i].append(rewards)
 
