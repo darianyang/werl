@@ -49,9 +49,9 @@ def calc_events(h5, tau=21e-12):
 fig, ax = plt.subplots()
 
 h5_files = ["stdMD", "stdHK1D", "stdHK2D", "LCAS", "REAP"]
-h5_files = ["stdMD", "stdHK1D", "stdHK2D", "LCAS", "FAST", "TSLC"]
+h5_files = ["stdMD", "stdHK1D", "stdHK2D", "LCAS", "REAP", "FAST", "TSLC"]
 colors = ["gray", "tab:blue", "tab:orange", "tab:red", "tab:green"]
-colors = ["gray", "tab:blue", "tab:orange", "tab:red", "tab:pink", "tab:purple"]
+colors = ["gray", "tab:blue", "tab:orange", "tab:red", "tab:green", "tab:pink", "tab:purple"]
 
 for h5, c in zip(h5_files, colors):
     # grab avg and std
@@ -60,13 +60,18 @@ for h5, c in zip(h5_files, colors):
         agg_time, events = calc_events(f"template-{h5}/0{i}/west-v0{i}.h5")
         agg_events.append(events)
     # plot
-    avg_events = np.average(agg_events, axis=0)
-    std_events = np.std(agg_events, axis=0)
+    #avg_events = np.average(agg_events, axis=0)
+    #std_events = np.std(agg_events, axis=0)
+    #ax.plot(agg_time, avg_events, label=h5, color=c)
+    #ax.fill_between(agg_time, avg_events - std_events, avg_events + std_events, color=c, alpha=0.2)
+    # plot
+    avg_events = np.sum(agg_events, axis=0)
+    #std_events = np.std(agg_events, axis=0)
     ax.plot(agg_time, avg_events, label=h5, color=c)
-    ax.fill_between(agg_time, avg_events - std_events, avg_events + std_events, color=c, alpha=0.2)
+    #ax.fill_between(agg_time, avg_events - std_events, avg_events + std_events, color=c, alpha=0.2)
 
-ax.set_ylabel("Total Recycling Events")
+ax.set_ylabel("Total Successful Events")
 ax.set_xlabel("Aggregate Simulation Time ($\mu$$s$)")
-plt.yscale("log")
+#plt.yscale("log")
 plt.legend()
 plt.show()

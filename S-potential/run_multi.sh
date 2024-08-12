@@ -1,17 +1,14 @@
 #!/bin/bash
 
-#SYSTEMS=(template-stdMD-test)
-#SYSTEMS=(template-stdHK1D template-stdHK2D template-LCAS template-REAP)
-#SYSTEMS=(template-stdHK2D template-LCAS template-REAP)
-#SYSTEMS=(template-FAST template-TSLC)
-SYSTEMS=(template-REAP)
+#SYSTEMS=(template-stdMD)
+SYSTEMS=(template-stdHK1D template-stdHK2D template-LCAS template-REAP template-FAST template-TSLC)
 ITERS=2000
 
 # loop each sys
 for SYS in ${SYSTEMS[@]} ; do
     cd $SYS
     # create dir using template files
-    for V in {00..02} ; do
+    for V in {03..04} ; do
         # copy over master files
         #cp -v ../west.cfg .
         mkdir $V
