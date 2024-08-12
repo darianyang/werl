@@ -3,6 +3,8 @@ import h5py
 import numpy as np
 import matplotlib.pyplot as plt
 
+plt.style.use("/home/dty7/Projects/wedap/wedap/styles/default.mplstyle")
+
 def calc_events(h5, tau=21e-12):
     """
     Get the cumulative sum of events and aggregate simulation times.
@@ -46,18 +48,20 @@ def calc_events(h5, tau=21e-12):
 
     return agg_time, events
 
-fig, ax = plt.subplots()
+fig, ax = plt.subplots(figsize=(7.5,4))
 
 h5_files = ["stdMD", "stdHK1D", "stdHK2D", "LCAS", "REAP"]
-h5_files = ["stdMD", "stdHK1D", "stdHK2D", "LCAS", "REAP", "FAST", "TSLC"]
+#h5_files = ["stdMD", "stdHK1D", "stdHK2D", "LCAS", "REAP", "FAST", "TSLC"]
 colors = ["gray", "tab:blue", "tab:orange", "tab:red", "tab:green"]
-colors = ["gray", "tab:blue", "tab:orange", "tab:red", "tab:green", "tab:pink", "tab:purple"]
+colors = ["k", "silver", "dimgray", "tab:blue", "tab:orange"]
+#colors = ["gray", "tab:blue", "tab:orange", "tab:red", "tab:green", "tab:pink", "tab:purple"]
+labels = ["cMD", "HK-1D", "HK-2D", "LCAS", "REAP"]
 
-for h5, c in zip(h5_files, colors):
+for i, h5 in enumerate(h5_files):
     # grab avg and std
     agg_events = []
-    for i in range(3):
-        agg_time, events = calc_events(f"template-{h5}/0{i}/west-v0{i}.h5")
+    for j in range(3):
+        agg_time, events = calc_events(f"template-{h5}/0{j}/west-v0{j}.h5")
         agg_events.append(events)
     # plot
     #avg_events = np.average(agg_events, axis=0)
@@ -67,11 +71,19 @@ for h5, c in zip(h5_files, colors):
     # plot
     avg_events = np.sum(agg_events, axis=0)
     #std_events = np.std(agg_events, axis=0)
-    ax.plot(agg_time, avg_events, label=h5, color=c)
+    if h5 == "stdMD":
+        ax.plot(agg_time, avg_events, label=labels[i], color=colors[i], linewidth=2, linestyle="--")
+    else:
+        ax.plot(agg_time, avg_events, label=labels[i], color=colors[i], linewidth=2)
     #ax.fill_between(agg_time, avg_events - std_events, avg_events + std_events, color=c, alpha=0.2)
 
 ax.set_ylabel("Total Successful Events")
-ax.set_xlabel("Aggregate Simulation Time ($\mu$$s$)")
-#plt.yscale("log")
-plt.legend()
+#ax.set_xlabel("Aggregate Simulation Time ($\mu$$s$)")
+ax.set_xlabel("Aggregate Simulation Time ($steps \cdot 10^6$)")
+plt.yscale("log")
+#plt.xlim(0,2.8)
+plt.xlim(-0.1,1.5)
+plt.legend(frameon=False, loc="center", bbox_to_anchor=(1.2,0.5))
+plt.tight_layout()
+plt.savefig("figs/events.pdf")
 plt.show()
