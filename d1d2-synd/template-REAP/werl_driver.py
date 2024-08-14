@@ -8,6 +8,8 @@ from werl.werl_lcas import LCAS
 #from werl.werl_lcasMA import LCAS_MA
 from werl.werl_reap import REAP
 
+from sklearn.preprocessing import MinMaxScaler
+
 ############################# SET WERL PARAMETERS #############################
 
 
@@ -137,6 +139,14 @@ class WERLDriver(WEDriver):
                 #print("weights", weights)
                 print("Initial weight sum: ", np.sum(weights))
 
+                # Do min max scaling before passing pcoords to resampler
+                #print("Before scaling", pcoords, pcoords.shape)
+                # also only do this for the first 4 dims, skip for the X1 angles for now
+                scaler = MinMaxScaler()
+                pcoords_scaled = scaler.fit_transform(pcoords[:,:4])
+                #print("After scaling", pcoords_scaled, pcoords_scaled.shape)
+
+
                 # run wevo and do split merge based on wevo decisions
                 # TODO: get merge_dista/char_dist/merge_alg/other wevo parameters from west.cfg
                 # TODO: pairs seems to not fail with assertion error while greedy tends to fail more often
@@ -149,8 +159,8 @@ class WERLDriver(WEDriver):
                 # split, merge, variation, walker_variations = resample.resample()
                 
                 #resample = LCAS(pcoords, weights, n_clusters=12)#, pmax=1, pmin=1e-500)
-                # resample = LCAS(pcoords, weights, n_clusters=20) # 80/4 = 20 (25% of walkers)
-                # split, merge = resample.lcas()
+                #resample = LCAS(pcoords_scaled, weights, n_clusters=20) # 80/4 = 20 (25% of walkers)
+                #split, merge = resample.lcas()
                 
                 # resample = LCAS_MA(pcoords, weights, n_clusters=5, n_agents=4)
                 # split, merge = resample.lcas_ma()

@@ -1,8 +1,9 @@
 #!/bin/bash
 
 SYSTEMS=(template-stdMD)
-#SYSTEMS=(template-stdHK1D template-stdHK2D template-LCAS template-REAP template-FAST template-TSLC)
-ITERS=5000
+#SYSTEMS=(template-stdHK template-LCAS template-REAP)
+#SYSTEMS=(template-LCAS template-REAP)
+ITERS=2000
 
 # loop each sys
 for SYS in ${SYSTEMS[@]} ; do
