@@ -3,6 +3,9 @@ import h5py
 import numpy as np
 import matplotlib.pyplot as plt
 
+#plt.style.use("/home/dty7/Projects/wedap/wedap/styles/default.mplstyle")
+plt.style.use("default.style")
+
 def calc_events(h5, tau=21e-12):
     """
     Get the cumulative sum of events and aggregate simulation times.
@@ -46,28 +49,42 @@ def calc_events(h5, tau=21e-12):
 
     return agg_time, events
 
-fig, ax = plt.subplots()
+fig, ax = plt.subplots(figsize=(7.5,4))
 
-#h5_files = ["stdMD", "stdHK1D", "stdHK1D_finer", "stdHK2D", "LCAS", "REAP", "TSLC", "FAST"]
-#colors = ["gray", "black", "brown", "tab:blue", "tab:orange", "tab:red", "tab:green", "tab:purple"]
+h5_files = ["stdMD", "stdHK1D", "stdHK2D", "LCAS", "REAP"]
+#h5_files = ["stdMD", "stdHK1D", "stdHK2D", "LCAS", "REAP", "FAST", "TSLC"]
+colors = ["gray", "tab:blue", "tab:orange", "tab:red", "tab:green"]
+colors = ["k", "silver", "dimgray", "tab:blue", "tab:orange"]
+#colors = ["gray", "tab:blue", "tab:orange", "tab:red", "tab:green", "tab:pink", "tab:purple"]
+labels = ["cMD", "HK-1D", "HK-2D", "LCAS", "REAP"]
 
-h5_files = ["stdMD", "stdHK1D", "stdHK2D", "LCAS", "REAP", "TSLC", "FAST"]
-colors = ["gray", "black", "tab:blue", "tab:orange", "tab:red", "tab:green", "tab:purple"]
+for i, h5 in enumerate(h5_files):
+    # grab avg and std
+    agg_events = []
+    for j in range(10):
+        agg_time, events = calc_events(f"template-{h5}/{j}/west-REPLACEWITHVERSION.h5")
+        agg_events.append(events)
+    # plot
+    #avg_events = np.average(agg_events, axis=0)
+    #std_events = np.std(agg_events, axis=0)
+    #ax.plot(agg_time, avg_events, label=h5, color=c)
+    #ax.fill_between(agg_time, avg_events - std_events, avg_events + std_events, color=c, alpha=0.2)
+    # plot
+    avg_events = np.sum(agg_events, axis=0)
+    #std_events = np.std(agg_events, axis=0)
+    if h5 == "stdMD":
+        ax.plot(agg_time, avg_events, label=labels[i], color=colors[i], linewidth=2, linestyle="--")
+    else:
+        ax.plot(agg_time, avg_events, label=labels[i], color=colors[i], linewidth=2)
+    #ax.fill_between(agg_time, avg_events - std_events, avg_events + std_events, color=c, alpha=0.2)
 
-
-for h5, c in zip(h5_files, colors):
-    #fig, ax = plt.subplots()
-    for i in range(0, 10):
-        agg_time, events = calc_events(f"template-"+h5+"/"+str(i)+"/west-REPLACEWITHVERSION.h5")
-        ax.plot(agg_time, events, label=h5, color=c)
-
-handles, labels = plt.gca().get_legend_handles_labels()
-by_label = dict(zip(labels, handles))
-plt.legend(by_label.values(), by_label.keys(), loc='lower right')
-
-ax.set_ylabel("Total Recycling Events")
-ax.set_xlabel("Aggregate Simulation Time ($\mu$$s$)")
+ax.set_ylabel("Total Successful Events")
+#ax.set_xlabel("Aggregate Simulation Time ($\mu$$s$)")
+ax.set_xlabel("Aggregate Simulation Time ($steps \cdot 10^6$)")
 plt.yscale("log")
-ax.set_title("Successful Events - 10x 1000 Iterations Per Resampler")
-plt.savefig("all_traces_events_plot.png")
+#plt.xlim(0,2.8)
+plt.xlim(-0.1,1.5)
+plt.legend(frameon=False, loc="center", bbox_to_anchor=(1.2,0.5))
+plt.tight_layout()
+plt.savefig("figs/events.pdf")
 plt.show()
