@@ -309,15 +309,16 @@ def ring_potential(x, y):
 
 def we_odld_2d_energy(x, y):
     A = 2
-    B = 2
+    #B = 2
+    B = 5
     #B = 10
     C = 0.5
     # for -10 to 0
-    # x0 = 0
-    # y0 = 0
+    x0 = 0
+    y0 = 0
     # for 0 to 10
-    x0 = 1
-    y0 = 1
+    #x0 = 1
+    #y0 = 1
 
     twopi_by_A = 2 * np.pi / A
     half_B = B / 2

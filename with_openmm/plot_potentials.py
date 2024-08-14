@@ -87,7 +87,8 @@ def plot_potential(potential, xlim=None, ylim=None, granularity=1, vmax=None, vm
     # TODO: not certain why yet
     #im = plt.pcolormesh(x, y, np.abs(Z), cmap=plt.cm.jet, vmax=vmax, vmin=vmin)
     #im = plt.pcolormesh(x, y, Z, cmap=plt.cm.jet, vmax=vmax, vmin=vmin)
-    im = plt.pcolormesh(x, y, Z, cmap="terrain", vmax=vmax, vmin=vmin)
+    #im = plt.pcolormesh(x, y, Z, cmap="terrain", vmax=vmax, vmin=vmin)
+    im = plt.pcolormesh(x, y, Z, cmap="viridis", vmax=vmax, vmin=vmin)
     #im = plt.pcolormesh(x, y, -np.log((np.min(np.abs(Z))+np.abs(Z))), cmap=plt.cm.jet, vmax=vmax, vmin=vmin)
     #im = plt.pcolormesh(x, y, -np.log(Z/np.max(Z)), cmap=plt.cm.jet, vmax=vmax, vmin=vmin)
     #plt.xlim(xlim)
@@ -97,9 +98,9 @@ def plot_potential(potential, xlim=None, ylim=None, granularity=1, vmax=None, vm
     # cset = plt.contour(Z, [-2, -1, 0, 1, 2, 3], linewidths=2, cmap=plt.cm.binary, extent=[xlim[0], xlim[1], ylim[1], ylim[0]])
     # plt.clabel(cset, inline=True,fmt='%1.1f', fontsize=10)
     cbar = plt.colorbar(im)  # adding the colobar on the right
-    cbar.set_label("$U(x)$")
+    cbar.set_label("$U(x)$", rotation=0, ha="center", va="center", labelpad=25)
     plt.xlabel("x")
-    plt.ylabel("y")
+    plt.ylabel("y", rotation=0, ha="center", va="center")
 
 # from MA-REAP
 #plot_potential(two_wells_complex_func, (0,100), (0,100))
@@ -120,7 +121,7 @@ def plot_potential(potential, xlim=None, ylim=None, granularity=1, vmax=None, vm
 #plot_potential(we_odld_2d_energy, (0, 10), (0, 10), granularity=0.01, vmax=15, calc_grad=True)
 #plot_potential(we_odld_2d_grad, (0, 10), (0, 10), granularity=0.01, vmax=15)
 #plot_potential(we_odld_2d_grad, (-10, 0), (-10, 0), granularity=0.01, vmax=15)
-#plot_potential(we_odld_2d_energy, (-10, 0), (-10, 0), granularity=0.01, vmax=10)
+plot_potential(we_odld_2d_energy, (-10, 0), (-10, 0), granularity=0.01, vmax=21)
 #plot_potential(we_odld_2d_energy, (-10, 0), (-10, 0), granularity=0.01, vmax=10, calc_grad=True)
 #plot_potential(we_odld_2d_grad, (-10, 0), (-10, 0), granularity=0.01, vmax=15)
 #plot_potential(we_odld_2d_new_grad, (0, 1), (0, 1), granularity=0.01)
@@ -135,7 +136,7 @@ def plot_potential(potential, xlim=None, ylim=None, granularity=1, vmax=None, vm
 #plot_potential(Muller, (-3, 3), (-3, 3), granularity=0.01, single_param=True, vmax=10)
 #plot_potential(Rosenbrock, (-2, 2), (-2, 2), granularity=0.01, single_param=True, vmax=100)
 #plot_potential(Zpotential, (-30, 30), (-30, 30), granularity=0.1, single_param=True, vmin=0, vmax=25)
-plot_potential(Zpotential_barrier, (-30, 30), (-30, 30), granularity=0.1, single_param=True, vmin=0, vmax=30)
+#plot_potential(Zpotential_barrier, (-30, 30), (-30, 30), granularity=0.1, single_param=True, vmin=0, vmax=25)
 #plot_potential(EntropicBox, (-1, 1), (-1, 1), granularity=0.01, single_param=True)
 
 # states / bins
@@ -143,9 +144,12 @@ plot_potential(Zpotential_barrier, (-30, 30), (-30, 30), granularity=0.1, single
 #     plt.axvline(bin, color="k", linestyle="--")
 #     plt.axhline(bin, color="k", linestyle="--")
 
-# markers
-plt.scatter(-15, -15, marker="o", s=200, edgecolors="k", color="white")
-plt.scatter(15, 15, marker="X", s=200, edgecolors="k", color="white")
+# markers for S-pot
+#plt.scatter(-15, -15, marker="o", s=200, edgecolors="k", color="white")
+#plt.scatter(15, 15, marker="X", s=200, edgecolors="k", color="white")
+# markers for 2d odld
+plt.scatter(-9, -9, marker="o", s=200, edgecolors="k", color="white")
+plt.scatter(-1, -1, marker="X", s=200, edgecolors="k", color="white")
 
 # # opt bins
 # #for xbin in [-14, -6, -5, -4, 10]:
@@ -155,9 +159,18 @@ plt.scatter(15, 15, marker="X", s=200, edgecolors="k", color="white")
 # for ybin in [-16, -5, 0, 2, 4, 10]:
 #     plt.axhline(ybin, color="k", linestyle="--")
 
+# for S-pot
+#plt.xticks([-30, -20, -10, 0, 10, 20, 30])
+#plt.yticks([-30, -20, -10, 0, 10, 20, 30])
+
+# for 2D-odld
+plt.xticks([-10, -8, -6, -4, -2, 0])
+plt.yticks([-10, -8, -6, -4, -2, 0])
+
 plt.tight_layout()
 #plt.savefig("S-potential-1path.pdf")
 #plt.savefig("S-potential-bins-opt.png", dpi=600, transparent=True)
 #plt.savefig("S-potential.pdf")
-plt.savefig("S-potential.png", dpi=1200, transparent=True)
+#plt.savefig("figures/S-potential-4.png", dpi=1200, transparent=True)
+plt.savefig("figures/odld-potential-b5.png", dpi=1200, transparent=True)
 plt.show()
