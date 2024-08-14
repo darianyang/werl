@@ -2,13 +2,13 @@
 
 #SYSTEMS=(template-FAST template-LCAS template-REAP template-TSLC template-stdMD template-stdHK2D)
 #SYSTEMS=(template-stdMD template-stdHK2D)
-SYSTEMS=(template-stdHK1D_finer)
+SYSTEMS=(template-stdMD)
 
 # loop each sys
 for SYS in ${SYSTEMS[@]} ; do
     cd $SYS
     # create dir using template files
-    for V in {00..09} ; do
+    for V in {06..09} ; do
         mkdir $V
         cp *.* $V/
         # replace text with V
