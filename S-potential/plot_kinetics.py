@@ -86,9 +86,9 @@ ax.set_xlabel("Aggregate Simulation Time ($steps \cdot 10^6$)")
 
 plt.yscale("log")
 plt.legend(frameon=False)
-plt.xlim(0,1.5)
+plt.xlim(-0.1,1.5)
 plt.tight_layout()
-plt.savefig("figs/kinetics3.pdf")
+plt.savefig("figs/kinetics4.pdf")
 plt.show()
 
 
