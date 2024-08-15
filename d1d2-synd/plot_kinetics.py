@@ -3,10 +3,13 @@ import wekap
 import matplotlib.pyplot as plt
 import numpy as np
 
-plt.style.use("/home/dty7/Projects/wedap/wedap/styles/default.mplstyle")
+#plt.style.use("/home/dty7/Projects/wedap/wedap/styles/default.mplstyle")
+plt.style.use("../werl.mplstyle")
 
 #kfiles = ["stdHK1D", "stdHK2D", "LCAS", "REAP", "FAST", "TSLC"]
-kfiles = ["stdMD", "stdHK", "LCAS", "REAP-noscale2"]
+#kfiles = ["stdMD", "stdHK", "LCAS", "REAP"]
+kfiles = ["stdHK", "LCAS", "REAP"]
+#kfiles = ["stdMD", "REAP-noscale", "REAP-noscale2", "REAP"]
 #kfiles = ["stdMD", "stdHK", "REAP-noscale", "REAP-noscale2"]
 #kfiles = ["stdMD", "stdHK", "LCAS"]
 #colors = ["tab:blue", "tab:orange", "tab:red", "tab:green", "tab:pink", "tab:purple"]
@@ -14,8 +17,10 @@ kfiles = ["stdMD", "stdHK", "LCAS", "REAP-noscale2"]
 colors = ["silver", "dimgray", "tab:blue", "tab:orange"]
 colors = ["tab:gray", "tab:red", "tab:blue", "tab:orange"]
 colors = ["tab:gray", "tab:blue", "tab:orange", "tab:green"]
+colors = ["tab:blue", "tab:orange", "tab:green"]
 #colors = ["gray", "tab:blue", "tab:orange"]
-labels = ["cMD", "HK", "LCAS", "REAP"]
+#labels = ["No WE", "WE", "WE-AS", "WE-RL"]
+labels = ["WE", "WE-AS", "WE-RL"]
 
 fig, ax = plt.subplots()
 
@@ -58,6 +63,7 @@ trials = 5
 for i, k in enumerate(kfiles):
     if k == "stdMD":
         dh5s = [f"template-{k}/0{i}/ANALYSIS/REPLACEWITHVERSION/direct.h5" for i in range(trials)]
+        #dh5s = [f"template-{k}/0{i}/ANALYSIS/v0{i}/direct.h5" for i in range(trials)]
     else:
         dh5s = [f"template-{k}/0{i}/ANALYSIS/v0{i}/direct.h5" for i in range(trials)]
     kap = wekap.Kinetics(direct=dh5s[0], ax=ax, color=colors[i], label=labels[i],
@@ -66,8 +72,8 @@ for i, k in enumerate(kfiles):
     if k == "stdMD":
         #ax.plot(std_x[::10]*10, avgs, label=labels[i], color=colors[i], linewidth=2)
         #ax.fill_between(std_x[::10]*10, crs[:,0], crs[:,1], alpha=0.25, color=colors[i])
-        ax.plot(std_x*10, avgs, label=labels[i], color=colors[i], linewidth=2)
-        ax.fill_between(std_x*10, crs[:,0], crs[:,1], alpha=0.25, color=colors[i])
+        ax.plot(std_x+1, avgs, label=labels[i], color=colors[i], linewidth=2, linestyle="--")
+        ax.fill_between(std_x+1, crs[:,0], crs[:,1], alpha=0.25, color=colors[i])
     else:
         ax.plot(std_x, avgs, label=labels[i], color=colors[i], linewidth=2)
         ax.fill_between(std_x, crs[:,0], crs[:,1], alpha=0.25, color=colors[i])
@@ -95,11 +101,13 @@ ax.set_xlabel("Aggregate Simulation Time ($\mu$$s$)")
 plt.yscale("log")
 plt.legend(frameon=False)
 #plt.xlim(-0.1,2.33)
-plt.xlim(-1,22.3)
+#plt.xlim(-1,22.3)
+plt.xlim(-1,15.3)
+#plt.xlim(-1,12.3)
 plt.tight_layout()
 #plt.savefig("figs/kinetics-noleg.pdf")
 #plt.savefig("figs/kinetics-leg.pdf")
-plt.savefig("figs/kinetics2.pdf")
+plt.savefig("figs/kinetics3.pdf")
 plt.show()
 
 
