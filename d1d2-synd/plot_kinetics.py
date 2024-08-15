@@ -17,7 +17,8 @@ kfiles = ["stdHK", "LCAS", "REAP"]
 colors = ["silver", "dimgray", "tab:blue", "tab:orange"]
 colors = ["tab:gray", "tab:red", "tab:blue", "tab:orange"]
 colors = ["tab:gray", "tab:blue", "tab:orange", "tab:green"]
-colors = ["tab:blue", "tab:orange", "tab:green"]
+colors = ["tab:gray", "tab:blue", "tab:orange"]
+#colors = ["tab:blue", "tab:orange", "tab:green"]
 #colors = ["gray", "tab:blue", "tab:orange"]
 #labels = ["No WE", "WE", "WE-AS", "WE-RL"]
 labels = ["WE", "WE-AS", "WE-RL"]
@@ -107,7 +108,7 @@ plt.xlim(-1,15.3)
 plt.tight_layout()
 #plt.savefig("figs/kinetics-noleg.pdf")
 #plt.savefig("figs/kinetics-leg.pdf")
-plt.savefig("figs/kinetics3.pdf")
+plt.savefig("figs/kinetics4.pdf")
 plt.show()
 
 

@@ -59,7 +59,7 @@ h5_files = ["stdHK","LCAS", "REAP"]
 #colors = ["gray", "tab:blue", "tab:orange", "tab:red", "tab:green"]
 colors = ["k", "dimgray", "tab:blue", "tab:orange"]
 colors = ["tab:gray", "tab:blue", "tab:orange", "tab:green"]
-colors = ["tab:blue", "tab:orange", "tab:green"]
+colors = ["tab:gray", "tab:blue", "tab:orange"]
 #colors = ["gray", "tab:blue", "tab:orange", "tab:red", "tab:green", "tab:pink", "tab:purple"]
 labels = ["No WE", "WE", "WE-AS", "WE-RL"]
 labels = ["WE", "WE-AS", "WE-RL"]
@@ -95,5 +95,5 @@ plt.xlim(-1,22.3)
 #plt.legend(frameon=False, loc="center", bbox_to_anchor=(1.2,0.5))
 plt.legend(frameon=False)
 plt.tight_layout()
-plt.savefig("figs/events4.pdf")
+plt.savefig("figs/events5.pdf")
 plt.show()
