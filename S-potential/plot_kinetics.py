@@ -27,7 +27,7 @@ kap = wekap.Kinetics(direct=std_dh5s[0], ax=ax, color='k',
 #std_x, rates, avgs, crs = kap.plot_multi_rates(std_dh5s, plotting=True)
 #print(f"stdMD avg: {avgs[-1]}")
 #ax.axhline(avgs[-1], color='k', linestyle='--', label='stdMD')
-ax.axhline(24374526.25947432, color='k', linestyle='--', label='cMD', linewidth=2)
+ax.axhline(24374526.25947432, color='k', linestyle='--', label='Std', linewidth=2)
 #print(f"stdMD_rate: {24374526.25947432:.5E}")
 #print(f"stdMD_cr_width: {crs[-1][1] - crs[-1][0]:.5E}")
 #import sys; sys.exit(0)
