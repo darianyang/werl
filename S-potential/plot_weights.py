@@ -41,9 +41,9 @@ for i in range(n_pcoords):
 #ax.fill_between(agg_time, avg_events - std_events, avg_events + std_events, color=c, alpha=0.2)
 
 ax.set_xlabel("WE Iteration")
-ax.set_ylabel("Weight")
+ax.set_ylabel("Progress Coordinate Weights")
 plt.ylim(0,1)
 plt.legend(frameon=False, loc="center", bbox_to_anchor=(1.2,0.5))
 plt.tight_layout()
-plt.savefig("figs/weights2.pdf")
+plt.savefig("figs/weights3.pdf")
 plt.show()
