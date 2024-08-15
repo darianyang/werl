@@ -3,7 +3,8 @@ import h5py
 import numpy as np
 import matplotlib.pyplot as plt
 
-plt.style.use("/home/dty7/Projects/wedap/wedap/styles/default.mplstyle")
+#plt.style.use("/home/dty7/Projects/wedap/wedap/styles/default.mplstyle")
+plt.style.use("../werl.mplstyle")
 
 def calc_events(h5, tau=21e-12):
     """
@@ -48,14 +49,14 @@ def calc_events(h5, tau=21e-12):
 
     return agg_time, events
 
-fig, ax = plt.subplots(figsize=(7.5,4))
+fig, ax = plt.subplots(figsize=(6,4))
 
 h5_files = ["stdMD", "stdHK1D", "stdHK2D", "LCAS", "REAP"]
 #h5_files = ["stdMD", "stdHK1D", "stdHK2D", "LCAS", "REAP", "FAST", "TSLC"]
 colors = ["gray", "tab:blue", "tab:orange", "tab:red", "tab:green"]
-colors = ["k", "silver", "dimgray", "tab:blue", "tab:orange"]
 #colors = ["gray", "tab:blue", "tab:orange", "tab:red", "tab:green", "tab:pink", "tab:purple"]
-labels = ["cMD", "HK-1D", "HK-2D", "LCAS", "REAP"]
+colors = ["k", "gray", "tab:gray", "tab:blue", "tab:orange"]
+labels = ["Std", "WE-1D", "WE-2D", "WE-AS", "WE-RL"]
 
 for i, h5 in enumerate(h5_files):
     # grab avg and std
@@ -71,7 +72,7 @@ for i, h5 in enumerate(h5_files):
     # plot
     avg_events = np.sum(agg_events, axis=0)
     #std_events = np.std(agg_events, axis=0)
-    if h5 == "stdMD":
+    if h5 == "stdMD" or h5 == "stdHK1D":
         ax.plot(agg_time, avg_events, label=labels[i], color=colors[i], linewidth=2, linestyle="--")
     else:
         ax.plot(agg_time, avg_events, label=labels[i], color=colors[i], linewidth=2)
@@ -83,7 +84,8 @@ ax.set_xlabel("Aggregate Simulation Time ($steps \cdot 10^6$)")
 plt.yscale("log")
 #plt.xlim(0,2.8)
 plt.xlim(-0.1,1.5)
-plt.legend(frameon=False, loc="center", bbox_to_anchor=(1.2,0.5))
+#plt.legend(frameon=False, loc="center", bbox_to_anchor=(1.2,0.5))
+plt.legend(frameon=False)
 plt.tight_layout()
-plt.savefig("figs/events.pdf")
+plt.savefig("figs/events3.pdf")
 plt.show()

@@ -3,16 +3,19 @@ import wekap
 import matplotlib.pyplot as plt
 import numpy as np
 
-plt.style.use("/home/dty7/Projects/wedap/wedap/styles/default.mplstyle")
+#plt.style.use("/home/dty7/Projects/wedap/wedap/styles/default.mplstyle")
+plt.style.use("../werl.mplstyle")
 
 #kfiles = ["stdHK1D", "stdHK2D", "LCAS", "REAP", "FAST", "TSLC"]
 kfiles = ["stdHK1D", "stdHK2D", "LCAS", "REAP"]
 #kfiles = ["stdMD", "stdHK", "LCAS"]
 #colors = ["tab:blue", "tab:orange", "tab:red", "tab:green", "tab:pink", "tab:purple"]
 #colors = ["tab:blue", "tab:orange", "tab:red", "tab:green"]
-colors = ["silver", "dimgray", "tab:blue", "tab:orange"]
+#colors = ["silver", "dimgray", "tab:blue", "tab:orange"]
 #colors = ["gray", "tab:blue", "tab:orange"]
-labels = ["HK-1D", "HK-2D", "LCAS", "REAP"]
+#labels = ["HK-1D", "HK-2D", "LCAS", "REAP"]
+colors = ["gray", "tab:gray", "tab:blue", "tab:orange"]
+labels = ["WE-1D", "WE-2D", "WE-AS", "WE-RL"]
 
 fig, ax = plt.subplots()
 
@@ -57,7 +60,10 @@ for i, k in enumerate(kfiles):
                          x_units="agg", tau=21e-12)
     std_x, rates, avgs, crs = kap.plot_multi_rates(dh5s, plotting=False)
     ax.fill_between(std_x, crs[:,0], crs[:,1], alpha=0.25, color=colors[i])
-    ax.plot(std_x, avgs, label=labels[i], color=colors[i], linewidth=2)
+    if k == "stdHK1D":
+        ax.plot(std_x, avgs, label=labels[i], color=colors[i], linewidth=2, linestyle="--")
+    else:
+        ax.plot(std_x, avgs, label=labels[i], color=colors[i], linewidth=2)
 
     #std_x, rates, avgs, crs = kap.plot_multi_rates(dh5s, plotting=False)
     # print S (efficiency)
@@ -79,10 +85,10 @@ ax.set_xlabel("Aggregate Simulation Time ($steps \cdot 10^6$)")
 #    kap.plot_rate()
 
 plt.yscale("log")
-#plt.legend(frameon=False)
-#plt.xlim(0,2.8)
+plt.legend(frameon=False)
+plt.xlim(0,1.5)
 plt.tight_layout()
-#plt.savefig("figs/kinetics-noleg.pdf")
+plt.savefig("figs/kinetics3.pdf")
 plt.show()
 
 

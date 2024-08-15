@@ -2,7 +2,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-plt.style.use("/home/dty7/Projects/wedap/wedap/styles/default.mplstyle")
+#plt.style.use("/home/dty7/Projects/wedap/wedap/styles/default.mplstyle")
+plt.style.use("../werl.mplstyle")
 
 #h5_files = ["stdMD", "stdHK1D", "stdHK2D", "LCAS", "REAP", "FAST", "TSLC"]
 #colors = ["gray", "tab:blue", "tab:orange", "tab:red", "tab:green"]
@@ -44,5 +45,5 @@ ax.set_ylabel("Weight")
 plt.ylim(0,1)
 plt.legend(frameon=False, loc="center", bbox_to_anchor=(1.2,0.5))
 plt.tight_layout()
-plt.savefig("figs/weights.pdf")
+plt.savefig("figs/weights2.pdf")
 plt.show()
