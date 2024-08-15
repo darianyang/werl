@@ -6,20 +6,23 @@ import numpy as np
 plt.style.use("/home/dty7/Projects/wedap/wedap/styles/default.mplstyle")
 
 #kfiles = ["stdHK1D", "stdHK2D", "LCAS", "REAP", "FAST", "TSLC"]
-kfiles = ["stdHK", "LCAS", "REAP"]
+kfiles = ["stdMD", "stdHK", "LCAS", "REAP-noscale2"]
+#kfiles = ["stdMD", "stdHK", "REAP-noscale", "REAP-noscale2"]
 #kfiles = ["stdMD", "stdHK", "LCAS"]
 #colors = ["tab:blue", "tab:orange", "tab:red", "tab:green", "tab:pink", "tab:purple"]
 #colors = ["tab:blue", "tab:orange", "tab:red", "tab:green"]
-colors = ["dimgray", "tab:blue", "tab:orange"]
+colors = ["silver", "dimgray", "tab:blue", "tab:orange"]
+colors = ["tab:gray", "tab:red", "tab:blue", "tab:orange"]
+colors = ["tab:gray", "tab:blue", "tab:orange", "tab:green"]
 #colors = ["gray", "tab:blue", "tab:orange"]
-labels = ["HK", "LCAS", "REAP"]
+labels = ["cMD", "HK", "LCAS", "REAP"]
 
 fig, ax = plt.subplots()
 
 # get stdMD reference rate from 5 trials
-std_dh5s = [f"template-stdMD/0{i}/ANALYSIS/v0{i}/direct.h5" for i in range(5)]
-kap = wekap.Kinetics(direct=std_dh5s[0], ax=ax, color='k',
-                     x_units="agg", tau=21e-12)
+#std_dh5s = [f"template-stdMD/0{i}/ANALYSIS/v0{i}/direct.h5" for i in range(5)]
+#kap = wekap.Kinetics(direct=std_dh5s[0], ax=ax, color='k',
+#                     x_units="agg", tau=21e-12)
 #std_x, rates, avgs, crs = kap.plot_multi_rates(std_dh5s, plotting=False)
 #std_x, rates, avgs, crs = kap.plot_multi_rates(std_dh5s, plotting=True)
 #print(f"stdMD avg: {avgs[-1]}")
@@ -53,12 +56,21 @@ def calc_efficiency(t_we, avg_rate_we, cr_width_we,
 S_calcs = []
 trials = 5
 for i, k in enumerate(kfiles):
-    dh5s = [f"template-{k}/0{i}/ANALYSIS/v0{i}/direct.h5" for i in range(trials)]
+    if k == "stdMD":
+        dh5s = [f"template-{k}/0{i}/ANALYSIS/REPLACEWITHVERSION/direct.h5" for i in range(trials)]
+    else:
+        dh5s = [f"template-{k}/0{i}/ANALYSIS/v0{i}/direct.h5" for i in range(trials)]
     kap = wekap.Kinetics(direct=dh5s[0], ax=ax, color=colors[i], label=labels[i],
                          x_units="agg", tau=200e-12)
     std_x, rates, avgs, crs = kap.plot_multi_rates(dh5s, plotting=False)
-    ax.fill_between(std_x, crs[:,0], crs[:,1], alpha=0.25, color=colors[i])
-    ax.plot(std_x, avgs, label=labels[i], color=colors[i], linewidth=2)
+    if k == "stdMD":
+        #ax.plot(std_x[::10]*10, avgs, label=labels[i], color=colors[i], linewidth=2)
+        #ax.fill_between(std_x[::10]*10, crs[:,0], crs[:,1], alpha=0.25, color=colors[i])
+        ax.plot(std_x*10, avgs, label=labels[i], color=colors[i], linewidth=2)
+        ax.fill_between(std_x*10, crs[:,0], crs[:,1], alpha=0.25, color=colors[i])
+    else:
+        ax.plot(std_x, avgs, label=labels[i], color=colors[i], linewidth=2)
+        ax.fill_between(std_x, crs[:,0], crs[:,1], alpha=0.25, color=colors[i])
 
     #std_x, rates, avgs, crs = kap.plot_multi_rates(dh5s, plotting=False)
     # print S (efficiency)
@@ -86,7 +98,8 @@ plt.legend(frameon=False)
 plt.xlim(-1,22.3)
 plt.tight_layout()
 #plt.savefig("figs/kinetics-noleg.pdf")
-plt.savefig("figs/kinetics-leg.pdf")
+#plt.savefig("figs/kinetics-leg.pdf")
+plt.savefig("figs/kinetics2.pdf")
 plt.show()
 
 

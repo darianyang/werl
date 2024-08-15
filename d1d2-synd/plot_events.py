@@ -50,10 +50,11 @@ def calc_events(h5, tau=200e-12):
 
 fig, ax = plt.subplots(figsize=(7.5,4))
 
-h5_files = ["stdMD", "stdHK","LCAS", "REAP"]
+h5_files = ["stdMD", "stdHK","LCAS", "REAP-noscale2"]
 #h5_files = ["stdMD", "stdHK1D", "stdHK2D", "LCAS", "REAP", "FAST", "TSLC"]
 #colors = ["gray", "tab:blue", "tab:orange", "tab:red", "tab:green"]
 colors = ["k", "dimgray", "tab:blue", "tab:orange"]
+colors = ["tab:gray", "tab:blue", "tab:orange", "tab:green"]
 #colors = ["gray", "tab:blue", "tab:orange", "tab:red", "tab:green", "tab:pink", "tab:purple"]
 labels = ["cMD", "HK", "LCAS", "REAP"]
 
@@ -72,7 +73,8 @@ for i, h5 in enumerate(h5_files):
     avg_events = np.sum(agg_events, axis=0)
     #std_events = np.std(agg_events, axis=0)
     if h5 == "stdMD":
-        ax.plot(agg_time*10, avg_events, label=labels[i], color=colors[i], linewidth=2, linestyle="--")
+        #ax.plot(agg_time*10, avg_events, label=labels[i], color=colors[i], linewidth=2, linestyle="--")
+        ax.plot(agg_time, avg_events, label=labels[i], color=colors[i], linewidth=2)
     else:
         ax.plot(agg_time, avg_events, label=labels[i], color=colors[i], linewidth=2)
     #ax.fill_between(agg_time, avg_events - std_events, avg_events + std_events, color=c, alpha=0.2)
@@ -86,5 +88,5 @@ plt.xlim(-1,22.3)
 #plt.xlim(-0.1,1.5)
 plt.legend(frameon=False, loc="center", bbox_to_anchor=(1.2,0.5))
 plt.tight_layout()
-plt.savefig("figs/events.pdf")
+#plt.savefig("figs/events2.pdf")
 plt.show()

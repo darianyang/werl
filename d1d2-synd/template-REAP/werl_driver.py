@@ -166,8 +166,8 @@ class WERLDriver(WEDriver):
                 # split, merge = resample.lcas_ma()
 
                 #resample = REAP(pcoords, weights, n_clusters=None)
-                resample = REAP(pcoords, weights, n_clusters=20) # 80/4 = 20 (25% of walkers)
-                split, merge = resample.reap(op_weights_file="op_weights_REPLACEWITHVERSION.txt")
+                resample = REAP(pcoords_scaled, weights, n_clusters=20) # 80/4 = 20 (25% of walkers)
+                split, merge = resample.reap(op_weights_file="op_weights.txt")
 
                 # TODO: testing filters
                 #split = [1 if i > 1 else i for i in split]

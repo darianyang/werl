@@ -1,8 +1,9 @@
 #!/bin/bash
 
-SYSTEMS=(template-stdMD)
+#SYSTEMS=(template-stdMD)
 #SYSTEMS=(template-stdHK template-LCAS template-REAP)
 #SYSTEMS=(template-LCAS template-REAP)
+SYSTEMS=(template-REAP)
 ITERS=2000
 
 # loop each sys

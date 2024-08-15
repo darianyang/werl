@@ -80,9 +80,9 @@ ax.set_xlabel("Aggregate Simulation Time ($steps \cdot 10^6$)")
 
 plt.yscale("log")
 #plt.legend(frameon=False)
-plt.xlim(0,2.8)
+#plt.xlim(0,2.8)
 plt.tight_layout()
-plt.savefig("figs/kinetics-noleg.pdf")
+#plt.savefig("figs/kinetics-noleg.pdf")
 plt.show()
 
 
