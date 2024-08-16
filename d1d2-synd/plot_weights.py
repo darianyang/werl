@@ -10,7 +10,7 @@ plt.style.use("../werl.mplstyle")
 #colors = ["k", "dimgray", "tab:blue", "tab:orange"]
 colors = ["tab:blue", "tab:orange", "tab:red", "tab:green", "tab:pink", "tab:purple"]
 #colors = ["tab:blue", "tab:orange", "tab:red", "tab:green"]
-pcoords = ["Orientation Angle 1 ($\degree$)", "Orientation Angle 2 ($\degree$)", "T188-T188 Distance ($\AA$)", "C$_2$ Angle ($\degree$)", "M1 W184 $\chi_1$ ($\degree$)", "M2 W184 $\chi_1$ ($\degree$)"]
+#pcoords = ["Orientation Angle 1 ($\degree$)", "Orientation Angle 2 ($\degree$)", "T188-T188 Distance ($\AA$)", "C$_2$ Angle ($\degree$)", "M1 W184 $\chi_1$ ($\degree$)", "M2 W184 $\chi_1$ ($\degree$)"]
 pcoords = ["Orientation\nAngle 1 ($\degree$)", "Orientation\nAngle 2 ($\degree$)", "T188-T188\nDistance ($\AA$)", "C$_2$ Angle ($\degree$)"]
 
 #fig, ax = plt.subplots(figsize=(7.5,4))
@@ -20,7 +20,8 @@ fig, ax = plt.subplots(figsize=(6,4))
 agg_weights = []
 for j in range(5):
     #weights = np.loadtxt(f"template-REAP-noscale/0{j}/op_weights_v0{j}.txt")
-    weights = np.loadtxt(f"template-REAP/0{j}/op_weights.txt")
+    #weights = np.loadtxt(f"template-REAP/0{j}/op_weights.txt")
+    weights = np.loadtxt(f"template-REAP2/0{j}/op_weights.txt")
     agg_weights.append(weights)
 
 # WE iterations
@@ -47,5 +48,5 @@ ax.set_ylabel("Progress Coordinate Weights")
 plt.ylim(0,1)
 plt.legend(frameon=False, loc="center left", bbox_to_anchor=(1,0.5), labelspacing=2)
 plt.tight_layout()
-plt.savefig("figs/weights2.pdf", bbox_inches='tight')
+#plt.savefig("figs/weights2.pdf", bbox_inches='tight')
 plt.show()

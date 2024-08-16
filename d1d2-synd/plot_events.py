@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 #plt.style.use("/home/dty7/Projects/wedap/wedap/styles/default.mplstyle")
 plt.style.use("../werl.mplstyle")
 
-def calc_events(h5, tau=200e-12):
+def calc_events(h5, tau=100e-12):
     """
     Get the cumulative sum of events and aggregate simulation times.
 
@@ -90,10 +90,11 @@ ax.set_xlabel("Aggregate Simulation Time ($\mu$$s$)")
 #ax.set_xlabel("Aggregate Simulation Time ($steps \cdot 10^6$)")
 plt.yscale("log")
 #plt.xlim(0,2.8)
-plt.xlim(-1,22.3)
+#plt.xlim(-1,22.3)
+plt.xlim(-1,10)
 #plt.xlim(-0.1,1.5)
 #plt.legend(frameon=False, loc="center", bbox_to_anchor=(1.2,0.5))
-plt.legend(frameon=False)
+plt.legend(frameon=False, loc="lower right")
 plt.tight_layout()
-plt.savefig("figs/events5.pdf")
+plt.savefig("figs/events6.pdf")
 plt.show()

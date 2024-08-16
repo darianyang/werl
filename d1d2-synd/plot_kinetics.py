@@ -68,7 +68,7 @@ for i, k in enumerate(kfiles):
     else:
         dh5s = [f"template-{k}/0{i}/ANALYSIS/v0{i}/direct.h5" for i in range(trials)]
     kap = wekap.Kinetics(direct=dh5s[0], ax=ax, color=colors[i], label=labels[i],
-                         x_units="agg", tau=200e-12)
+                         x_units="agg", tau=100e-12)
     std_x, rates, avgs, crs = kap.plot_multi_rates(dh5s, plotting=False)
     if k == "stdMD":
         #ax.plot(std_x[::10]*10, avgs, label=labels[i], color=colors[i], linewidth=2)
@@ -103,12 +103,15 @@ plt.yscale("log")
 plt.legend(frameon=False)
 #plt.xlim(-0.1,2.33)
 #plt.xlim(-1,22.3)
-plt.xlim(-1,15.3)
+#plt.xlim(-1,15.3)
+#plt.xlim(-1,8.3)
+plt.xlim(-1,10)
+
 #plt.xlim(-1,12.3)
 plt.tight_layout()
 #plt.savefig("figs/kinetics-noleg.pdf")
 #plt.savefig("figs/kinetics-leg.pdf")
-plt.savefig("figs/kinetics4.pdf")
+plt.savefig("figs/kinetics5.pdf")
 plt.show()
 
 
