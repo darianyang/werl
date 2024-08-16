@@ -87,7 +87,7 @@ plt.legend(frameon=False)
 #plt.xlim(0,1000)
 plt.xlim(-0.1,3.0)
 plt.tight_layout()
-plt.savefig("figs/kinetics2.pdf")
+plt.savefig("figs/kinetics3.pdf")
 plt.show()
 
 

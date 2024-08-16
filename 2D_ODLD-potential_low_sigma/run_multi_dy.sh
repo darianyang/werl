@@ -1,7 +1,7 @@
 #!/bin/bash
 
-SYSTEMS=(template-FAST template-LCAS template-REAP template-TSLC template-stdMD template-stdHK1D template-stdHK2D)
-#SYSTEMS=(template-stdMD template-stdHK2D)
+#SYSTEMS=(template-FAST template-LCAS template-REAP template-TSLC template-stdMD template-stdHK1D template-stdHK2D)
+SYSTEMS=(template-stdHK2D-test)
 #SYSTEMS=(template-stdMD)
 
 # loop each sys
@@ -10,10 +10,10 @@ for SYS in ${SYSTEMS[@]} ; do
     # create dir using template files
     for V in {00..04} ; do
         mkdir $V
-        cp *.* $V/
+        cp * $V/
         # replace text with V
         cd $V
-        sed -i "s/REPLACEWITHVERSION/v${V}/g" *
+        #sed -i "s/REPLACEWITHVERSION/v${V}/g" *
         # run WE within V
         ./init.sh &&
         ./run.sh &&
