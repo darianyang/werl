@@ -180,6 +180,13 @@ class REAP(WERL):
         weights_log = [[] for _ in range(n_agents)]
         individual_rewards_log = [[] for _ in range(n_agents)]
 
+
+        # pcoords for init are 1 frame or len 1, so skip
+        # otherwise should always be 2 or greater in len
+        # another (earlier) check for the init pcoord len 1
+        if len(self.pcoords) == 1:
+            return self.to_split, self.to_merge 
+
         # TODO: the agents are kinda like different renditions of the REAP workflow
         #       with subsets of trajectories, I feel like this could work well
         #       in the context of basis states, so each basis state would get a REAP agent?

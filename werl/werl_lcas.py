@@ -41,6 +41,13 @@ class LCAS(WERL):
         self.to_split : list
         self.to_merge : list
         '''        
+        #print("PCOORDS B4 CLUST:", self.pcoords)
+        # pcoords for init are 1 frame or len 1, so skip
+        # otherwise should always be 2 or greater in len
+        # another check for the init pcoord len 1
+        if len(self.pcoords) == 1:
+            return self.to_split, self.to_merge 
+
         # do clustering
         self._clustering()
         #print("shape labels: ", self.labels.shape)
