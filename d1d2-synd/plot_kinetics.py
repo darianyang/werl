@@ -8,7 +8,7 @@ plt.style.use("../werl.mplstyle")
 
 #kfiles = ["stdHK1D", "stdHK2D", "LCAS", "REAP", "FAST", "TSLC"]
 #kfiles = ["stdMD", "stdHK", "LCAS", "REAP"]
-kfiles = ["stdHK", "LCAS", "REAP"]
+kfiles = ["stdHK", "LCAS-4pc-noscale", "REAP-4pc-noscale"]
 #kfiles = ["stdMD", "REAP-noscale", "REAP-noscale2", "REAP"]
 #kfiles = ["stdMD", "stdHK", "REAP-noscale", "REAP-noscale2"]
 #kfiles = ["stdMD", "stdHK", "LCAS"]
@@ -111,7 +111,7 @@ plt.xlim(-1,10)
 plt.tight_layout()
 #plt.savefig("figs/kinetics-noleg.pdf")
 #plt.savefig("figs/kinetics-leg.pdf")
-plt.savefig("figs/kinetics5.pdf")
+plt.savefig("figs/kinetics6.pdf")
 plt.show()
 
 

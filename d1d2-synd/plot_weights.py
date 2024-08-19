@@ -21,7 +21,8 @@ agg_weights = []
 for j in range(5):
     #weights = np.loadtxt(f"template-REAP-noscale/0{j}/op_weights_v0{j}.txt")
     #weights = np.loadtxt(f"template-REAP/0{j}/op_weights.txt")
-    weights = np.loadtxt(f"template-REAP2/0{j}/op_weights.txt")
+    #weights = np.loadtxt(f"template-REAP2/0{j}/op_weights.txt")
+    weights = np.loadtxt(f"template-REAP-4pc-noscale/0{j}/op_weights.txt")
     agg_weights.append(weights)
 
 # WE iterations
@@ -46,7 +47,8 @@ for i in range(n_pcoords):
 ax.set_xlabel("WE Iteration")
 ax.set_ylabel("Progress Coordinate Weights")
 plt.ylim(0,1)
+plt.xlim(-50,1050)
 plt.legend(frameon=False, loc="center left", bbox_to_anchor=(1,0.5), labelspacing=2)
 plt.tight_layout()
-#plt.savefig("figs/weights2.pdf", bbox_inches='tight')
+plt.savefig("figs/weights3.pdf", bbox_inches='tight')
 plt.show()

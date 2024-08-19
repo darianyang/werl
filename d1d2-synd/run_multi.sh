@@ -4,7 +4,8 @@
 #SYSTEMS=(template-stdHK template-LCAS template-REAP)
 #SYSTEMS=(template-LCAS template-REAP)
 #SYSTEMS=(template-REAP2)
-SYSTEMS=(template-stdHK-C2)
+#SYSTEMS=(template-stdHK-C2)
+SYSTEMS=(template-REAP-4pc-noscale template-LCAS-4pc-noscale)
 ITERS=2000
 
 # loop each sys

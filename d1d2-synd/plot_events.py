@@ -53,7 +53,8 @@ def calc_events(h5, tau=100e-12):
 fig, ax = plt.subplots(figsize=(6,4))
 
 h5_files = ["stdMD", "stdHK","LCAS", "REAP"]
-h5_files = ["stdHK","LCAS", "REAP"]
+h5_files = ["stdHK","LCAS-noscale", "REAP-4pc-noscale"]
+h5_files = ["stdHK","LCAS-4pc-noscale", "REAP-4pc-noscale"]
 #h5_files = ["stdMD", "stdHK","LCAS-noscale", "REAP-noscale2"]
 #h5_files = ["stdMD", "stdHK1D", "stdHK2D", "LCAS", "REAP", "FAST", "TSLC"]
 #colors = ["gray", "tab:blue", "tab:orange", "tab:red", "tab:green"]
@@ -79,7 +80,7 @@ for i, h5 in enumerate(h5_files):
     avg_events = np.sum(agg_events, axis=0)
     #std_events = np.std(agg_events, axis=0)
     if h5 == "stdMD":
-        ax.plot(agg_time+1, avg_events, label=labels[i], color=colors[i], linewidth=2, linestyle="--")
+        ax.plot(agg_time, avg_events, label=labels[i], color=colors[i], linewidth=2, linestyle="--")
         #ax.plot(agg_time, avg_events, label=labels[i], color=colors[i], linewidth=2)
     else:
         ax.plot(agg_time, avg_events, label=labels[i], color=colors[i], linewidth=2)
@@ -96,5 +97,5 @@ plt.xlim(-1,10)
 #plt.legend(frameon=False, loc="center", bbox_to_anchor=(1.2,0.5))
 plt.legend(frameon=False, loc="lower right")
 plt.tight_layout()
-plt.savefig("figs/events6.pdf")
+plt.savefig("figs/events7.pdf")
 plt.show()
