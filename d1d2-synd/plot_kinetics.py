@@ -8,7 +8,7 @@ plt.style.use("../werl.mplstyle")
 
 #kfiles = ["stdHK1D", "stdHK2D", "LCAS", "REAP", "FAST", "TSLC"]
 #kfiles = ["stdMD", "stdHK", "LCAS", "REAP"]
-kfiles = ["stdHK", "LCAS-4pc-noscale", "REAP-4pc-noscale"]
+kfiles = ["stdMD2", "stdHK", "LCAS-4pc-noscale", "REAP-4pc-noscale"]
 #kfiles = ["stdMD", "REAP-noscale", "REAP-noscale2", "REAP"]
 #kfiles = ["stdMD", "stdHK", "REAP-noscale", "REAP-noscale2"]
 #kfiles = ["stdMD", "stdHK", "LCAS"]
@@ -17,11 +17,11 @@ kfiles = ["stdHK", "LCAS-4pc-noscale", "REAP-4pc-noscale"]
 colors = ["silver", "dimgray", "tab:blue", "tab:orange"]
 colors = ["tab:gray", "tab:red", "tab:blue", "tab:orange"]
 colors = ["tab:gray", "tab:blue", "tab:orange", "tab:green"]
-colors = ["tab:gray", "tab:blue", "tab:orange"]
+colors = ["gray", "tab:gray", "tab:blue", "tab:orange"]
 #colors = ["tab:blue", "tab:orange", "tab:green"]
 #colors = ["gray", "tab:blue", "tab:orange"]
 #labels = ["No WE", "WE", "WE-AS", "WE-RL"]
-labels = ["WE", "WE-AS", "WE-RL"]
+labels = ["cMD", "WE", "WE-AS", "WE-RL"]
 
 fig, ax = plt.subplots()
 
@@ -70,11 +70,11 @@ for i, k in enumerate(kfiles):
     kap = wekap.Kinetics(direct=dh5s[0], ax=ax, color=colors[i], label=labels[i],
                          x_units="agg", tau=100e-12)
     std_x, rates, avgs, crs = kap.plot_multi_rates(dh5s, plotting=False)
-    if k == "stdMD":
+    if k == "stdMD" or k == "stdMD2":
         #ax.plot(std_x[::10]*10, avgs, label=labels[i], color=colors[i], linewidth=2)
         #ax.fill_between(std_x[::10]*10, crs[:,0], crs[:,1], alpha=0.25, color=colors[i])
-        ax.plot(std_x+1, avgs, label=labels[i], color=colors[i], linewidth=2, linestyle="--")
-        ax.fill_between(std_x+1, crs[:,0], crs[:,1], alpha=0.25, color=colors[i])
+        ax.plot(std_x, avgs, label=labels[i], color=colors[i], linewidth=2, linestyle="--")
+        ax.fill_between(std_x, crs[:,0], crs[:,1], alpha=0.25, color=colors[i])
     else:
         ax.plot(std_x, avgs, label=labels[i], color=colors[i], linewidth=2)
         ax.fill_between(std_x, crs[:,0], crs[:,1], alpha=0.25, color=colors[i])
@@ -111,7 +111,7 @@ plt.xlim(-1,10)
 plt.tight_layout()
 #plt.savefig("figs/kinetics-noleg.pdf")
 #plt.savefig("figs/kinetics-leg.pdf")
-plt.savefig("figs/kinetics6.pdf")
+plt.savefig("figs/kinetics7.pdf")
 plt.show()
 
 

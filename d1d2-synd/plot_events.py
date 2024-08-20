@@ -54,16 +54,16 @@ fig, ax = plt.subplots(figsize=(6,4))
 
 h5_files = ["stdMD", "stdHK","LCAS", "REAP"]
 h5_files = ["stdHK","LCAS-noscale", "REAP-4pc-noscale"]
-h5_files = ["stdHK","LCAS-4pc-noscale", "REAP-4pc-noscale"]
+h5_files = ["stdMD2", "stdHK", "LCAS-4pc-noscale", "REAP-4pc-noscale"]
 #h5_files = ["stdMD", "stdHK","LCAS-noscale", "REAP-noscale2"]
 #h5_files = ["stdMD", "stdHK1D", "stdHK2D", "LCAS", "REAP", "FAST", "TSLC"]
 #colors = ["gray", "tab:blue", "tab:orange", "tab:red", "tab:green"]
 colors = ["k", "dimgray", "tab:blue", "tab:orange"]
 colors = ["tab:gray", "tab:blue", "tab:orange", "tab:green"]
-colors = ["tab:gray", "tab:blue", "tab:orange"]
+colors = ["gray", "tab:gray", "tab:blue", "tab:orange"]
 #colors = ["gray", "tab:blue", "tab:orange", "tab:red", "tab:green", "tab:pink", "tab:purple"]
 labels = ["No WE", "WE", "WE-AS", "WE-RL"]
-labels = ["WE", "WE-AS", "WE-RL"]
+labels = ["cMD", "WE", "WE-AS", "WE-RL"]
 
 for i, h5 in enumerate(h5_files):
     # grab avg and std
@@ -79,7 +79,7 @@ for i, h5 in enumerate(h5_files):
     # plot
     avg_events = np.sum(agg_events, axis=0)
     #std_events = np.std(agg_events, axis=0)
-    if h5 == "stdMD":
+    if h5 == "stdMD" or h5 == "stdMD2":
         ax.plot(agg_time, avg_events, label=labels[i], color=colors[i], linewidth=2, linestyle="--")
         #ax.plot(agg_time, avg_events, label=labels[i], color=colors[i], linewidth=2)
     else:
@@ -95,7 +95,8 @@ plt.yscale("log")
 plt.xlim(-1,10)
 #plt.xlim(-0.1,1.5)
 #plt.legend(frameon=False, loc="center", bbox_to_anchor=(1.2,0.5))
-plt.legend(frameon=False, loc="lower right")
+#plt.legend(frameon=False, loc="lower right")
+plt.legend(frameon=False)
 plt.tight_layout()
-plt.savefig("figs/events7.pdf")
+plt.savefig("figs/events8.pdf")
 plt.show()
