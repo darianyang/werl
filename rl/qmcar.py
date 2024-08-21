@@ -1,6 +1,7 @@
 import numpy as np
 import gymnasium as gym
 import pickle
+import time
 
 # Q-learning agent for MountainCar environment
 class QLearningAgent:
@@ -104,6 +105,10 @@ def run_training():
 
     print(f"Test Total Reward: {total_reward}")
 
+    # for video saving
+    env.render()
+    time.sleep(1)  
+
     env.close()
 
 def load_q_learning_agent(file_path="qmcar_agent.pkl"):
@@ -116,7 +121,12 @@ def load_q_learning_agent(file_path="qmcar_agent.pkl"):
 def run_trained_agent(file_path="qmcar_agent.pkl"):
     # load trained agent and test
     # Create MountainCar environment
-    env = gym.make('MountainCar-v0', render_mode="human")
+    #env = gym.make('MountainCar-v0', render_mode="human")
+    env = gym.make('MountainCar-v0', render_mode="rgb_array")
+
+    # Wrap the environment for recording video
+    env = gym.wrappers.RecordVideo(env, video_folder='video', #episode_trigger=lambda x: True,
+                                   step_trigger=lambda x: True)
 
     # Initialize Q-learning agent
     q_learning_agent = load_q_learning_agent(file_path)
@@ -139,6 +149,10 @@ def run_trained_agent(file_path="qmcar_agent.pkl"):
             break
 
     print(f"Test Total Reward: {total_reward}")
+
+    # for video saving
+    env.render()
+    time.sleep(1)  
 
     env.close()
 
