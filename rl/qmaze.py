@@ -3,6 +3,8 @@ import numpy as np
 import math
 import random
 
+#import gymnasium as gym
+#import gymnasium as gym
 import gym
 import gym_maze
 
@@ -171,8 +173,8 @@ if __name__ == "__main__":
     STREAK_TO_END = 100
     SOLVED_T = np.prod(MAZE_SIZE, dtype=int)
     DEBUG_MODE = 0
-    RENDER_MAZE = True
-    ENABLE_RECORDING = False
+    RENDER_MAZE = False
+    ENABLE_RECORDING = True
 
     '''
     Creating a Q-Table for each state-action pair
@@ -186,7 +188,7 @@ if __name__ == "__main__":
 
     # TODO: recording not working
     if ENABLE_RECORDING:
-        recording = gym.wrappers.RecordVideo(env, recording_folder)
+        recording = gym.wrappers.RecordVideo(env, recording_folder, episode_trigger=lambda x: True)
         recording.start_video_recorder()
 
     simulate()
