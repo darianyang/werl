@@ -21,7 +21,7 @@ colors = ["gray", "tab:gray", "tab:blue", "tab:orange"]
 #colors = ["tab:blue", "tab:orange", "tab:green"]
 #colors = ["gray", "tab:blue", "tab:orange"]
 #labels = ["No WE", "WE", "WE-AS", "WE-RL"]
-labels = ["cMD", "WE", "WE-AS", "WE-RL"]
+labels = ["cMD", "WE", "WE-LC", "WE-RL"]
 
 fig, ax = plt.subplots()
 
@@ -111,7 +111,7 @@ plt.xlim(-1,10)
 plt.tight_layout()
 #plt.savefig("figs/kinetics-noleg.pdf")
 #plt.savefig("figs/kinetics-leg.pdf")
-plt.savefig("figs/kinetics7.pdf")
+plt.savefig("figs/kinetics8.pdf")
 plt.show()
 
 

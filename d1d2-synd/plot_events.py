@@ -63,7 +63,7 @@ colors = ["tab:gray", "tab:blue", "tab:orange", "tab:green"]
 colors = ["gray", "tab:gray", "tab:blue", "tab:orange"]
 #colors = ["gray", "tab:blue", "tab:orange", "tab:red", "tab:green", "tab:pink", "tab:purple"]
 labels = ["No WE", "WE", "WE-AS", "WE-RL"]
-labels = ["cMD", "WE", "WE-AS", "WE-RL"]
+labels = ["cMD", "WE", "WE-LC", "WE-RL"]
 
 for i, h5 in enumerate(h5_files):
     # grab avg and std
@@ -98,5 +98,5 @@ plt.xlim(-1,10)
 #plt.legend(frameon=False, loc="lower right")
 plt.legend(frameon=False)
 plt.tight_layout()
-plt.savefig("figs/events8.pdf")
+plt.savefig("figs/events9.pdf")
 plt.show()

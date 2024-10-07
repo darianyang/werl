@@ -15,7 +15,7 @@ kfiles = ["stdHK1D", "stdHK2D", "LCAS", "REAP"]
 #colors = ["gray", "tab:blue", "tab:orange"]
 #labels = ["HK-1D", "HK-2D", "LCAS", "REAP"]
 colors = ["gray", "tab:gray", "tab:blue", "tab:orange"]
-labels = ["WE-1D", "WE-2D", "WE-AS", "WE-RL"]
+labels = ["WE-1D", "WE-2D", "WE-LC", "WE-RL"]
 
 fig, ax = plt.subplots()
 
@@ -88,7 +88,7 @@ plt.yscale("log")
 plt.legend(frameon=False)
 plt.xlim(-0.1,1.5)
 plt.tight_layout()
-plt.savefig("figs/kinetics4.pdf")
+plt.savefig("figs/kinetics5.pdf")
 plt.show()
 
 

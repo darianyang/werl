@@ -16,7 +16,7 @@ colors = ["silver", "dimgray", "tab:blue", "tab:orange", "tab:green", "tab:pink"
 #colors = ["gray", "tab:blue", "tab:orange"]
 #labels = ["HK-1D", "HK-2D", "LCAS", "REAP"]
 colors = ["gray", "tab:gray", "tab:blue", "tab:orange"]
-labels = ["WE-1D", "WE-2D", "WE-AS", "WE-RL"]
+labels = ["WE-1D", "WE-2D", "WE-LC", "WE-RL"]
 fig, ax = plt.subplots()
 
 # get stdMD reference rate from 5 10k trials
@@ -87,7 +87,7 @@ plt.legend(frameon=False)
 #plt.xlim(0,1000)
 plt.xlim(-0.1,3.0)
 plt.tight_layout()
-plt.savefig("figs/kinetics3.pdf")
+plt.savefig("figs/kinetics4.pdf")
 plt.show()
 
 
