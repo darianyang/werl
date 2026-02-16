@@ -14,7 +14,7 @@ import numpy as np
 from scipy.optimize import minimize
 from sklearn.metrics import pairwise_distances_argmin_min
 
-from .werl_base import WERL
+from werl_base import WERL
 #from werl.werl_base import WERL
 import os
 
@@ -33,9 +33,14 @@ class REAP(WERL):
         # Which clusters contain lowest populations
         #least_counts = np.asarray(self.counts[::-1][:])[:, 0]
         #least_counts = np.asarray(self.counts[::-1][:self.n_clusters])[:, 0]
-        least_counts = np.asarray(self.counts[::-1][:n_select])[:, 0]
-        
-        closest, _ = pairwise_distances_argmin_min(self.centers, self.pcoords)
+        if self.pca:
+            least_counts = np.asarray(self.counts[::-1][:n_select])[:, 0]
+            closest, _ = pairwise_distances_argmin_min(self.centers, self.projected)
+
+        else:
+            least_counts = np.asarray(self.counts[::-1][:n_select])[:, 0]
+            closest, _ = pairwise_distances_argmin_min(self.centers, self.pcoords)
+
         return least_counts, self.pcoords[closest[least_counts]]
 
     def compute_structure_reward(self, selected_points, weights):
@@ -45,6 +50,9 @@ class REAP(WERL):
         #print("Selected Points: ", selected_points)
         mu = self.pcoords.mean(axis=0)
         sigma = self.pcoords.std(axis=0)
+        print(mu)
+        print(sigma)
+        print(weights)
         #selected_points = selected_points[:, :2]  # Drop third dimension
 
         # Shape is (selected_points.shape[0],)
@@ -118,7 +126,7 @@ class REAP(WERL):
 
         return results
 
-    def reap(self, op_weights_file='op_weights.txt', n_select=None, delta=0.02):
+    def reap(self, op_weights_file='op_weights.txt', n_select=None, delta=0.02, pca=False):
         '''
         WE version of the REinforcement learning based Adaptive SamPling (REAP) algorithm.
         
@@ -198,7 +206,10 @@ class REAP(WERL):
         for i in range(n_agents):
 
             #clusters = clustering(self.pcoords, self.n_clusters, max_frames=max_frames, b=b, gamma=gamma, d=d)
-            self._clustering()
+            if not pca:
+                self._clustering()
+            else:
+                self._clustering_pca()
 
             # if less than the requested amount of clusters was generated
             # then go with zero array return, currently useful for w_init
@@ -289,13 +300,13 @@ class REAP(WERL):
         return self.to_split, self.to_merge
 
 if __name__ == "__main__":
-    # test data (1D array of 1D ODLD endpoints)
-    # pcoords = np.loadtxt('mm_potentials/pcoords.txt')
-    # weights = np.loadtxt('mm_potentials/weights.txt')
+    import matplotlib.pyplot as plt # For testing clustering
+
 
     # this is the full pcoord array, in this case (80, 5, 2)
     # for 80 walkers, 5 frames of simulation each, and 2 pcoords (X and Y)
-    pcoords = np.load('pcoords_full.npy')
+    TEST_DATA = '/Users/alexgoldberg/Desktop/werl/test_data/'
+    pcoords = np.load(f'{TEST_DATA}pcoords_full.npy')
     print(f"pcoord full shape: {pcoords.shape}")
     weights = np.ones(80) / 80
 
@@ -304,14 +315,14 @@ if __name__ == "__main__":
     # weights = np.ones(40) / 40
 
     # test init data
-    #pcoords = np.array([9.5] * 50).reshape(-1,1)
-    #pcoords = np.array([np.random.uniform(5, 10, 50)]).reshape(-1,1)
-    #weights = np.array([0.02] * 50)
+    pcoords = np.array([np.random.uniform(0, 10, (50,5,3))])[0] # 6 dim pcoord for testing, shape (1, 50, 6)
+    weights = np.array([0.02] * 50)
+    print(pcoords.shape)
 
     # REAP test
-    werl = REAP(pcoords, weights)
-    print("N_CLUSTERS: ", werl.n_clusters)
-    split, merge = werl.reap()
+    werl = REAP(pcoords, weights, pca=True)
+    #print("N_CLUSTERS: ", werl.n_clusters)
+    split, merge = werl.reap(pca=True, op_weights_file='test_data/op_weights.txt')
     print("CLUSTER COUNTS: ", werl.counts)
     print("CLUSTER COUNTS: ", werl.counts.shape)
     print("LABELS", werl.labels)
@@ -320,6 +331,17 @@ if __name__ == "__main__":
     print("SPLIT INDICES: ", [i for i, e in enumerate(split) if e != 0])
     print("split sum: ", np.sum(split))
     print("merge sum: ", np.sum([np.count_nonzero(i) for i in merge]))
-    #print("counts: ", werl.counts)
+    print("counts: ", werl.counts)
 
- 
+
+    fig = plt.figure(figsize=(12, 6))
+    ax = fig.add_subplot(121, projection='3d')
+    ax.set_title('Original Clusters')
+    ax.scatter(pcoords[:,0,0], pcoords[:,0,1], pcoords[:,0,2], c=werl.labels)
+    
+    if werl.projected is not None:
+        ax = fig.add_subplot(122)
+        ax.set_title('Projected Clusters')
+        ax.scatter(werl.projected[:,0], werl.projected[:,1], c=werl.labels)
+
+    plt.show()
