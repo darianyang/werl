@@ -18,6 +18,7 @@ TODO:
 import numpy as np
 from sklearn.cluster import KMeans
 from collections import Counter
+from sklearn.decomposition import PCA
 
 class WERL:
     '''
@@ -26,7 +27,7 @@ class WERL:
     
     def __init__(self, pcoords, weights, pmin=1e-12, pmax=0.1,
                  n_clusters=None, n_split=None, 
-                 b=0.07, gamma=0.6, d=2):
+                 b=0.07, gamma=0.6, d=2, pca=False):
         '''
         Parameters
         ----------
@@ -106,6 +107,9 @@ class WERL:
         # list of lists for walker positions to merge, begin as all empty
         self.to_merge = [[] for _ in range(self.n_segments)]
 
+        # For setting if we will be projecting coordinates to lower dimensions using PCA before clustering
+        self.pca = pca 
+
     @staticmethod
     def calc_n_clusters(n_datapoints, b=0.07, gamma=0.6, d=2):
         '''
@@ -146,6 +150,33 @@ class WERL:
         # then change to array to be able to update label values later on
         self.counts = np.array(Counter(km.labels_).most_common())
         #print(self.counts)
+
+    def _clustering_pca(self, n_dim=2):
+        '''
+        Shared clustering method with k-means using self.n_clusters.
+
+        Updates
+        -------
+        self.labels : array
+            Cluster labels for each data point.
+        self.counts : list of tuples
+            Count of each cluster label amount.
+        '''
+        # pca dimensionality reduction and transform to n_dim dimensions
+        pca = PCA(n_components=n_dim)
+        pca_fit = pca.fit_transform(self.pcoords) # this is the transformed pcoord data in n_dim dimensions, shape (n_segments, n_dim)
+        self.projected = pca_fit
+        
+        # kmeans clustering
+        km = KMeans(n_clusters=self.n_clusters).fit(self.projected)
+        self.centers = km.cluster_centers_
+        self.labels = km.labels_
+
+        # count each label amount (using km.labels_ since not reshaped)
+        # example output: Counter({0: 21, 1: 20, 2: 4, 3: 3, 4: 2})
+        # then with most_common: [(0, 21), (1, 20), (2, 4), (3, 3), (4, 2)]
+        # then change to array to be able to update label values later on
+        self.counts = np.array(Counter(km.labels_).most_common())
 
     def do_splitting(self):
         '''
