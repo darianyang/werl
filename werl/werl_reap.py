@@ -344,4 +344,5 @@ if __name__ == "__main__":
         ax.set_title('Projected Clusters')
         ax.scatter(werl.projected[:,0], werl.projected[:,1], c=werl.labels)
 
+    plt.savefig(f'{TEST_DATA}/reap_test_clusters.png')
     plt.show()
