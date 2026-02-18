@@ -114,7 +114,7 @@ class REAP(WERL):
 
         return results
 
-    def reap(self, op_weights_file='op_weights.txt', n_select=None, delta=0.02, pca=False):
+    def reap(self, op_weights_file='op_weights.txt', n_select=None, delta=0.02):
         '''
         WE version of the REinforcement learning based Adaptive SamPling (REAP) algorithm.
         
@@ -194,7 +194,7 @@ class REAP(WERL):
         for i in range(n_agents):
 
             #clusters = clustering(self.pcoords, self.n_clusters, max_frames=max_frames, b=b, gamma=gamma, d=d)
-            if not pca:
+            if not self.pca:
                 self._clustering()
             else:
                 self._clustering_pca()
@@ -305,7 +305,7 @@ if __name__ == "__main__":
 
     # REAP test
     werl = REAP(pcoords, weights, pca=True)
-    split, merge = werl.reap(pca=True, op_weights_file='test_data/op_weights.txt')
+    split, merge = werl.reap(op_weights_file='test_data/op_weights.txt')
     print("CLUSTER COUNTS: ", werl.counts)
     print("CLUSTER COUNTS: ", werl.counts.shape)
     print("LABELS", werl.labels)
