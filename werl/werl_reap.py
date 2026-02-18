@@ -31,8 +31,6 @@ class REAP(WERL):
         n_select allows for a sub-selection of clusters, this way the worst case is LCAS-like.
         '''
         # Which clusters contain lowest populations
-        #least_counts = np.asarray(self.counts[::-1][:])[:, 0]
-        #least_counts = np.asarray(self.counts[::-1][:self.n_clusters])[:, 0]
         if self.pca:
             least_counts = np.asarray(self.counts[::-1][:n_select])[:, 0]
             closest, _ = pairwise_distances_argmin_min(self.centers, self.projected)
@@ -47,25 +45,15 @@ class REAP(WERL):
         '''
         Computes the reward for each structure and returns it as an array.
         '''
-        #print("Selected Points: ", selected_points)
+
         mu = self.pcoords.mean(axis=0)
         sigma = self.pcoords.std(axis=0)
         print(mu)
         print(sigma)
         print(weights)
-        #selected_points = selected_points[:, :2]  # Drop third dimension
 
-        # Shape is (selected_points.shape[0],)
-        # print(weights * np.abs(selected_points - mu) / sigma)
-        # print((weights * np.abs(selected_points - mu) / sigma).shape)
-        # print((weights * np.abs(selected_points - mu) / sigma).sum(axis=1))
         reward = (weights * np.abs(selected_points - mu) / sigma)
-        # make sure 2d array sum axis indexable
-        #reward = np.atleast_2d(reward)
-
-        # print("Reward shape: ", reward.shape)
-        # print("Reward: ", reward)
-        # print("Reward SUM: ", reward.sum(axis=1))
+ 
         return reward.sum(axis=1)
 
     def compute_cumulative_reward(self, selected_points, weights):
@@ -310,18 +298,13 @@ if __name__ == "__main__":
     print(f"pcoord full shape: {pcoords.shape}")
     weights = np.ones(80) / 80
 
-    # cut to n walkers for testing
-    # pcoords = pcoords[40:,:,:]
-    # weights = np.ones(40) / 40
-
     # test init data
-    pcoords = np.array([np.random.uniform(0, 10, (50,5,3))])[0] # 6 dim pcoord for testing, shape (1, 50, 6)
+    pcoords = np.array([np.random.uniform(0, 10, (50,5,6))])[0] # 6 dim pcoord for testing, shape (50, 5, 6) for 50 walkers, 5 frames, 6 pcoord dims
     weights = np.array([0.02] * 50)
     print(pcoords.shape)
 
     # REAP test
     werl = REAP(pcoords, weights, pca=True)
-    #print("N_CLUSTERS: ", werl.n_clusters)
     split, merge = werl.reap(pca=True, op_weights_file='test_data/op_weights.txt')
     print("CLUSTER COUNTS: ", werl.counts)
     print("CLUSTER COUNTS: ", werl.counts.shape)
