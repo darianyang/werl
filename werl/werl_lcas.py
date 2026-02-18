@@ -50,7 +50,6 @@ class LCAS(WERL):
 
         # do clustering
         self._clustering()
-        #print("shape labels: ", self.labels.shape)
 
         # if less than the requested amount of clusters was generated
         # then go with zero array return, currently useful for w_init
@@ -67,13 +66,10 @@ class LCAS(WERL):
 
 
 if __name__ == "__main__":
-    # test data (1D array of 1D ODLD endpoints)
-    # pcoords = np.loadtxt('mm_potentials/pcoords.txt')
-    # weights = np.loadtxt('mm_potentials/weights.txt')
 
     # this is the full pcoord array, in this case (80, 5, 2)
     # for 80 walkers, 5 frames of simulation each, and 2 pcoords (X and Y)
-    pcoords = np.load('pcoords_full.npy')
+    pcoords = np.load('test_data/pcoords_full.npy')
     print(f"pcoord full shape: {pcoords.shape}")
 
     # cut to n walkers for testing
@@ -81,10 +77,6 @@ if __name__ == "__main__":
     pcoords = pcoords[:n,:,:]
     weights = np.ones(n) / n
 
-    # test init data
-    #pcoords = np.array([9.5] * 50).reshape(-1,1)
-    #pcoords = np.array([np.random.uniform(5, 10, 50)]).reshape(-1,1)
-    #weights = np.array([0.02] * 50)
 
     # LCAS test
     werl = LCAS(pcoords, weights)

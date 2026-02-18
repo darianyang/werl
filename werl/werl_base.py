@@ -110,6 +110,7 @@ class WERL:
 
         # For setting if we will be projecting coordinates to lower dimensions using PCA before clustering
         self.pca = pca 
+        self.projected = projected
 
     @staticmethod
     def calc_n_clusters(n_datapoints, b=0.07, gamma=0.6, d=2):
@@ -141,16 +142,13 @@ class WERL:
         #km = KMeans(n_clusters=self.n_clusters, random_state=1).fit(self.pcoords)
         km = KMeans(n_clusters=self.n_clusters).fit(self.pcoords)
         self.centers = km.cluster_centers_
-        #print(km.labels_)
         self.labels = km.labels_
-        #print(self.labels)
 
         # count each label amount (using km.labels_ since not reshaped)
         # example output: Counter({0: 21, 1: 20, 2: 4, 3: 3, 4: 2})
         # then with most_common: [(0, 21), (1, 20), (2, 4), (3, 3), (4, 2)]
         # then change to array to be able to update label values later on
         self.counts = np.array(Counter(km.labels_).most_common())
-        #print(self.counts)
 
     def _clustering_pca(self, n_dim=2):
         '''
@@ -192,9 +190,6 @@ class WERL:
         # this will be a negative index, so start with smallest cluster (-1)
         # and decrease by 1 if needed
         lc_cluster_counter = 1
-
-        # TODO: debugging an indexing error in line 156 (-14 index from size 13 array)
-        #print("COUNTS: \n", self.counts)
 
         while splits_remaining > 0:
            
@@ -278,7 +273,6 @@ class WERL:
                                     # mark these as a merge pair
                                     self.to_merge[i].append(j)
                                     merges_remaining -= 1
-                                    #print(f"merged {i} and {j}")
                         
                         # extra precaution
                         if merges_remaining == 0:
@@ -293,13 +287,10 @@ class WERL:
             lc_cluster_counter += 1
 
 if __name__ == "__main__":
-    # test data (1D array of 1D ODLD endpoints)
-    # pcoords = np.loadtxt('mm_potentials/pcoords.txt')
-    # weights = np.loadtxt('mm_potentials/weights.txt')
 
     # this is the full pcoord array, in this case (80, 5, 2)
     # for 80 walkers, 5 frames of simulation each, and 2 pcoords (X and Y)
-    pcoords = np.load('mm_potentials/pcoords_full.npy')
+    pcoords = np.load('test_data/pcoords_full.npy')
     print(f"pcoord full shape: {pcoords.shape}")
 
     # test init data
@@ -308,5 +299,4 @@ if __name__ == "__main__":
     #weights = np.array([0.02] * 50)
 
     werl = WERL(pcoords)
-    print(werl.pcoords)
     werl._clustering()

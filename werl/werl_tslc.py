@@ -37,7 +37,6 @@ class TSLC(WERL):
         ## TODO maybe simply update self.n_clusters in the clustering method
         '''
         # Which clusters contain lowest populations
-        print(self.counts)
         least_counts = np.asarray(self.counts[::-1][:self.n_clusters])[:, 0]
         closest, _ = pairwise_distances_argmin_min(self.centers, self.pcoords)
         return least_counts, self.pcoords[closest[least_counts]]
@@ -124,8 +123,6 @@ class TSLC(WERL):
         # With all dimensions taken care of, we can now calculate the reward
         reward = (weights * np.abs(fun_selected_points - mu) / sigma)
         print(reward)
-        # make sure array sum axis indexable
-        #reward = np.atleast_2d(reward)
 
         # print("Reward shape: ", reward.shape)
         # print("Reward: ", reward)
@@ -164,7 +161,6 @@ class TSLC(WERL):
         '''
 
         # Calculate n_clusters_prime 
-        #self.pcoords = self.pcoords.reshape(-1, self.pcoords.shape[2])
         print('clusters N: ', self.n_clusters)
         n_clusters_prime = int(self.n_clusters * np.log(self.n_clusters) + l)
 
@@ -277,7 +273,6 @@ class TSLC(WERL):
             pca_trans = pca.fit(points)  # Projection onto d space
             Vi = pca_trans.components_.T  # Must transpose to get desired shape
             Vis.append(Vi)
-        print(Vis)
 
         # 5) Get Gi matrices of shape (D, K) that contain the gradient of 
         # each CV w.r.t. to the cartesian coordinate of the point.
@@ -321,7 +316,6 @@ class TSLC(WERL):
         # since that will use the largest eigenvalue's index of each eigenvector.
         # weights = eig_vecs[:, largest_eigval] ** 2  # This is the MA-TSLC code
         weights = eig_vecs[largest_eigval, :] ** 2  # Use the elements of the largest eigenvector for the weights
-        print(weights, np.sum(weights))
 
         return weights
 
@@ -466,25 +460,6 @@ if __name__ == "__main__":
     print("SPLIT INDICES: ", [i for i, e in enumerate(split) if e != 0])
     print("split sum: ", np.sum(split))
     print("merge sum: ", np.sum([np.count_nonzero(i) for i in merge]))
-    #print("counts: ", werl.counts)
-
-    # f = open('TSLC.out','w')
-    # f.write("N_CLUSTERS: " + str(werl.n_clusters)+'\n')
-    # f.write("CLUSTER COUNTS: " + str(werl.counts)+'\n')
-    # f.write("CLUSTER COUNTS: " + str(werl.counts.shape)+'\n')
-    # f.write("LABELS" + str(werl.labels)+'\n')
-    
-    # f.write("SPLIT: " + str(split)+ "\nMERGE: "+ str(merge)+'\n')
-    # f.write("SPLIT INDICES: "+ str([i for i, e in enumerate(split) if e != 0])+'\n')
-    # f.write("split sum: "+ str(np.sum(split))+'\n')
-    # f.write("merge sum: "+ str(np.sum([np.count_nonzero(i) for i in merge]))+'\n')
-    # f.write("counts: "+ str(werl.counts)+'\n')
-    # f.close()
-
-    # Visualize pcoord in CV space
-    # plt.scatter([np.transpose(frame)[0] for frame in pcoords], [np.transpose(frame)[1] for frame in pcoords], s=40, alpha=0.3)
-    # plt.title('pcoords')
-    # plt.show()
 
     # Assess distribution of cluster centers
     # N = 5 # Set number of LC clusters

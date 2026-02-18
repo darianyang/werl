@@ -154,9 +154,6 @@ class REAP(WERL):
         # self.pcoords.shape[1] (n_pcoord_dims = n_columns of the pcoords array)
         n_features = self.pcoords.shape[1]  # Number of variables in OP space (2d pcoord for now)
 
-        # Step 2: set initial OP weights (not WE traj weights)
-        # only do this if input weights are None
-        #if weights is None:
         
         # if the file already exists, grab last row
         if os.path.isfile(op_weights_file) is True:
@@ -267,16 +264,13 @@ class REAP(WERL):
 
         # make a full length least_counts_clusters since using a n_select subset
         # replace the end of the self.counts list of clusters with sorted n_select subset of clusters
-        #print(self.counts[:,0])
         self.counts[:,0][-len(least_counts_clusters):] = least_counts_clusters
-        #print(self.counts[:,0])
 
         # Insert least_count_clusters as a new column before the first column of cluster_counts
         # replaces the previous column sorting
         # NOTE: using the above replacement step instead
         #self.counts = np.insert(self.counts, 0, least_counts_clusters, axis=1)
 
-        #print("SORTED COUNTS:", self.counts)
 
         # run split merge methods, updating split/merge lists
         self.do_splitting()
@@ -293,8 +287,7 @@ if __name__ == "__main__":
 
     # this is the full pcoord array, in this case (80, 5, 2)
     # for 80 walkers, 5 frames of simulation each, and 2 pcoords (X and Y)
-    TEST_DATA = '/Users/alexgoldberg/Desktop/werl/test_data/'
-    pcoords = np.load(f'{TEST_DATA}pcoords_full.npy')
+    pcoords = np.load('test_data/pcoords_full.npy')
     print(f"pcoord full shape: {pcoords.shape}")
     weights = np.ones(80) / 80
 
@@ -327,5 +320,5 @@ if __name__ == "__main__":
         ax.set_title('Projected Clusters')
         ax.scatter(werl.projected[:,0], werl.projected[:,1], c=werl.labels)
 
-    plt.savefig(f'{TEST_DATA}/reap_test_clusters.png')
+    plt.savefig('test_data/reap_test_clusters.png')
     plt.show()

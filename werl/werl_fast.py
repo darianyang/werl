@@ -93,7 +93,6 @@ class FAST(WERL):
         ### Something to revisit later, because it really only happens in the first iteration
 
         clust_and_counts = np.unique(self.labels, return_counts=True)
-        print(clust_and_counts)
 
         clusts = list(clust_and_counts[0])
         clustcounts = list(clust_and_counts[1])
@@ -129,14 +128,10 @@ class FAST(WERL):
         '''
 
         print('LABELS:', self.labels)
-        #print('DIR:', directed)
-        #print('UNDIR:', undirected,'\n')
         dir_rewards = [r[0] for r in directed]
         undir_rewards = [r[0] for r in undirected]
 
         rewards = []
-       #if len(dir_rewards) != len(undir_rewards):
-       #     raise Exception
 
         for i in range(len(dir_rewards)):
             rewards.append(dir_rewards[i] + alpha*undir_rewards[i])
@@ -350,6 +345,7 @@ class FAST(WERL):
             low_reward_cluster_counter -= 1
 
     def plot_clustering(self):
+        # This is mainly for testing the clustering, I do not see this being used in final version
         if self.pcoords.shape[-1] != 2:
             return
         import matplotlib.pyplot as plt
@@ -369,13 +365,9 @@ class FAST(WERL):
                     color_points[m] = 'purple'
                     size_points[m] = 30
 
-        #print(color_points)
         plt.figure()
         plt.scatter(self.pcoords.T[0], self.pcoords.T[1], c=color_points, s=size_points, alpha=0.5)
-        #plt.savefig('fast_2D_cluster_pcoords.png')
-        #plt.figure()
         plt.scatter(self.pcoords.T[0], self.pcoords.T[1], s=5, c='k')
-        #plt.savefig('fast_2D_splitmerge.png')
         plt.show()
 
     def fast(self):
@@ -414,16 +406,11 @@ class FAST(WERL):
         return self.to_split, self.to_merge
 
 
-## Testing ##
 
 if __name__ == "__main__":
-    ## 1D TEST SET
-    # np.random.seed(55) # for testing
-    #pcoords = np.random.uniform(-10, -8, size=40) # Generate random initial states
-    #weights = np.ones(40) / 40
 
     ## 2D TEST SET
-    pcoords = np.load("mm_potentials/pcoords_full.npy")
+    pcoords = np.load("test_data/pcoords_full.npy")
     weights = np.ones(len(pcoords)) / len(pcoords)
     
     print(f"pcoord full shape: {pcoords.shape}")
