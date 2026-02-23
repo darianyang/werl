@@ -11,7 +11,8 @@ To merge: 50 total: 11 being merged
 '''
 
 import numpy as np
-from .werl_base import WERL
+from werl.werl_base import WERL
+from werl.werl_lcas import LCAS
 
 class QT(WERL):
     '''
