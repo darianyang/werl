@@ -13,6 +13,6 @@ Requirements:
 
 
 TODO:
- - Projected clustering
- - Multiagent 
+ - Multiagent
+ - Higher barrier potentials
 
