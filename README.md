@@ -14,5 +14,5 @@ Requirements:
 
 TODO:
  - Multiagent
- - Higher barrier potentials
+ - Higher barriers for potentials
 
