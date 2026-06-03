@@ -59,7 +59,7 @@ def calculate_gradient_sympy(func, x, y):
     return gradients
 
 def plot_potential(potential, xlim=None, ylim=None, granularity=1, vmax=None, vmin=None,
-                   single_param=False, calc_grad=False):
+                   single_param=False, calc_grad=False, cmap='jet'):
     '''
     Plots potential based on analytic function.
     '''
@@ -85,30 +85,18 @@ def plot_potential(potential, xlim=None, ylim=None, granularity=1, vmax=None, vm
     # note that to accurately get the potential needs to be plotted as negative
     # TODO: not certain why yet
     #im = plt.pcolormesh(x, y, np.abs(Z), cmap=plt.cm.jet, vmax=vmax, vmin=vmin)
-    im = plt.pcolormesh(x, y, Z, cmap=plt.cm.jet, vmax=vmax, vmin=vmin)
-    #im = plt.pcolormesh(x, y, -np.log((np.min(np.abs(Z))+np.abs(Z))), cmap=plt.cm.jet, vmax=vmax, vmin=vmin)
-    #im = plt.pcolormesh(x, y, -np.log(Z/np.max(Z)), cmap=plt.cm.jet, vmax=vmax, vmin=vmin)
-    #plt.xlim(xlim)
-    #plt.ylim(ylim)
+    im = plt.pcolormesh(x, y, Z, cmap=cmap, vmax=vmax, vmin=vmin)
+    
+    try:
+        plt.xlim(xlim)
+        plt.ylim(ylim)
+    except:
+        print("Need to specify both xlim and ylim")
 
     # adding the Contour lines with labels
     # cset = plt.contour(Z, [-2, -1, 0, 1, 2, 3], linewidths=2, cmap=plt.cm.binary, extent=[xlim[0], xlim[1], ylim[1], ylim[0]])
     # plt.clabel(cset, inline=True,fmt='%1.1f', fontsize=10)
     plt.colorbar(im)  # adding the colobar on the right
-
-# from MA-REAP
-#plot_potential(two_wells_complex_func, (0,100), (0,100))
-#plot_potential(four_wells_symmetric_func, (0,2), (0,2), granularity=0.01)
-#plot_potential(four_wells_asymmetric_func, (0,2), (0,2), granularity=0.01)
-
-# from REAP
-#plot_potential(I_potential, (-2, 2), (0, 4), granularity=0.01)
-#plot_potential(L_potential, (-1, 3), (-1, 3), granularity=0.01)
-#plot_potential(L_potential, (-1, 3), (-1, 3), granularity=0.01)
-#plot_potential(O_potential, (-1.5, 1.5), (-1.5, 1.5), granularity=0.01)
-
-# from TSLC
-#plot_potential(ring_potential, (-3, 3), (-3, 3), granularity=0.01, calc_grad=True)
 
 # WE 2D ODLDs
 #plot_potential(we_odld_2d_energy, (0, 10), (0, 10), granularity=0.01, vmax=5)
@@ -122,30 +110,24 @@ def plot_potential(potential, xlim=None, ylim=None, granularity=1, vmax=None, vm
 #plot_potential(we_odld_2d_new_energy, (0, 1), (0, 1), granularity=0.01)
 #plot_potential(we_odld_2d_new_energy, (0, 1), (0, 1), granularity=0.01, calc_grad=True, vmin=-10, vmax=10)
 
+
+# Plotting each potential used for resampler evaluation
 # from Gideon Simpson Julia landscapes code
-# using a single x var and Python unpacking
-# TODO: convert other potentials to be consistent or just unpack when using these
-#plot_potential(EntropicSwitch, (-3, 3), (-3, 3), granularity=0.01, single_param=True, vmax=10)
-#plot_potential(SymmetricTwoChannel, (-3, 3), (-3, 3), granularity=0.01, single_param=True, vmax=4)
-#plot_potential(Muller, (-3, 3), (-3, 3), granularity=0.01, single_param=True, vmax=10)
-#plot_potential(Rosenbrock, (-2, 2), (-2, 2), granularity=0.01, single_param=True, vmax=100)
-plot_potential(Zpotential, (-30, 30), (-30, 30), granularity=0.1, single_param=True, vmin=0, vmax=25)
-#plot_potential(Zpotential_barrier, (-30, 30), (-30, 30), granularity=0.1, single_param=True, vmin=0, vmax=30)
-#plot_potential(EntropicBox, (-1, 1), (-1, 1), granularity=0.01, single_param=True)
+# S-potential
+plt.figure()
+plot_potential(Spotential, (-30, 30), (-30, 30), granularity=0.1, single_param=True, vmin=0, vmax=25, cmap='viridis')
 
 # states / bins
-for bin in [-20, -10, 0, 10, 20]:
-    plt.axvline(bin, color="k", linestyle="--")
-    plt.axhline(bin, color="k", linestyle="--")
+#for bin in [-20, -10, 0, 10, 20]:
+#    plt.axvline(bin, color="k", linestyle="--")
+#    plt.axhline(bin, color="k", linestyle="--")
 
-# # opt bins
-# #for xbin in [-14, -6, -5, -4, 10]:
-# for xbin in [-16, -6, -3, 0, 10]:
-#     plt.axvline(xbin, color="k", linestyle="--")
-# #for ybin in [-6, 2, 4, 5, 6, 10]:
-# for ybin in [-16, -5, 0, 2, 4, 10]:
-#     plt.axhline(ybin, color="k", linestyle="--")
-
-plt.savefig("S-potential-1path.pdf")
-#plt.savefig("S-potential-bins-opt.png", dpi=600, transparent=True)
+plt.savefig("S-potential.pdf")
 plt.show()
+
+# 2D ODLD 
+plt.figure()
+plot_potential(we_odld_2d_energy, (-10, 0), (-10, 0), granularity=0.01, vmax=10, calc_grad=True, cmap='viridis')
+plt.savefig("ODLD_2d_energy.pdf")
+
+
