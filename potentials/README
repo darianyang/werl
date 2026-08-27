@@ -1,0 +1,8 @@
+
+The potentials used in the preprint are: 
+  1) 2d_odld_grad
+  2) Spotential (Zpotential_barrier)
+
+The original potentials and plots can be found in "original_potentials"
+There are additional higher barrier potentials found in "high_barrier_potentials", which are more difficult problems
+

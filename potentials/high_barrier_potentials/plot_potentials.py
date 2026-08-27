@@ -79,19 +79,17 @@ def plot_potential(potential, xlim=None, ylim=None, granularity=1, vmax=None, vm
     else:
         Z = potential(X, Y)  # evaluation of the function on the grid
 
-    #im = plt.imshow(Z, cmap=plt.cm.jet, vmax=vmax, #interpolation='None',
-    #                extent=[xlim[0], xlim[1], ylim[0], ylim[1]])  # drawing the function
-
     # note that to accurately get the potential needs to be plotted as negative
     # TODO: not certain why yet
-    #im = plt.pcolormesh(x, y, np.abs(Z), cmap=plt.cm.jet, vmax=vmax, vmin=vmin)
-    im = plt.pcolormesh(x, y, Z, cmap=cmap, vmax=vmax, vmin=vmin)
-    
     try:
-        plt.xlim(xlim)
-        plt.ylim(ylim)
+        im = plt.pcolormesh(x, y, Z, cmap=cmap, vmax=vmax, vmin=vmin)
     except:
-        print("Need to specify both xlim and ylim")
+        print("Array passed as tuple of arrays, combined as dist")
+        Z = np.sqrt(Z[0]**2 + Z[1]**2)
+        im = plt.pcolormesh(x, y, Z, cmap=cmap, vmax=vmax, vmin=vmin)
+    
+    plt.xlim(xlim)
+    plt.ylim(ylim)
 
     # adding the Contour lines with labels
     # cset = plt.contour(Z, [-2, -1, 0, 1, 2, 3], linewidths=2, cmap=plt.cm.binary, extent=[xlim[0], xlim[1], ylim[1], ylim[0]])
@@ -99,35 +97,18 @@ def plot_potential(potential, xlim=None, ylim=None, granularity=1, vmax=None, vm
     plt.colorbar(im)  # adding the colobar on the right
 
 # WE 2D ODLDs
-#plot_potential(we_odld_2d_energy, (0, 10), (0, 10), granularity=0.01, vmax=5)
-#plot_potential(we_odld_2d_energy, (0, 10), (0, 10), granularity=0.01, vmax=15, calc_grad=True)
-#plot_potential(we_odld_2d_grad, (0, 10), (0, 10), granularity=0.01, vmax=15)
-#plot_potential(we_odld_2d_grad, (-10, 0), (-10, 0), granularity=0.01, vmax=15)
-#plot_potential(we_odld_2d_energy, (-10, 0), (-10, 0), granularity=0.01, vmax=10)
-#plot_potential(we_odld_2d_energy, (-10, 0), (-10, 0), granularity=0.01, vmax=10, calc_grad=True)
-#plot_potential(we_odld_2d_grad, (-10, 0), (-10, 0), granularity=0.01, vmax=15)
-#plot_potential(we_odld_2d_new_grad, (0, 1), (0, 1), granularity=0.01)
-#plot_potential(we_odld_2d_new_energy, (0, 1), (0, 1), granularity=0.01)
-#plot_potential(we_odld_2d_new_energy, (0, 1), (0, 1), granularity=0.01, calc_grad=True, vmin=-10, vmax=10)
-
 
 # Plotting each potential used for resampler evaluation
-# from Gideon Simpson Julia landscapes code
+
 # S-potential
-plt.figure()
-plot_potential(Spotential, (-30, 30), (-30, 30), granularity=0.1, single_param=True, vmin=0, vmax=25, cmap='viridis')
-
-# states / bins
-#for bin in [-20, -10, 0, 10, 20]:
-#    plt.axvline(bin, color="k", linestyle="--")
-#    plt.axhline(bin, color="k", linestyle="--")
-
-plt.savefig("S-potential.pdf")
-plt.show()
+#plt.figure()
+#plot_potential(Spotential, (-30, 30), (-30, 30), granularity=0.1, single_param=True, vmin=0, vmax=25, cmap='viridis')
+#plt.savefig("S-potential.pdf")
 
 # 2D ODLD 
 plt.figure()
-plot_potential(we_odld_2d_energy, (-10, 0), (-10, 0), granularity=0.01, vmax=10, calc_grad=True, cmap='viridis')
-plt.savefig("ODLD_2d_energy.pdf")
+#plot_potential(we_odld_2d_energy, (-10, 0), (-10, 0), granularity=0.01, vmax=10, calc_grad=True)
+plot_potential(we_odld_2d_grad, (-10, 0), (-10, 0), granularity=0.01, vmin=-8, vmax=8, cmap='viridis')
+plt.savefig("ODLD_2d_grad.pdf")
 
 

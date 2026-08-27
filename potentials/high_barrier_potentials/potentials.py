@@ -153,12 +153,12 @@ def Spotential(x):
     Returns:
     float: The value of the potential at the given position x.
     """
-    # original coefficients: 3, 5, 5, 3
+    # original coefficients: -60, -35, 50, 16
     return (x[0]**4 + x[1]**4)/20480 - 3 * np.exp(-0.01 * (x[0]+5)**2 - 0.2 * (x[1]+5)**2) - \
-            -60 * np.exp(-0.003 * (x[0]-5)**2 - 0.2 * (x[1]-5)**2) + \
-            -35 * np.exp(-0.075 * (x[0]+3*(x[1]-3)**2))/(1+np.exp(-x[0]-3)) + \
-            50 * np.exp(-0.2 * (x[0]+3*(x[1]+3)**2))/(1+np.exp(x[0]-3)) + \
-            16 * np.exp(-0.01 *(x[0]**2 + x[1]**2))
+            -90 * np.exp(-0.003 * (x[0]-5)**2 - 0.2 * (x[1]-5)**2) + \
+            -42.5 * np.exp(-0.075 * (x[0]+3*(x[1]-3)**2))/(1+np.exp(-x[0]-3)) + \
+            75 * np.exp(-0.2 * (x[0]+3*(x[1]+3)**2))/(1+np.exp(x[0]-3)) + \
+            24 * np.exp(-0.01 *(x[0]**2 + x[1]**2))
             # originally smaller barrier near middle
             #3 * np.exp(-0.01 *(x[0]**2 + x[1]**2))
 
