@@ -53,8 +53,9 @@ def we_odld_2d_energy(x, y):
 
 def we_odld_2d_grad(x, y):
     A = 2
-    B = 2
+    #B = 2
     #B = 10
+    B = 30  # 30 is a much higher barrier / harder system
     C = 0.5
     # for -10 to 0
     x0 = 0
